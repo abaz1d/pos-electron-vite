@@ -46,7 +46,10 @@ defineExpose({ openMenu, closeMenu })
     class="bg-slate-50 h-12 px-2 sm:px-4 py-2.5 dark:bg-gray-900 sticky w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600"
   >
     <div class="container flex flex-wrap items-center justify-between -mt-2 mx-auto">
-      <a href="#" class="flex items-center hover:scale-125 transition duration-700 ease-in-out">
+      <a
+        href="#"
+        class="items-center hover:scale-125 transition duration-700 ease-in-out hidden xl:flex"
+      >
         <img :src="LOGO" alt="logo" class="h-4 mr-3 sm:h-7" />
         <span class="self-center text-base font-semibold whitespace-nowrap dark:text-white"
           >Binaniaga</span

@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 //import { currencyFormatter } from '../helpers/util'
+const ipcRenderer = window.electron.ipcRenderer
 
 export const useDaftarAnggotaStore = defineStore({
   id: 'daftar-anggota',
@@ -12,16 +13,23 @@ export const useDaftarAnggotaStore = defineStore({
   },
   actions: {
     async readItem() {
-      // try {
-      //   const { data } = await request.get("outlet");
-      //   if (data.success) {
-      //     this.rawItems = data.data;
-      //     return this.rawItems;
-      //   }
-      // } catch (error) {
-      //   throw new Error(error);
-      // }
-      let db = Object.values(Object.values(window.api)[0])[0]
+      //const response = await window.electron.ping()
+      try {
+        //const data = await
+        window.api.fetchProduk().then((data) => {
+          console.log('pinia', data)
+        })
+
+        //return data
+        // if (data.success) {
+        //   this.rawItems = data.data;
+        //   return this.rawItems;
+        // }
+      } catch (error) {
+        throw new Error(error)
+      }
+      //ipcRenderer.send('fetch')
+      //window.api.fetchProduk()
       // db.query('SELECT * FROM produk;', (err, rows) => {
       //   if (err) console.error(err)
       //   console.log(rows)
@@ -33,7 +41,7 @@ export const useDaftarAnggotaStore = defineStore({
       //     console.log('Connect DB successfully')
       //   }
       // })
-      console.log('Connect', window.api)
+      //console.log('Connect', ipcRenderer, window.api)
     }
   }
 })

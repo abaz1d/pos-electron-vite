@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -7,8 +7,8 @@ import { pool } from '../helpers/util.js'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    minWidth: 1200,
-    minHeight: 670,
+    minWidth: 1366,
+    minHeight: 768,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -32,13 +32,15 @@ function createWindow() {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  pool.connect((err) => {
+  pool.getConnection((err) => {
     if (err) {
+      //render page error atau tidak terhubung kedatabase
       console.log('err database', err)
     } else {
       console.log('Connect DB successfully')
     }
   })
+
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
