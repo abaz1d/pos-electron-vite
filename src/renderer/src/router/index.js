@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '@renderer/views/HomeView.vue'
-import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota.vue'
-import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota.vue'
+import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
+import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota/HistoryAnggota.vue'
 
 const routes = [
   {

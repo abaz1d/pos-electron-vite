@@ -1596,7 +1596,7 @@ defineExpose({ openMenu, closeMenu })
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                   /></a>
                   <ul
-                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[435px] transition duration-150 ease-in-out origin-top-left min-w-max"
+                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[385px] transition duration-150 ease-in-out origin-top-left min-w-max"
                   >
                     <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                       <RouterLink to="/setting-laporan">
@@ -1639,7 +1639,7 @@ defineExpose({ openMenu, closeMenu })
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                   /></a>
                   <ul
-                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[391px] transition duration-150 ease-in-out origin-top-left min-w-max"
+                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[345px] transition duration-150 ease-in-out origin-top-left min-w-max"
                   >
                     <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                       <RouterLink to="/transaksi-simpanan">
@@ -1677,7 +1677,7 @@ defineExpose({ openMenu, closeMenu })
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                   /></a>
                   <ul
-                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[435px] transition duration-150 ease-in-out origin-top-left min-w-max"
+                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-[385px] transition duration-150 ease-in-out origin-top-left min-w-max"
                   >
                     <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                       <RouterLink to="/setting-laporan">

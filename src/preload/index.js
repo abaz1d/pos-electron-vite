@@ -1,23 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { pool, Response } from '../helpers/util.js'
-const db = pool.promise()
+import daftarAnggota from '../models/daftarAnggota'
 
 // Custom APIs for renderer
-const api = {}
-
-api.ping = function (req, res) {
-  ipcRenderer.invoke('ping')
+const api = {
+  daftarAnggota
 }
 
-api.fetchProduk = async (e) => {
-  try {
-    const [rows, fields] = await db.query('SELECT * FROM anggota;')
-    return rows
-  } catch (error) {
-    console.log(error)
-  }
-}
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.

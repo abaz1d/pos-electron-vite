@@ -1,4 +1,5 @@
 import LucideIcons from './lucide'
+import { Modal, ModalHeader, ModalBody, ModalFooter } from './modal'
 import {
   Dropdown,
   DropdownToggle,
@@ -11,6 +12,10 @@ import {
 } from './dropdown'
 
 export default (app) => {
+  app.component('Modal', Modal)
+  app.component('ModalHeader', ModalHeader)
+  app.component('ModalBody', ModalBody)
+  app.component('ModalFooter', ModalFooter)
   app.component('Dropdown', Dropdown)
   app.component('DropdownToggle', DropdownToggle)
   app.component('DropdownMenu', DropdownMenu)

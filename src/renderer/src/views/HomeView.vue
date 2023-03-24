@@ -11,14 +11,14 @@ const closeMenu = (e) => {
 }
 </script>
 
-<template>
+<template class="main-class">
   <NavbarView ref="navbarRef" title="home" />
   <div class="container my-auto flex h-[90vh]">
     <div
       class="grid m-auto p-10 overflow-hidden grid-rows-3 grid-flow-col gap-8 h-[575px] w-[1100px]"
     >
       <div
-        @mouseover="openMenu('setting')"
+        @click="openMenu('setting')"
         @mouseleave="closeMenu('setting')"
         class="col-span-1 transition duration-500 ease-in-out hover:scale-105 bg-white hover:bg-blue-300 backdrop-blur-[2px] bg-no-repeat bg-center border-[9px] border-primary rounded-lg cursor-pointer"
       >
@@ -31,7 +31,7 @@ const closeMenu = (e) => {
         ></div>
       </div>
       <div
-        @mouseover="openMenu('transaksi')"
+        @click="openMenu('transaksi')"
         @mouseleave="closeMenu('transaksi')"
         class="row-span-2 transition duration-500 ease-in-out hover:scale-105 col-span-1 bg-white hover:bg-blue-300 backdrop-blur-[2px] border-[9px] border-primary rounded-lg cursor-pointer"
       >
@@ -44,7 +44,7 @@ const closeMenu = (e) => {
         ></div>
       </div>
       <div
-        @mouseover="openMenu('proses')"
+        @click="openMenu('proses')"
         @mouseleave="closeMenu('proses')"
         class="row-span-2 transition duration-500 ease-in-out hover:scale-105 col-span-1 bg-white hover:bg-blue-300 backdrop-blur-[2px] border-[9px] border-primary rounded-lg cursor-pointer"
       >
@@ -57,7 +57,7 @@ const closeMenu = (e) => {
         ></div>
       </div>
       <div
-        @mouseover="openMenu('utility')"
+        @click="openMenu('utility')"
         @mouseleave="closeMenu('utility')"
         class="col-span-1 transition duration-500 ease-in-out hover:scale-105 bg-white hover:bg-blue-300 backdrop-blur-[2px] border-[9px] border-primary rounded-lg cursor-pointer"
       >
@@ -70,7 +70,7 @@ const closeMenu = (e) => {
         ></div>
       </div>
       <div
-        @mouseover="openMenu('laporan')"
+        @click="openMenu('laporan')"
         @mouseleave="closeMenu('laporan')"
         class="row-span-3 transition duration-500 ease-in-out hover:scale-105 bg-white hover:bg-blue-300 backdrop-blur-[2px] border-[9px] border-primary rounded-lg cursor-pointer"
       >
@@ -85,3 +85,12 @@ const closeMenu = (e) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.main-class {
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+</style>

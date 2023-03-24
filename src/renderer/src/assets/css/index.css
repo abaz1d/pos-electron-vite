@@ -1,5 +1,6 @@
 @import '@left4code/tw-starter/dist/css/_btn.css';
 @import '@left4code/tw-starter/dist/css/_dropdown.css';
 @import './components/_lucide-icon.css';
+@import './components/_modal.css';
 @import './_tailwind.css';
 @import './_colors.css';
