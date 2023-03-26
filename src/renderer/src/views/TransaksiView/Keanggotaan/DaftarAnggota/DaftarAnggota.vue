@@ -13,6 +13,7 @@ const isAdd = ref(false)
 const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
+const modal_delete = ref(false)
 const id_anggota = ref('')
 const foto_profile = ref()
 const previewFoto = ref(null)
@@ -142,6 +143,9 @@ const simpan_data = (e) => {
   e.target.reset()
   resetForm()
 }
+const deleteAnggota = () => {
+  console.log('deleteAnggota')
+}
 const resetForm = () => {
   id_anggota.value = ''
   foto_profile.value.value = null
@@ -179,6 +183,7 @@ const resetForm = () => {
   simpanan_lain.value = ''
   total_simpanan.value = ''
   modal_utama.value = false
+  modal_delete.value = false
   isAdd.value = false
   isEdit.value = false
   isView.value = false
@@ -199,7 +204,7 @@ onMounted(async () => {
   <KeanggotaanBC />
   <div class="relative top-0 bg-white w-full border-y-2 border-[#d0d3d4]">
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
-      <div class="grid grid-cols-77 xl:grid-cols-10 w-full h-10">
+      <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
         <button
           class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:text-blue-700 hover:bg-gray-200 btn-light-bordered"
           @click="addGet"
@@ -264,29 +269,30 @@ onMounted(async () => {
         >
           <XIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
-        <!-- <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-          id="unselect-all"
-          title="Unselect All"
-          @click="this.$router.go(this.$router.currentRoute)"
+        <a
+          href="javascript:history.go(0)"
+          title="Refresh All"
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
         >
-          <RefreshCwIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
-        </button> -->
+          <RefreshCwIcon class="w-4 h-4 mx-auto my-[9px] stroke-2 stroke-current" />
+        </a>
       </div>
       <div class="flex order-2 w-full h-10">
         <div id="pagination" class="mx-auto">
           <div class="inline-flex align-middle leading-tight text-xs">
             <div class="relative inline-flex align-middle py-1 leading-tight text-xs">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center rounded-l-lg select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-                id="next-page"
+                id="first-page"
+                title="first page"
                 ><RewindIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-                id="last-page"
+                id="previous-page"
+                title="previous page"
               >
                 <SkipBackIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
@@ -307,17 +313,19 @@ onMounted(async () => {
             </div>
             <div class="relative inline-flex align-middle py-1 leading-tight text-xs">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="next-page"
-                ><FastForwardIcon class="w-4 h-4 mx-auto my-[5px]"
+                title="next page"
+                ><SkipForwardIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 rounded-r-lg py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="last-page"
+                title="last page"
               >
-                <SkipForwardIcon class="w-4 h-4 mx-auto my-[5px]"
+                <FastForwardIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
             </div>
           </div>
@@ -449,7 +457,11 @@ onMounted(async () => {
               >
                 <CheckSquareIcon class="w-4 h-4 mr-1" /> Edit
               </a>
-              <a id="delete" class="flex items-center text-danger" href="javascript:;">
+              <a
+                @click="modal_delete = true"
+                class="flex items-center text-danger"
+                href="javascript:;"
+              >
                 <Trash2Icon class="w-4 h-4 mr-1" /> Hapus
               </a>
             </td>
@@ -473,709 +485,713 @@ onMounted(async () => {
   <Modal backdrop="static" size="modal-xl" :show="modal_utama" @hidden="modal_utama = false">
     <ModalHeader>
       <h2 class="font-medium text-base mr-auto">
-        <span v-if="isAdd">Tambah</span><span v-if="isEdit">Edit</span
-        ><span v-if="isView">Data</span> Anggota
+        <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
+        ><span v-if="isView">Data </span> Anggota
         <span v-if="isEdit || isView">{{ id_anggota }}</span>
       </h2>
-      <div class="float-right space-x-4 -my-2 mx-auto">
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Fasilitas</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. Pokok</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. Wajib</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. SWK</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. Lain</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. SHU</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Simp. Saldo</span
-          >
-        </button>
-        <button
-          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
-        >
-          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
-          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
-            >Catatan</span
-          >
-        </button>
-      </div>
+
       <a
         data-tw-dismiss="modal"
+        @click="resetForm"
         href="javascript:;"
         class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
       >
         <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
       </a>
     </ModalHeader>
-    <ModalBody class="-mx-4">
-      <form
-        id="daftarAnggotaForm"
-        class="grid grid-cols-12 gap-4 pl-2"
-        @submit.prevent="simpan_data"
-      >
-        <div class="border-r-2 mx-auto col-span-3 overflow-hidden mt-0">
-          <div
-            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm mx-auto text-center mb-4 max-w-max h-[40%] bg-gray-100"
+    <ModalBody>
+      <div v-if="isView" class="flex space-x-4 -mx-5 py-2 justify-center -mt-5 mb-3 bg-gray-100">
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-amber-800 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <BookIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Fasilitas</span
           >
-            <div class="border p-1">
-              <img
-                :src="PP"
-                v-if="!previewFoto"
-                class="h-[125px] mx-auto mb-10 hover:scale-110 transition duration-500 ease-in-out"
-              />
-              <template v-if="previewFoto">
-                <img
-                  :src="previewFoto"
-                  class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
-                />
-                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
-                <p class="mb-1 text-xs rounded-b-md bg-white">
-                  {{ imageFoto.size / 1024 }}<span class="font-semibold"> KB</span>
-                </p>
-              </template>
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              @change="previewFotoImage"
-              class="text-[10px] w-full cursor-pointer"
-              id="foto_anggota"
-              ref="foto_profile"
-              required
-            />
-
-            <label
-              for="foto"
-              class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Foto Anggota</label
-            >
-          </div>
-          <div
-            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-slate-600 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <BanknoteIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Pokok</span
           >
-            <div class="border p-1">
-              <img
-                :src="TTD"
-                v-if="!previewTTD"
-                class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
-              />
-              <template v-if="previewTTD">
-                <img
-                  :src="previewTTD"
-                  class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
-                />
-                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageTTD.name }}</p>
-                <p class="mb-1 text-xs rounded-b-md bg-white">
-                  {{ imageTTD.size / 1024 }}<span class="font-semibold"> KB</span>
-                </p>
-              </template>
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              @change="previewTTDImage"
-              class="text-[10px] w-full cursor-pointer"
-              id="foto_ttd"
-              ref="foto_ttd"
-              required
-            />
-            <label
-              for="foto"
-              class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Tanda Tangan Anggota</label
-            >
-          </div>
-          <div
-            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-amber-400 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <CoinsIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Wajib</span
           >
-            <div class="border p-1">
-              <img
-                :src="PA"
-                v-if="!previewPA"
-                class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
-              />
-              <template v-if="previewPA">
-                <img
-                  :src="previewPA"
-                  class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
-                />
-                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imagePA.name }}</p>
-                <p class="mb-1 text-xs rounded-b-md bg-white">
-                  {{ imagePA.size / 1024 }}<span class="font-semibold"> KB</span>
-                </p>
-              </template>
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              @change="previewPAImage"
-              class="text-[10px] w-full cursor-pointer"
-              id="foto_pa"
-              ref="foto_pa"
-              required
-            />
-            <label
-              for="foto"
-              class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Paraf Anggota</label
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-amber-700 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ScaleIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. SWK</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-red-300 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <PiggyBankIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Lain</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-primary bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <LandmarkIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. SHU</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-green-600 bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <WalletIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Saldo</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-black bg-white hover:bg-slate-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <FileIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Catatan</span
+          >
+        </button>
+      </div>
+      <div class="-mx-4">
+        <form
+          id="daftarAnggotaForm"
+          class="grid grid-cols-12 gap-4 pl-2"
+          @submit.prevent="simpan_data"
+        >
+          <div class="border-r-2 mx-auto col-span-3 overflow-hidden mt-0">
+            <div
+              class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm mx-auto text-center mb-4 max-w-max h-[40%] bg-gray-100"
             >
-          </div>
-        </div>
-        <div class="col-span-9 flex max-h-[64vh]">
-          <div class="flex-grow overflow-auto pr-2">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="relative z-0 w-full mb-5 mt-2 group">
-                <input
-                  type="text"
-                  name="tanggal"
-                  id="tanggal"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="tanggal"
-                  disabled
+              <div class="border p-1">
+                <img
+                  :src="PP"
+                  v-if="!previewFoto"
+                  class="h-[125px] mx-auto mb-10 hover:scale-110 transition duration-500 ease-in-out"
                 />
-                <label
-                  for="tanggal"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Tanggal</label
-                >
+                <template v-if="previewFoto">
+                  <img
+                    :src="previewFoto"
+                    class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                  />
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
+                  <p class="mb-1 text-xs rounded-b-md bg-white">
+                    {{ imageFoto.size / 1024 }}<span class="font-semibold"> KB</span>
+                  </p>
+                </template>
               </div>
-              <div class="relative z-0 w-full mb-5 mt-2 group">
-                <input
-                  type="text"
-                  name="no_anggota"
-                  id="no_anggota"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="no_anggota"
-                  required
-                />
-                <label
-                  for="no_anggota"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >No. Anggota</label
-                >
-              </div>
-            </div>
-            <hr class="mb-3 border-1 border-gray-300 bg-gray-300" />
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="no_ktp"
-                  id="no_ktp"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="no_ktp"
-                  required
-                />
-                <label
-                  for="no_ktp"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >No. KTP/ NIK</label
-                >
-              </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="no_kk"
-                  id="no_kk"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="no_kk"
-                  required
-                />
-                <label
-                  for="no_kk"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >No. Kartu Keluarga</label
-                >
-              </div>
-            </div>
-            <div class="relative z-0 w-full mb-6 group">
+
               <input
-                type="text"
-                name="nama_lengkap"
-                id="nama_lengkap"
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                v-model="nama_lengkap"
+                type="file"
+                accept="image/*"
+                @change="previewFotoImage"
+                class="text-[10px] w-full cursor-pointer"
+                id="foto_anggota"
+                ref="foto_profile"
+                required
+              />
+
+              <label
+                for="foto"
+                class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >Foto Anggota</label
+              >
+            </div>
+            <div
+              class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+            >
+              <div class="border p-1">
+                <img
+                  :src="TTD"
+                  v-if="!previewTTD"
+                  class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
+                />
+                <template v-if="previewTTD">
+                  <img
+                    :src="previewTTD"
+                    class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                  />
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageTTD.name }}</p>
+                  <p class="mb-1 text-xs rounded-b-md bg-white">
+                    {{ imageTTD.size / 1024 }}<span class="font-semibold"> KB</span>
+                  </p>
+                </template>
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                @change="previewTTDImage"
+                class="text-[10px] w-full cursor-pointer"
+                id="foto_ttd"
+                ref="foto_ttd"
                 required
               />
               <label
-                for="nama_lengkap"
-                class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Nama Lengkap</label
+                for="foto"
+                class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >Tanda Tangan Anggota</label
               >
             </div>
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="tempat_lahir"
-                  id="tempat_lahir"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="tempat_lahir"
-                  required
+            <div
+              class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+            >
+              <div class="border p-1">
+                <img
+                  :src="PA"
+                  v-if="!previewPA"
+                  class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
                 />
-                <label
-                  for="tempat_lahir"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Tempat Lahir</label
-                >
+                <template v-if="previewPA">
+                  <img
+                    :src="previewPA"
+                    class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                  />
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imagePA.name }}</p>
+                  <p class="mb-1 text-xs rounded-b-md bg-white">
+                    {{ imagePA.size / 1024 }}<span class="font-semibold"> KB</span>
+                  </p>
+                </template>
               </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="date"
-                  name="tanggal_lahir"
-                  id="tanggal_lahir"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="tanggal_lahir"
-                  required
-                />
-                <label
-                  for="tanggal_lahir"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Tanggal Lahir</label
-                >
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <select
-                  name="jenis_kelamin"
-                  id="jenis_kelamin"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="jenis_kelamin"
-                  required
-                >
-                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                  <option class="text-xs" value="Laki-Laki">Laki - Laki</option>
-                  <option class="text-xs" value="Perempuan">Perempuan</option>
-                </select>
-                <label
-                  for="jenis_kelamin"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-2.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Jenis Kelamin</label
-                >
-              </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <select
-                  name="agama"
-                  id="agama"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="agama"
-                  required
-                >
-                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                  <option class="text-xs" value="Islam">Islam</option>
-                  <option class="text-xs" value="Kristen">Kristen</option>
-                  <option class="text-xs" value="Katolik">Katolik</option>
-                  <option class="text-xs" value="Hindu">Hindu</option>
-                  <option class="text-xs" value="Buddha">Buddha</option>
-                  <option class="text-xs" value="Konghucu">Konghucu</option>
-                </select>
-                <label
-                  for="agama"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Agama</label
-                >
-              </div>
-            </div>
-            <div class="relative z-0 w-full mb-6 group">
-              <textarea
-                type="text"
-                name="alamat"
-                id="alamat"
-                class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                v-model="alamat"
+
+              <input
+                type="file"
+                accept="image/*"
+                @change="previewPAImage"
+                class="text-[10px] w-full cursor-pointer"
+                id="foto_pa"
+                ref="foto_pa"
                 required
-              ></textarea>
+              />
               <label
-                for="alamat"
-                class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >Alamat</label
+                for="foto"
+                class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >Paraf Anggota</label
               >
             </div>
+          </div>
+          <div class="col-span-9 flex max-h-[64vh]">
+            <div class="flex-grow overflow-auto pr-2">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="relative z-0 w-full mb-5 mt-2 group">
+                  <input
+                    type="text"
+                    name="tanggal"
+                    id="tanggal"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="tanggal"
+                    disabled
+                  />
+                  <label
+                    for="tanggal"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Tanggal</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-5 mt-2 group">
+                  <input
+                    type="text"
+                    name="no_anggota"
+                    id="no_anggota"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="no_anggota"
+                    required
+                  />
+                  <label
+                    for="no_anggota"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >No. Anggota</label
+                  >
+                </div>
+              </div>
+              <hr class="mb-3 border-1 border-gray-300 bg-gray-300" />
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="no_ktp"
+                    id="no_ktp"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="no_ktp"
+                    required
+                  />
+                  <label
+                    for="no_ktp"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >No. KTP/ NIK</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="no_kk"
+                    id="no_kk"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="no_kk"
+                    required
+                  />
+                  <label
+                    for="no_kk"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >No. Kartu Keluarga</label
+                  >
+                </div>
+              </div>
+              <div class="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="nama_lengkap"
+                  id="nama_lengkap"
+                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  v-model="nama_lengkap"
+                  required
+                />
+                <label
+                  for="nama_lengkap"
+                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                  >Nama Lengkap</label
+                >
+              </div>
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="tempat_lahir"
+                    id="tempat_lahir"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="tempat_lahir"
+                    required
+                  />
+                  <label
+                    for="tempat_lahir"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Tempat Lahir</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="date"
+                    name="tanggal_lahir"
+                    id="tanggal_lahir"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="tanggal_lahir"
+                    required
+                  />
+                  <label
+                    for="tanggal_lahir"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Tanggal Lahir</label
+                  >
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <select
+                    name="jenis_kelamin"
+                    id="jenis_kelamin"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="jenis_kelamin"
+                    required
+                  >
+                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
+                    <option class="text-xs" value="Laki-Laki">Laki - Laki</option>
+                    <option class="text-xs" value="Perempuan">Perempuan</option>
+                  </select>
+                  <label
+                    for="jenis_kelamin"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-2.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Jenis Kelamin</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <select
+                    name="agama"
+                    id="agama"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="agama"
+                    required
+                  >
+                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
+                    <option class="text-xs" value="Islam">Islam</option>
+                    <option class="text-xs" value="Kristen">Kristen</option>
+                    <option class="text-xs" value="Katolik">Katolik</option>
+                    <option class="text-xs" value="Hindu">Hindu</option>
+                    <option class="text-xs" value="Buddha">Buddha</option>
+                    <option class="text-xs" value="Konghucu">Konghucu</option>
+                  </select>
+                  <label
+                    for="agama"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Agama</label
+                  >
+                </div>
+              </div>
+              <div class="relative z-0 w-full mb-6 group">
+                <textarea
+                  type="text"
+                  name="alamat"
+                  id="alamat"
+                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  v-model="alamat"
+                  required
+                ></textarea>
+                <label
+                  for="alamat"
+                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                  >Alamat</label
+                >
+              </div>
 
-            <div class="grid grid-cols-4 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="rt"
-                  id="rt"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="rt"
-                  required
-                />
-                <label
-                  for="rt"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >RT</label
-                >
+              <div class="grid grid-cols-4 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="rt"
+                    id="rt"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="rt"
+                    required
+                  />
+                  <label
+                    for="rt"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >RT</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="rw"
+                    id="rw"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="rw"
+                    required
+                  />
+                  <label
+                    for="rw"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >RW</label
+                  >
+                </div>
+                <div class="relative z-0 w-full col-span-2 mb-6 group">
+                  <input
+                    type="text"
+                    name="kelurahan"
+                    id="kelurahan"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="kelurahan"
+                    required
+                  />
+                  <label
+                    for="kelurahan"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Kelurahan/ Desa</label
+                  >
+                </div>
               </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="rw"
-                  id="rw"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="rw"
-                  required
-                />
-                <label
-                  for="rw"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >RW</label
-                >
-              </div>
-              <div class="relative z-0 w-full col-span-2 mb-6 group">
-                <input
-                  type="text"
-                  name="kelurahan"
-                  id="kelurahan"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="kelurahan"
-                  required
-                />
-                <label
-                  for="kelurahan"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Kelurahan/ Desa</label
-                >
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="kecamatan"
-                  id="kecamatan"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="kecamatan"
-                  required
-                />
-                <label
-                  for="kecamatan"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Kecamatan</label
-                >
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="kecamatan"
+                    id="kecamatan"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="kecamatan"
+                    required
+                  />
+                  <label
+                    for="kecamatan"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Kecamatan</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="kota"
+                    id="kota"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="kota"
+                    required
+                  />
+                  <label
+                    for="kota"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Kabupaten/ Kota</label
+                  >
+                </div>
               </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="kota"
-                  id="kota"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="kota"
-                  required
-                />
-                <label
-                  for="kota"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Kabupaten/ Kota</label
-                >
-              </div>
-            </div>
 
-            <div class="grid grid-cols-3 gap-6">
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="pendamping"
-                  id="pendamping"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="pendamping"
-                  required
-                />
-                <label
-                  for="pendamping"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Pendamping</label
-                >
+              <div class="grid grid-cols-3 gap-6">
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="pendamping"
+                    id="pendamping"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="pendamping"
+                    required
+                  />
+                  <label
+                    for="pendamping"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Pendamping</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="text"
+                    name="pekerjaan"
+                    id="pekerjaan"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="pekerjaan"
+                    required
+                  />
+                  <label
+                    for="pekerjaan"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Pekerjaan</label
+                  >
+                </div>
+                <div class="relative z-0 w-full mb-6 group">
+                  <input
+                    type="tel"
+                    name="telepon"
+                    id="telepon"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="no_telepon"
+                    required
+                  />
+                  <label
+                    for="telepon"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >No. Telepon</label
+                  >
+                </div>
               </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="pekerjaan"
-                  id="pekerjaan"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="pekerjaan"
-                  required
-                />
-                <label
-                  for="pekerjaan"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Pekerjaan</label
-                >
-              </div>
-              <div class="relative z-0 w-full mb-6 group">
-                <input
-                  type="tel"
-                  name="telepon"
-                  id="telepon"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="no_telepon"
-                  required
-                />
-                <label
-                  for="telepon"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >No. Telepon</label
-                >
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-5 group">
-                <select
-                  name="resort"
-                  id="resort"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="resort"
-                  required
-                >
-                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                  <option class="text-xs" value="050 - SMB">050 - SMB</option>
-                  <option class="text-xs" value="101 - KRESNA">101 - KRESNA</option>
-                  <option class="text-xs" value="102 - RAMA">102 - RAMA</option>
-                  <option class="text-xs" value="103 - SADEWA">103 - SADEWA</option>
-                  <option class="text-xs" value="104 - NAKULA">104 - NAKULA</option>
-                  <option class="text-xs" value="105 - SRIKANDI">105 - SRIKANDI</option>
-                  <option class="text-xs" value="106 - ARIMBI">106 - ARIMBI</option>
-                  <option class="text-xs" value="107 - ANJANI">107 - ANJANI</option>
-                  <option class="text-xs" value="108 - ABIMANYU">108 - ABIMANYU</option>
-                  <option class="text-xs" value="109 - BANOWATI">109 - BANOWATI</option>
-                  <option class="text-xs" value="110 - DRUPADI">109 - DRUPADI</option>
-                  <option class="text-xs" value="111 - GONDOMONO">110 - GONDOMONO</option>
-                  <option class="text-xs" value="112 - KUNTHI">112 - KUNTHI</option>
-                  <option class="text-xs" value="113 - LARASATI">113 - LARASATI</option>
-                  <option class="text-xs" value="114 - BALADEWA">114 - BALADEWA</option>
-                  <option class="text-xs" value="115 - ANTAREJA">115 - ANTAREJA</option>
-                  <option class="text-xs" value="116 - LESMANA">116 - LESMANA</option>
-                  <option class="text-xs" value="117 - SUBALI">117 - SUBALI</option>
-                  <option class="text-xs" value="118 - SUGRIWA">118 - SUGRIWA</option>
-                  <option class="text-xs" value="119 - PERMADI">119 - PERMADI</option>
-                  <option class="text-xs" value="120 - PERGIWO">120 - PERGIWO</option>
-                  <option class="text-xs" value="121 - UTARI">121 - UTARI</option>
-                  <option class="text-xs" value="122 - JATAYU">122 - JATAYU</option>
-                </select>
-                <label
-                  for="resort"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Resort</label
-                >
-              </div>
-              <div class="relative z-0 w-full mb-5 group">
-                <input
-                  type="date"
-                  name="tanggal_bht"
-                  id="tanggal_bht"
-                  class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="tanggal_bht"
-                  required
-                />
-                <label
-                  for="tanggal_bht"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Tanggal BHT</label
-                >
-              </div>
-            </div>
-            <hr class="mb-3 border-1 border-gray-300 bg-gray-300" />
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-5 group">
-                <input
-                  type="text"
-                  name="simpanan_pokok"
-                  id="simpanan_pokok"
-                  class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="simpanan_pokok"
-                  required
-                />
-                <div
-                  class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
-                >
-                  Rp
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                  <select
+                    name="resort"
+                    id="resort"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="resort"
+                    required
+                  >
+                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
+                    <option class="text-xs" value="050 - SMB">050 - SMB</option>
+                    <option class="text-xs" value="101 - KRESNA">101 - KRESNA</option>
+                    <option class="text-xs" value="102 - RAMA">102 - RAMA</option>
+                    <option class="text-xs" value="103 - SADEWA">103 - SADEWA</option>
+                    <option class="text-xs" value="104 - NAKULA">104 - NAKULA</option>
+                    <option class="text-xs" value="105 - SRIKANDI">105 - SRIKANDI</option>
+                    <option class="text-xs" value="106 - ARIMBI">106 - ARIMBI</option>
+                    <option class="text-xs" value="107 - ANJANI">107 - ANJANI</option>
+                    <option class="text-xs" value="108 - ABIMANYU">108 - ABIMANYU</option>
+                    <option class="text-xs" value="109 - BANOWATI">109 - BANOWATI</option>
+                    <option class="text-xs" value="110 - DRUPADI">109 - DRUPADI</option>
+                    <option class="text-xs" value="111 - GONDOMONO">110 - GONDOMONO</option>
+                    <option class="text-xs" value="112 - KUNTHI">112 - KUNTHI</option>
+                    <option class="text-xs" value="113 - LARASATI">113 - LARASATI</option>
+                    <option class="text-xs" value="114 - BALADEWA">114 - BALADEWA</option>
+                    <option class="text-xs" value="115 - ANTAREJA">115 - ANTAREJA</option>
+                    <option class="text-xs" value="116 - LESMANA">116 - LESMANA</option>
+                    <option class="text-xs" value="117 - SUBALI">117 - SUBALI</option>
+                    <option class="text-xs" value="118 - SUGRIWA">118 - SUGRIWA</option>
+                    <option class="text-xs" value="119 - PERMADI">119 - PERMADI</option>
+                    <option class="text-xs" value="120 - PERGIWO">120 - PERGIWO</option>
+                    <option class="text-xs" value="121 - UTARI">121 - UTARI</option>
+                    <option class="text-xs" value="122 - JATAYU">122 - JATAYU</option>
+                  </select>
+                  <label
+                    for="resort"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Resort</label
+                  >
                 </div>
-                <label
-                  for="simpanan_pokok"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Simpanan Pokok</label
-                >
-              </div>
-              <div class="relative z-0 w-full mb-5 group">
-                <input
-                  type="text"
-                  name="simpanan_swk"
-                  id="simpanan_swk"
-                  class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="simpanan_swk"
-                  required
-                />
-                <div
-                  class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
-                >
-                  Rp
+                <div class="relative z-0 w-full mb-5 group">
+                  <input
+                    type="date"
+                    name="tanggal_bht"
+                    id="tanggal_bht"
+                    class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="tanggal_bht"
+                    required
+                  />
+                  <label
+                    for="tanggal_bht"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Tanggal BHT</label
+                  >
                 </div>
-                <label
-                  for="simpanan_swk"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Simpanan SWK</label
-                >
               </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-5 group">
-                <input
-                  type="text"
-                  name="simpanan_wajib"
-                  id="simpanan_wajib"
-                  class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="simpanan_wajib"
-                  required
-                />
-                <div
-                  class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
-                >
-                  Rp
+              <hr class="mb-3 border-1 border-gray-300 bg-gray-300" />
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                  <input
+                    type="text"
+                    name="simpanan_pokok"
+                    id="simpanan_pokok"
+                    class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="simpanan_pokok"
+                    required
+                  />
+                  <div
+                    class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
+                  >
+                    Rp
+                  </div>
+                  <label
+                    for="simpanan_pokok"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Simpanan Pokok</label
+                  >
                 </div>
-                <label
-                  for="simpanan_wajib"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Simpanan Wajib</label
-                >
+                <div class="relative z-0 w-full mb-5 group">
+                  <input
+                    type="text"
+                    name="simpanan_swk"
+                    id="simpanan_swk"
+                    class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="simpanan_swk"
+                    required
+                  />
+                  <div
+                    class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
+                  >
+                    Rp
+                  </div>
+                  <label
+                    for="simpanan_swk"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Simpanan SWK</label
+                  >
+                </div>
               </div>
-              <div class="relative z-0 w-full mb-5 group">
-                <input
-                  type="text"
-                  name="simpanan_lain"
-                  id="simpanan_lain"
-                  class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="simpanan_lain"
-                  required
-                />
-                <div
-                  class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
-                >
-                  Rp
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-5 group">
+                  <input
+                    type="text"
+                    name="simpanan_wajib"
+                    id="simpanan_wajib"
+                    class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="simpanan_wajib"
+                    required
+                  />
+                  <div
+                    class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
+                  >
+                    Rp
+                  </div>
+                  <label
+                    for="simpanan_wajib"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Simpanan Wajib</label
+                  >
                 </div>
-                <label
-                  for="simpanan_lain"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Simpanan Lain - Lain</label
-                >
+                <div class="relative z-0 w-full mb-5 group">
+                  <input
+                    type="text"
+                    name="simpanan_lain"
+                    id="simpanan_lain"
+                    class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="simpanan_lain"
+                    required
+                  />
+                  <div
+                    class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
+                  >
+                    Rp
+                  </div>
+                  <label
+                    for="simpanan_lain"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Simpanan Lain - Lain</label
+                  >
+                </div>
               </div>
-            </div>
-            <div class="grid grid-cols-2 gap-6">
-              <div class="relative z-0 w-full mb-5 col-start-2 group">
-                <input
-                  type="text"
-                  name="total_simpanan"
-                  id="total_simpanan"
-                  class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  v-model="total_simpanan"
-                  required
-                />
-                <div
-                  class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
-                >
-                  Rp
+              <div class="grid grid-cols-2 gap-6">
+                <div class="relative z-0 w-full mb-5 col-start-2 group">
+                  <input
+                    type="text"
+                    name="total_simpanan"
+                    id="total_simpanan"
+                    class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                    v-model="total_simpanan"
+                    required
+                  />
+                  <div
+                    class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
+                  >
+                    Rp
+                  </div>
+                  <label
+                    for="total_simpanan"
+                    class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Total Simpanan</label
+                  >
                 </div>
-                <label
-                  for="total_simpanan"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-10 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Total Simpanan</label
-                >
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </ModalBody>
     <ModalFooter class="text-right">
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
@@ -1183,6 +1199,36 @@ onMounted(async () => {
       </button>
       <button type="submit" form="daftarAnggotaForm" class="btn btn-primary w-32">Simpan</button>
     </ModalFooter>
+  </Modal>
+
+  <Modal :show="modal_delete" @hidden="modal_delete = false">
+    <ModalBody class="p-0">
+      <div class="p-5 text-center">
+        <XCircleIcon class="w-16 h-16 text-danger mx-auto mt-3" />
+        <div class="text-3xl mt-5">Apakah Anda Yakin ?</div>
+        <div class="text-slate-500 mt-2">
+          Anda yakin ingin menghapus data <b> username </b> ? <br />Data yang telah dihapus tidak
+          bisa kembali.
+        </div>
+      </div>
+      <div class="px-5 pb-8 text-center">
+        <button type="button" @click="resetForm" class="btn btn-outline-secondary w-24 mr-1">
+          Batal
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger w-24"
+          @click="
+            (e) => {
+              e.preventDefault()
+              deleteAnggota(id_anggota)
+            }
+          "
+        >
+          Hapus
+        </button>
+      </div>
+    </ModalBody>
   </Modal>
 </template>
 

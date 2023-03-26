@@ -47,7 +47,7 @@ defineExpose({ openMenu, closeMenu })
   >
     <div class="container flex flex-wrap items-center justify-between -mt-2 mx-auto">
       <a
-        href="#"
+        href="javascript:void(0);"
         class="items-center hover:scale-125 transition duration-700 ease-in-out hidden xl:flex"
       >
         <img :src="LOGO" alt="logo" class="h-4 mr-3 sm:h-7" />
@@ -109,7 +109,7 @@ defineExpose({ openMenu, closeMenu })
           <li>
             <RouterLink to="/">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm hover:text-primary hover:bg-slate-200 p-2 -mt-3"
                 :class="props.title == 'home' ? 'bg-slate-200' : 'bg-transparent'"
                 aria-current="page"
@@ -121,7 +121,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >Setting
@@ -133,7 +133,9 @@ defineExpose({ openMenu, closeMenu })
                 class="shadow-lg space-y-1 p-2 ring-1 py-2 ring-opacity-5 focus:outline-none bg-white mt-2 border rounded transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top min-w-max"
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Pinjaman
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -145,7 +147,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/produk-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Produk Pinjaman</a
                         >
                       </RouterLink>
@@ -154,7 +156,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/cara-hitung-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Cara Hitung Pinjaman</a
                         >
                       </RouterLink>
@@ -186,7 +188,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >SMB / Simpanan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -197,7 +201,7 @@ defineExpose({ openMenu, closeMenu })
                     <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
                       <a
                         class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                        href="#"
+                        href="javascript:void(0);"
                         >Produk Simpanan
                         <ChevronDownIcon
                           class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -209,7 +213,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/produk-simpata">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Produk Simpata/ Tabungan</a
                             >
                           </RouterLink>
@@ -218,7 +222,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/produk-simpanan-berjangka">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Produk Simpanan Berjangka</a
                             >
                           </RouterLink>
@@ -253,13 +257,17 @@ defineExpose({ openMenu, closeMenu })
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/kode-perkiraan">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >kode Perkiraan</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Pengikatan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -271,7 +279,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/barang-bergerak">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Barang Bergerak</a
                         >
                       </RouterLink>
@@ -280,7 +288,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/tanah-bangunan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Tanah & Bangunan</a
                         >
                       </RouterLink>
@@ -289,7 +297,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/jaminan-simpanan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Jaminan Simpanan</a
                         >
                       </RouterLink>
@@ -298,7 +306,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/jaminan-lain">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Jaminan Lain - Lain</a
                         >
                       </RouterLink>
@@ -306,7 +314,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Lain - Lain
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -318,7 +328,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-kolektor">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Kolektor</a
                         >
                       </RouterLink>
@@ -380,7 +390,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >Transaksi
@@ -393,13 +403,17 @@ defineExpose({ openMenu, closeMenu })
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/transaksi-kas-nonkas">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Transaksi Kas dan Non Kas</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Pinjaman dan Pembiayaan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -411,7 +425,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-pinjaman-pembiyaan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Pinjaman/ Pembiayaan</a
                         >
                       </RouterLink>
@@ -420,7 +434,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/history-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Data History Pinjaman</a
                         >
                       </RouterLink>
@@ -429,7 +443,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/debius-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Data Debius Pinjaman</a
                         >
                       </RouterLink>
@@ -437,7 +451,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Keanggotaan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -449,7 +465,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-anggota-koperasi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Anggota Koperasi</a
                         >
                       </RouterLink>
@@ -458,7 +474,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/history-anggota-koperasi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >History Anggota Koperasi</a
                         >
                       </RouterLink>
@@ -466,7 +482,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Akuntansi
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -478,7 +496,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/jurnal-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Jurnal Transaksi</a
                         >
                       </RouterLink>
@@ -487,7 +505,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-perkiraan-akuntansi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Perkiraan Akuntansi</a
                         >
                       </RouterLink>
@@ -496,7 +514,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-inventaris">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Inventaris</a
                         >
                       </RouterLink>
@@ -505,7 +523,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/history-inventaris">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >History Inventaris</a
                         >
                       </RouterLink>
@@ -514,13 +532,17 @@ defineExpose({ openMenu, closeMenu })
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/pembayaran-kolektor">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Pembayaran Kolektor</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Jaminan/ Agunan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -532,7 +554,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/agunan-bpkb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Agunan BPKB</a
                         >
                       </RouterLink>
@@ -541,7 +563,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/agunan-stpk">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Agunan STPK</a
                         >
                       </RouterLink>
@@ -555,7 +577,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >Laporan
@@ -567,7 +589,9 @@ defineExpose({ openMenu, closeMenu })
                 class="shadow-lg p-2 space-y-1 ring-1 py-2 ring-opacity-5 focus:outline-none bg-white mt-2 border rounded transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top min-w-max"
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Keanggotaan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -579,7 +603,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpanan-pokok">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Simpanan Pokok</a
                         >
                       </RouterLink>
@@ -588,7 +612,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpanan-wajib">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Simpanan Wajib</a
                         >
                       </RouterLink>
@@ -597,7 +621,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpanan-swk">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Simpanan SWK</a
                         >
                       </RouterLink>
@@ -606,7 +630,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpanan-lain">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Simpanan Lain - Lain</a
                         >
                       </RouterLink>
@@ -615,7 +639,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpanan-shu">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Simpanan SHU</a
                         >
                       </RouterLink>
@@ -624,7 +648,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-shu">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician SHU</a
                         >
                       </RouterLink>
@@ -633,7 +657,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/anggota-keluar">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Anggota Keluar</a
                         >
                       </RouterLink>
@@ -642,7 +666,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/terima-shu">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Terima SHU</a
                         >
                       </RouterLink>
@@ -651,7 +675,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/anggota-baru">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Anggota Baru</a
                         >
                       </RouterLink>
@@ -660,7 +684,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-pokok">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan Pokok</a
                         >
                       </RouterLink>
@@ -669,7 +693,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-wajib">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan Wajib</a
                         >
                       </RouterLink>
@@ -678,7 +702,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-swk">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan SWK</a
                         >
                       </RouterLink>
@@ -687,7 +711,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-lain">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan Lain - Lain</a
                         >
                       </RouterLink>
@@ -696,7 +720,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-shu">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan SHU</a
                         >
                       </RouterLink>
@@ -705,7 +729,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpanan-Anggota">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Simpanan Anggota</a
                         >
                       </RouterLink>
@@ -713,7 +737,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >SMB
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -725,7 +751,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pembukaan-rekening-baru-smb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pembukaan Rekening Baru</a
                         >
                       </RouterLink>
@@ -734,7 +760,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-smb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi SMB</a
                         >
                       </RouterLink>
@@ -743,7 +769,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-smb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif SMB</a
                         >
                       </RouterLink>
@@ -752,7 +778,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/penutupan-rekening-smb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penutupan Rekening</a
                         >
                       </RouterLink>
@@ -761,7 +787,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rekap-buku-besar">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rekap Buku Besar</a
                         >
                       </RouterLink>
@@ -769,7 +795,7 @@ defineExpose({ openMenu, closeMenu })
                     <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
                       <a
                         class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                        href="#"
+                        href="javascript:void(0);"
                         >SMB Tiap Resort
                         <ChevronDownIcon
                           class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -781,7 +807,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/daftar-mutasi-pengambilan-simpanan">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Daftar Mutasi Pengambilan Simpanan</a
                             >
                           </RouterLink>
@@ -790,7 +816,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-smb-resort">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Laporan SMB Tiap Resort</a
                             >
                           </RouterLink>
@@ -801,7 +827,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-saldo">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Saldo</a
                         >
                       </RouterLink>
@@ -810,7 +836,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pengambilan-smb">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pengambilan SMB</a
                         >
                       </RouterLink>
@@ -818,7 +844,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Pinjaman
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -830,7 +858,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-realisasi-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Realisasi Pinjaman</a
                         >
                       </RouterLink>
@@ -839,7 +867,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-penerimaan-angsuran">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penerimaan Angsuran</a
                         >
                       </RouterLink>
@@ -848,7 +876,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-nominatif-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Pinjaman</a
                         >
                       </RouterLink>
@@ -857,7 +885,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-pelunasan-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pelunasan Pinjaman</a
                         >
                       </RouterLink>
@@ -865,7 +893,7 @@ defineExpose({ openMenu, closeMenu })
                     <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
                       <a
                         class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                        href="#"
+                        href="javascript:void(0);"
                         >Tentang Agunan
                         <ChevronDownIcon
                           class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -877,7 +905,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-agunan-masuk">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Agunan Masuk</a
                             >
                           </RouterLink>
@@ -886,7 +914,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-agunan-keluar">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Agunan Keluar</a
                             >
                           </RouterLink>
@@ -895,7 +923,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-saldo-agunan">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Saldo Agunan</a
                             >
                           </RouterLink>
@@ -904,7 +932,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-jaminan-kosong">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Jaminan Kosong</a
                             >
                           </RouterLink>
@@ -913,7 +941,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-jaminan-belum-diambil">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Jaminan Belum Diambil</a
                             >
                           </RouterLink>
@@ -922,7 +950,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-agunan-titipan-masuk">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Agunan Titipan Masuk</a
                             >
                           </RouterLink>
@@ -931,7 +959,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-agunan-titipan-keluar">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Agunan Titipan Keluar</a
                             >
                           </RouterLink>
@@ -940,7 +968,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-saldo-agunan-titipan">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Saldo Agunan Titipan</a
                             >
                           </RouterLink>
@@ -949,7 +977,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/laporan-rekap-agunan-harian">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >Rekap Agunan Harian</a
                             >
                           </RouterLink>
@@ -960,7 +988,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-tunggakan-angsuran">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Tunggakan Angsuran</a
                         >
                       </RouterLink>
@@ -969,7 +997,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-angsuran-menurut-realisasi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Angsuran Menurut Realisasi</a
                         >
                       </RouterLink>
@@ -978,7 +1006,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-pinjaman-belum-cair">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pinjaman Belum Cair</a
                         >
                       </RouterLink>
@@ -986,7 +1014,7 @@ defineExpose({ openMenu, closeMenu })
                     <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
                       <a
                         class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                        href="#"
+                        href="javascript:void(0);"
                         >Non Performing Loan (NPL)
                         <ChevronDownIcon
                           class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -998,7 +1026,7 @@ defineExpose({ openMenu, closeMenu })
                           <RouterLink to="/rekapitulasi-npl">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                              href="#"
+                              href="javascript:void(0);"
                               >rekapitulasi NPL</a
                             >
                           </RouterLink>
@@ -1009,7 +1037,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-nasabah-turun-bunga">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nasabah Turun Bunga</a
                         >
                       </RouterLink>
@@ -1018,7 +1046,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-pinjaman-debius">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pinjaman Debius</a
                         >
                       </RouterLink>
@@ -1027,7 +1055,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-penerimaan-angsuran-debius">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penerimaan Angsuran Debius</a
                         >
                       </RouterLink>
@@ -1036,7 +1064,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-nominatif-pinjaman-debius">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Pinjaman Debius</a
                         >
                       </RouterLink>
@@ -1045,7 +1073,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-pelunasan-pinjaman-debius">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pelunasan Pinjaman Debius</a
                         >
                       </RouterLink>
@@ -1054,7 +1082,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-nominatif-pinjaman-2">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Pinjaman 2</a
                         >
                       </RouterLink>
@@ -1063,7 +1091,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-nominatif-pinjaman-3">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif Pinjaman 3</a
                         >
                       </RouterLink>
@@ -1072,7 +1100,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-kurang-lebih-jasa-lunas">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Kurang Lebih Jasa Lunas</a
                         >
                       </RouterLink>
@@ -1080,7 +1108,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Kasir
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1092,7 +1122,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/penerimaan-kas">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penerimaan Kas</a
                         >
                       </RouterLink>
@@ -1101,7 +1131,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-non-kas">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Non Kas</a
                         >
                       </RouterLink>
@@ -1110,7 +1140,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-uang-kas">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Uang Kas</a
                         >
                       </RouterLink>
@@ -1118,7 +1148,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Akuntansi
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1130,7 +1162,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-neraca">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Neraca</a
                         >
                       </RouterLink>
@@ -1139,7 +1171,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-laba-rugi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Laba Rugi</a
                         >
                       </RouterLink>
@@ -1148,7 +1180,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-neraca-perbandingan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Neraca Perbandingan</a
                         >
                       </RouterLink>
@@ -1157,7 +1189,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-laba-rugi-perbandingan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Laba Rugi Perbandingan</a
                         >
                       </RouterLink>
@@ -1166,7 +1198,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-neraca-harian">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Neraca Harian</a
                         >
                       </RouterLink>
@@ -1175,7 +1207,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-laba-rugi-harian">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Laba Rugi Harian</a
                         >
                       </RouterLink>
@@ -1184,7 +1216,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-rician-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Transaksi</a
                         >
                       </RouterLink>
@@ -1193,7 +1225,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-rekap-buku-besar">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rekap Buku Besar</a
                         >
                       </RouterLink>
@@ -1202,7 +1234,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-inventaris">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Inventaris</a
                         >
                       </RouterLink>
@@ -1211,7 +1243,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-aktiva">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Aktiva</a
                         >
                       </RouterLink>
@@ -1220,7 +1252,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-pasiva">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Pasiva</a
                         >
                       </RouterLink>
@@ -1229,7 +1261,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-pendapatan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Pendapatan</a
                         >
                       </RouterLink>
@@ -1238,7 +1270,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rician-biaya">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rician Biaya</a
                         >
                       </RouterLink>
@@ -1247,7 +1279,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/cetak-jurnal-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Cetak Jurnal Transaksi</a
                         >
                       </RouterLink>
@@ -1256,7 +1288,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/cetak-neraca-laba-rugi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Cetak Neraca & Laba/ Rugi</a
                         >
                       </RouterLink>
@@ -1265,7 +1297,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-rekap-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Rekap Transaksi</a
                         >
                       </RouterLink>
@@ -1273,7 +1305,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Kolektor
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1285,7 +1319,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/daftar-tagihan-instansi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Daftar Tagihan Instansi</a
                         >
                       </RouterLink>
@@ -1294,7 +1328,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-rekap-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Laporan Rekap Transaksi</a
                         >
                       </RouterLink>
@@ -1303,7 +1337,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/laporan-daftar-transaksi">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Laporan Daftar Transaksi</a
                         >
                       </RouterLink>
@@ -1311,7 +1345,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >SIMPATA
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1323,7 +1359,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pembukaan-rekening-baru-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pembukaan Rekening Baru</a
                         >
                       </RouterLink>
@@ -1332,7 +1368,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi SIMPATA</a
                         >
                       </RouterLink>
@@ -1341,7 +1377,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif SIMPATA</a
                         >
                       </RouterLink>
@@ -1350,7 +1386,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/penutupan-rekening-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penutupan Rekening</a
                         >
                       </RouterLink>
@@ -1359,7 +1395,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/simpata-keluar">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >SIMPATA Keluar</a
                         >
                       </RouterLink>
@@ -1368,7 +1404,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rbb-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >RBB SIMPATA</a
                         >
                       </RouterLink>
@@ -1377,7 +1413,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pengambilan-simpata">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pengambilan SIMPATA</a
                         >
                       </RouterLink>
@@ -1385,7 +1421,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >SMA
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1397,7 +1435,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pembukaan-rekening-baru-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pembukaan Rekening Baru</a
                         >
                       </RouterLink>
@@ -1406,7 +1444,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi SMA</a
                         >
                       </RouterLink>
@@ -1415,7 +1453,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/nominatif-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Nominatif SMA</a
                         >
                       </RouterLink>
@@ -1424,7 +1462,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/penutupan-rekening-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Penutupan Rekening</a
                         >
                       </RouterLink>
@@ -1433,7 +1471,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/sma-keluar">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >SMA Keluar</a
                         >
                       </RouterLink>
@@ -1442,7 +1480,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/rbb-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >RBB SMA</a
                         >
                       </RouterLink>
@@ -1451,7 +1489,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/pengambilan-sma">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Pengambilan SMA</a
                         >
                       </RouterLink>
@@ -1465,7 +1503,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >Proses
@@ -1478,49 +1516,63 @@ defineExpose({ openMenu, closeMenu })
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-harian">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Harian</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-hitung-perbagian">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Hitung Perbagian</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-perubahan-ketentuan">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Perubahan Ketentuan</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-hitung-ulang-saldo-smb-simpata-sma">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Hitung Ulang Saldo SMB, SIMPATA, SMA</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-hitung-ulang-simpanan-anggota">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Hitung Ulang Simpanan Anggota</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-hitung-ulang-saldo-pinjaman">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Hitung Ulang Saldo Pinjaman</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-hitung-ulang-saldo-inventaris">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Hitung Ulang Saldo Inventaris</a
                     >
                   </RouterLink>
@@ -1528,7 +1580,9 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/acc-pengeluaran">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >ACC Pengeluaran</a
                     >
                   </RouterLink>
@@ -1536,7 +1590,9 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/verifikasi-proses-harian">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Verifikasi Proses Harian</a
                     >
                   </RouterLink>
@@ -1544,14 +1600,18 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-tutup-buku">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Tutup Buku</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/batal-proses-tutup-buku">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Batal Tutup Buku</a
                     >
                   </RouterLink>
@@ -1559,7 +1619,9 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/proses-perhitungan-shu">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Perhitungan SHU</a
                     >
                   </RouterLink>
@@ -1571,7 +1633,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >Utility
@@ -1584,13 +1646,17 @@ defineExpose({ openMenu, closeMenu })
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/pembatasan-tanggal">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Pembatasan Tanggal</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Setting Laporan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1602,7 +1668,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/setting-laporan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Setting Laporan/ Cetakan</a
                         >
                       </RouterLink>
@@ -1611,7 +1677,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/setting-posisi-laporan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Setting Posisi Cetakan</a
                         >
                       </RouterLink>
@@ -1620,20 +1686,26 @@ defineExpose({ openMenu, closeMenu })
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/sms-gateway">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Sms GateWay</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/cek-transaksi">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Cek Transaksi</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Perbaikan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1645,7 +1717,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/transaksi-simpanan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Transaksi Simpanan</a
                         >
                       </RouterLink>
@@ -1654,7 +1726,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-anggota">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi Anggota</a
                         >
                       </RouterLink>
@@ -1663,7 +1735,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/mutasi-pinjaman">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Mutasi pinjaman</a
                         >
                       </RouterLink>
@@ -1671,7 +1743,9 @@ defineExpose({ openMenu, closeMenu })
                   </ul>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
-                  <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
                     >Pengaturan Lainya
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
@@ -1683,7 +1757,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/setting-laporan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Setting Laporan/ Cetakan</a
                         >
                       </RouterLink>
@@ -1692,7 +1766,7 @@ defineExpose({ openMenu, closeMenu })
                       <RouterLink to="/setting-posisi-laporan">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
-                          href="#"
+                          href="javascript:void(0);"
                           >Setting Posisi Cetakan</a
                         >
                       </RouterLink>
@@ -1701,14 +1775,18 @@ defineExpose({ openMenu, closeMenu })
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/setting-default-printer">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Setting Default Printer</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/perbaikan-data">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Perbaikan Data</a
                     >
                   </RouterLink>
@@ -1716,14 +1794,18 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/backup-database">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Backup Database</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/restore-database">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Restore Database</a
                     >
                   </RouterLink>
@@ -1731,14 +1813,18 @@ defineExpose({ openMenu, closeMenu })
                 <hr />
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/migrasi-data">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Migrasi Data</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/migrasi-inventaris">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Migrasi Inventaris</a
                     >
                   </RouterLink>
@@ -1750,7 +1836,7 @@ defineExpose({ openMenu, closeMenu })
             <!-- component -->
             <div class="group mx-2">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="rounded text-sm bg-transparent hover:text-primary flex items-center hover:bg-slate-200 p-2 -m-2"
                 aria-current="page"
                 >About
@@ -1763,14 +1849,18 @@ defineExpose({ openMenu, closeMenu })
               >
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/tentang-aplikasi">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Tentang Aplikasi</a
                     >
                   </RouterLink>
                 </li>
                 <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                   <RouterLink to="/registrasi-aplikasi">
-                    <a class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3" href="#"
+                    <a
+                      class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                      href="javascript:void(0);"
                       >Registrasi Aplikasi</a
                     >
                   </RouterLink>

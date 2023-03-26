@@ -68,13 +68,13 @@ import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/Keanggotaa
           <div class="inline-flex align-middle leading-tight text-xs">
             <div class="relative inline-flex align-middle py-1 leading-tight text-xs">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center rounded-l-lg select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="next-page"
                 ><RewindIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="last-page"
               >
@@ -97,13 +97,13 @@ import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/Keanggotaa
             </div>
             <div class="relative inline-flex align-middle py-1 leading-tight text-xs">
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="next-page"
                 ><FastForwardIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
-                href="#"
+                href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 rounded-r-lg py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="last-page"
               >
