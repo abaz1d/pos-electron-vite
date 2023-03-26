@@ -3,10 +3,186 @@ import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
 import { onMounted, ref } from 'vue'
 import moment from 'moment'
 import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/KeanggotaanBC.vue'
+import PP from '@renderer/assets/images/pp-placeholder.svg'
+import TTD from '@renderer/assets/images/ttd-placeholder.svg'
+import PA from '@renderer/assets/images/pa-placeholder.svg'
 
 const daftarAnggota = useDaftarAnggotaStore()
 const isLoading = ref(false)
+const isAdd = ref(false)
+const isEdit = ref(false)
+const isView = ref(false)
 const modal_utama = ref(false)
+const id_anggota = ref('')
+const foto_profile = ref()
+const previewFoto = ref(null)
+const imageFoto = ref(null)
+const foto_ttd = ref()
+const previewTTD = ref(null)
+const imageTTD = ref(null)
+const foto_pa = ref()
+const previewPA = ref(null)
+const imagePA = ref(null)
+const tanggal = ref(moment(Date.now()).format('DD-MM-YYYY'))
+const no_anggota = ref('')
+const no_ktp = ref('')
+const no_kk = ref('')
+const nama_lengkap = ref('')
+const tempat_lahir = ref('')
+const tanggal_lahir = ref('')
+const jenis_kelamin = ref('')
+const agama = ref('')
+const alamat = ref('')
+const rt = ref('')
+const rw = ref('')
+const kelurahan = ref('')
+const kecamatan = ref('')
+const kota = ref('')
+const pendamping = ref('')
+const pekerjaan = ref('')
+const no_telepon = ref('')
+const resort = ref('')
+const tanggal_bht = ref('')
+const simpanan_pokok = ref('')
+const simpanan_swk = ref('')
+const simpanan_wajib = ref('')
+const simpanan_lain = ref('')
+const total_simpanan = ref('')
+
+const addGet = () => {
+  isAdd.value = true
+  modal_utama.value = true
+}
+const editGet = (e) => {
+  const anggota = e
+  isEdit.value = true
+  id_anggota.value = anggota.iddata
+  console.log(anggota)
+  modal_utama.value = true
+}
+const viewData = (e) => {
+  const anggota = e
+  isView.value = true
+  id_anggota.value = anggota.iddata
+  console.log(anggota)
+  modal_utama.value = true
+}
+const previewPAImage = (event) => {
+  var input = event.target
+  if (input.files) {
+    var reader = new FileReader()
+    reader.onload = (e) => {
+      previewPA.value = e.target.result
+    }
+    imagePA.value = input.files[0]
+    reader.readAsDataURL(input.files[0])
+  }
+}
+const previewTTDImage = (event) => {
+  var input = event.target
+  if (input.files) {
+    var reader = new FileReader()
+    reader.onload = (e) => {
+      previewTTD.value = e.target.result
+    }
+    imageTTD.value = input.files[0]
+    reader.readAsDataURL(input.files[0])
+  }
+}
+const previewFotoImage = (event) => {
+  var input = event.target
+  if (input.files) {
+    var reader = new FileReader()
+    reader.onload = (e) => {
+      previewFoto.value = e.target.result
+    }
+    imageFoto.value = input.files[0]
+    reader.readAsDataURL(input.files[0])
+  }
+}
+const simpan_data = (e) => {
+  console.log(
+    'e',
+    modal_utama.value,
+    foto_profile.value,
+    imageFoto.value,
+    previewFoto.value,
+    foto_pa.value,
+    imagePA.value,
+    previewPA.value,
+    foto_ttd.value,
+    imageTTD.value,
+    previewTTD.value,
+    tanggal.value,
+    no_anggota.value,
+    no_ktp.value,
+    no_kk.value,
+    nama_lengkap.value,
+    tempat_lahir.value,
+    tanggal_lahir.value,
+    jenis_kelamin.value,
+    agama.value,
+    alamat.value,
+    rt.value,
+    rw.value,
+    kelurahan.value,
+    kecamatan.value,
+    kota.value,
+    pendamping.value,
+    pekerjaan.value,
+    no_telepon.value,
+    resort.value,
+    tanggal_bht.value,
+    simpanan_pokok.value,
+    simpanan_swk.value,
+    simpanan_wajib.value,
+    simpanan_lain.value,
+    total_simpanan.value
+  )
+  e.target.reset()
+  resetForm()
+}
+const resetForm = () => {
+  id_anggota.value = ''
+  foto_profile.value.value = null
+  imageFoto.value = null
+  previewFoto.value = null
+  foto_pa.value.value = null
+  imagePA.value = null
+  previewPA.value = null
+  foto_ttd.value.value = null
+  imageTTD.value = null
+  previewTTD.value = null
+  tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
+  no_anggota.value = ''
+  no_ktp.value = ''
+  no_kk.value = ''
+  nama_lengkap.value = ''
+  tempat_lahir.value = ''
+  tanggal_lahir.value = ''
+  jenis_kelamin.value = ''
+  agama.value = ''
+  alamat.value = ''
+  rt.value = ''
+  rw.value = ''
+  kelurahan.value = ''
+  kecamatan.value = ''
+  kota.value = ''
+  pendamping.value = ''
+  pekerjaan.value = ''
+  no_telepon.value = ''
+  resort.value = ''
+  tanggal_bht.value = ''
+  simpanan_pokok.value = ''
+  simpanan_swk.value = ''
+  simpanan_wajib.value = ''
+  simpanan_lain.value = ''
+  total_simpanan.value = ''
+  modal_utama.value = false
+  isAdd.value = false
+  isEdit.value = false
+  isView.value = false
+}
 
 onMounted(async () => {
   try {
@@ -25,36 +201,44 @@ onMounted(async () => {
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
       <div class="grid grid-cols-77 xl:grid-cols-10 w-full h-10">
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-          @click="modal_utama = true"
+          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:text-blue-700 hover:bg-gray-200 btn-light-bordered"
+          @click="addGet"
           id="delete-multiple-data"
           data-bs-toggle="tooltip"
-          title="Hapus Data"
+          title="Tambah Data"
         >
           <PlusIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+          class="inline-block align-middle hover:text-danger text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           onclick="deleteAction()"
           id="delete-multiple-data"
           data-bs-toggle="tooltip"
           title="Hapus Data"
         >
-          <TrashIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
+          <Trash2Icon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+          class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export CSV"
           onclick="exportData('csv')"
         >
-          <FileIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
+          <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
+          <span
+            class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-success font-bold"
+            >CSV</span
+          >
         </button>
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+          class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export PDF"
           onclick="exportData('pdf')"
         >
-          <FileIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
+          <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
+          <span
+            class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-danger font-bold"
+            >PDF</span
+          >
         </button>
         <button
           class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
@@ -64,7 +248,7 @@ onMounted(async () => {
           <PrinterIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+          class="inline-block hover:text-success align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           onclick="selectAll()"
           id="select-all"
           title="Select All"
@@ -73,7 +257,7 @@ onMounted(async () => {
           <i class="fa-solid fa-check"></i>
         </button>
         <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+          class="inline-block align-middle hover:text-danger text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           onclick="unSelectAll()"
           id="unselect-all"
           title="Unselect All"
@@ -118,7 +302,7 @@ onMounted(async () => {
                 type="text"
                 class="block appearance-none w-full px-2 mb-1 bg-gray-200 text-gray-800 border border-gray-200 text-xs leading-normal"
                 id="total_pages"
-                required
+                disabled
               />
             </div>
             <div class="relative inline-flex align-middle py-1 leading-tight text-xs">
@@ -210,6 +394,7 @@ onMounted(async () => {
             :key="anggota.iddata"
             :anggota="anggota"
             :value="anggota.iddata"
+            @dblclick="viewData(anggota)"
           >
             <td class="w-4 border-r border-b font-medium p-2 pl-4">
               <div class="flex items-center">
@@ -257,7 +442,11 @@ onMounted(async () => {
               {{ anggota.kantor }}
             </td>
             <td class="flex justify-center border-r border-b font-medium p-2">
-              <a id="edit" class="flex items-center mr-4 text-blue-700" href="javascript:;">
+              <a
+                @click="editGet(anggota)"
+                class="flex items-center mr-4 text-blue-700"
+                href="javascript:;"
+              >
                 <CheckSquareIcon class="w-4 h-4 mr-1" /> Edit
               </a>
               <a id="delete" class="flex items-center text-danger" href="javascript:;">
@@ -283,35 +472,211 @@ onMounted(async () => {
   </div>
   <Modal backdrop="static" size="modal-xl" :show="modal_utama" @hidden="modal_utama = false">
     <ModalHeader>
-      <h2 class="font-medium text-base mr-auto">Anggota</h2>
+      <h2 class="font-medium text-base mr-auto">
+        <span v-if="isAdd">Tambah</span><span v-if="isEdit">Edit</span
+        ><span v-if="isView">Data</span> Anggota
+        <span v-if="isEdit || isView">{{ id_anggota }}</span>
+      </h2>
+      <div class="float-right space-x-4 -my-2 mx-auto">
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Fasilitas</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Pokok</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Wajib</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. SWK</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Lain</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. SHU</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Simp. Saldo</span
+          >
+        </button>
+        <button
+          class="inline-block hover:text-primary align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-14 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200"
+          title="Export PDF"
+          onclick="exportData('pdf')"
+        >
+          <ShareIcon class="w-5 h-5 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Catatan</span
+          >
+        </button>
+      </div>
+      <a
+        data-tw-dismiss="modal"
+        href="javascript:;"
+        class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
+      >
+        <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
+      </a>
     </ModalHeader>
     <ModalBody class="-mx-4">
-      <form id="daftarAnggotaForm" class="grid grid-cols-12 gap-4 pl-2">
-        <div class="border-r-2 mx-auto col-span-3 overflow-hidden mt-3">
+      <form
+        id="daftarAnggotaForm"
+        class="grid grid-cols-12 gap-4 pl-2"
+        @submit.prevent="simpan_data"
+      >
+        <div class="border-r-2 mx-auto col-span-3 overflow-hidden mt-0">
           <div
-            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm mx-auto text-center mb-5 w-2/3 h-[35%]"
+            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm mx-auto text-center mb-4 max-w-max h-[40%] bg-gray-100"
           >
-            Ini Tempat Upload foto Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
-            molestiae possimus numquam repudiandae amet aliquid accusantium tempora unde reiciendis
-            fugit.
+            <div class="border p-1">
+              <img
+                :src="PP"
+                v-if="!previewFoto"
+                class="h-[125px] mx-auto mb-10 hover:scale-110 transition duration-500 ease-in-out"
+              />
+              <template v-if="previewFoto">
+                <img
+                  :src="previewFoto"
+                  class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                />
+                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
+                <p class="mb-1 text-xs rounded-b-md bg-white">
+                  {{ imageFoto.size / 1024 }}<span class="font-semibold"> KB</span>
+                </p>
+              </template>
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              @change="previewFotoImage"
+              class="text-[10px] w-full cursor-pointer"
+              id="foto_anggota"
+              ref="foto_profile"
+              required
+            />
+
             <label
               for="foto"
               class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
               >Foto Anggota</label
             >
           </div>
-          <div class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-5">
-            Ini Tempat Upload foto Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut,
-            est. Omnis atque obcaecati ea inventore?
+          <div
+            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+          >
+            <div class="border p-1">
+              <img
+                :src="TTD"
+                v-if="!previewTTD"
+                class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
+              />
+              <template v-if="previewTTD">
+                <img
+                  :src="previewTTD"
+                  class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                />
+                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageTTD.name }}</p>
+                <p class="mb-1 text-xs rounded-b-md bg-white">
+                  {{ imageTTD.size / 1024 }}<span class="font-semibold"> KB</span>
+                </p>
+              </template>
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              @change="previewTTDImage"
+              class="text-[10px] w-full cursor-pointer"
+              id="foto_ttd"
+              ref="foto_ttd"
+              required
+            />
             <label
               for="foto"
               class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
               >Tanda Tangan Anggota</label
             >
           </div>
-          <div class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-5">
-            Ini Tempat Upload foto Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            Consequatur, distinctio.
+          <div
+            class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
+          >
+            <div class="border p-1">
+              <img
+                :src="PA"
+                v-if="!previewPA"
+                class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
+              />
+              <template v-if="previewPA">
+                <img
+                  :src="previewPA"
+                  class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                />
+                <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imagePA.name }}</p>
+                <p class="mb-1 text-xs rounded-b-md bg-white">
+                  {{ imagePA.size / 1024 }}<span class="font-semibold"> KB</span>
+                </p>
+              </template>
+            </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              @change="previewPAImage"
+              class="text-[10px] w-full cursor-pointer"
+              id="foto_pa"
+              ref="foto_pa"
+              required
+            />
             <label
               for="foto"
               class="font-medium text-base rounded-lg bg-white px-2 absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] left-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
@@ -329,6 +694,7 @@ onMounted(async () => {
                   id="tanggal"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="tanggal"
                   disabled
                 />
                 <label
@@ -344,6 +710,7 @@ onMounted(async () => {
                   id="no_anggota"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="no_anggota"
                   required
                 />
                 <label
@@ -362,6 +729,7 @@ onMounted(async () => {
                   id="no_ktp"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="no_ktp"
                   required
                 />
                 <label
@@ -377,6 +745,7 @@ onMounted(async () => {
                   id="no_kk"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="no_kk"
                   required
                 />
                 <label
@@ -393,6 +762,7 @@ onMounted(async () => {
                 id="nama_lengkap"
                 class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
+                v-model="nama_lengkap"
                 required
               />
               <label
@@ -409,6 +779,7 @@ onMounted(async () => {
                   id="tempat_lahir"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="tempat_lahir"
                   required
                 />
                 <label
@@ -419,16 +790,17 @@ onMounted(async () => {
               </div>
               <div class="relative z-0 w-full mb-6 group">
                 <input
-                  type="text"
-                  name="floating_last_name"
-                  id="floating_last_name"
+                  type="date"
+                  name="tanggal_lahir"
+                  id="tanggal_lahir"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="tanggal_lahir"
                   required
                 />
                 <label
-                  for="floating_last_name"
-                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                  for="tanggal_lahir"
+                  class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >Tanggal Lahir</label
                 >
               </div>
@@ -436,14 +808,14 @@ onMounted(async () => {
             <div class="grid grid-cols-2 gap-6">
               <div class="relative z-0 w-full mb-6 group">
                 <select
-                  type="text"
                   name="jenis_kelamin"
                   id="jenis_kelamin"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="jenis_kelamin"
                   required
                 >
-                  <option class="text-xs" selected disabled>Pilihlah Salah Satu</option>
+                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
                   <option class="text-xs" value="Laki-Laki">Laki - Laki</option>
                   <option class="text-xs" value="Perempuan">Perempuan</option>
                 </select>
@@ -455,14 +827,14 @@ onMounted(async () => {
               </div>
               <div class="relative z-0 w-full mb-6 group">
                 <select
-                  type="text"
-                  name="floating_last_name"
-                  id="floating_last_name"
+                  name="agama"
+                  id="agama"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="agama"
                   required
                 >
-                  <option class="text-xs" selected disabled>Pilihlah Salah Satu</option>
+                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
                   <option class="text-xs" value="Islam">Islam</option>
                   <option class="text-xs" value="Kristen">Kristen</option>
                   <option class="text-xs" value="Katolik">Katolik</option>
@@ -471,7 +843,7 @@ onMounted(async () => {
                   <option class="text-xs" value="Konghucu">Konghucu</option>
                 </select>
                 <label
-                  for="floating_last_name"
+                  for="agama"
                   class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >Agama</label
                 >
@@ -484,6 +856,7 @@ onMounted(async () => {
                 id="alamat"
                 class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
+                v-model="alamat"
                 required
               ></textarea>
               <label
@@ -501,6 +874,7 @@ onMounted(async () => {
                   id="rt"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="rt"
                   required
                 />
                 <label
@@ -516,6 +890,7 @@ onMounted(async () => {
                   id="rw"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="rw"
                   required
                 />
                 <label
@@ -531,6 +906,7 @@ onMounted(async () => {
                   id="kelurahan"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="kelurahan"
                   required
                 />
                 <label
@@ -549,6 +925,7 @@ onMounted(async () => {
                   id="kecamatan"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="kecamatan"
                   required
                 />
                 <label
@@ -564,6 +941,7 @@ onMounted(async () => {
                   id="kota"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="kota"
                   required
                 />
                 <label
@@ -582,6 +960,7 @@ onMounted(async () => {
                   id="pendamping"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="pendamping"
                   required
                 />
                 <label
@@ -597,6 +976,7 @@ onMounted(async () => {
                   id="pekerjaan"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="pekerjaan"
                   required
                 />
                 <label
@@ -608,11 +988,11 @@ onMounted(async () => {
               <div class="relative z-0 w-full mb-6 group">
                 <input
                   type="tel"
-                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                   name="telepon"
                   id="telepon"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="no_telepon"
                   required
                 />
                 <label
@@ -626,14 +1006,14 @@ onMounted(async () => {
             <div class="grid grid-cols-2 gap-6">
               <div class="relative z-0 w-full mb-5 group">
                 <select
-                  type="text"
                   name="resort"
                   id="resort"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="resort"
                   required
                 >
-                  <option class="text-xs" selected disabled>Pilihlah Salah Satu</option>
+                  <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
                   <option class="text-xs" value="050 - SMB">050 - SMB</option>
                   <option class="text-xs" value="101 - KRESNA">101 - KRESNA</option>
                   <option class="text-xs" value="102 - RAMA">102 - RAMA</option>
@@ -671,6 +1051,7 @@ onMounted(async () => {
                   id="tanggal_bht"
                   class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="tanggal_bht"
                   required
                 />
                 <label
@@ -689,6 +1070,7 @@ onMounted(async () => {
                   id="simpanan_pokok"
                   class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="simpanan_pokok"
                   required
                 />
                 <div
@@ -709,6 +1091,7 @@ onMounted(async () => {
                   id="simpanan_swk"
                   class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="simpanan_swk"
                   required
                 />
                 <div
@@ -731,6 +1114,7 @@ onMounted(async () => {
                   id="simpanan_wajib"
                   class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="simpanan_wajib"
                   required
                 />
                 <div
@@ -751,6 +1135,7 @@ onMounted(async () => {
                   id="simpanan_lain"
                   class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="simpanan_lain"
                   required
                 />
                 <div
@@ -773,6 +1158,7 @@ onMounted(async () => {
                   id="total_simpanan"
                   class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
+                  v-model="total_simpanan"
                   required
                 />
                 <div
@@ -792,11 +1178,7 @@ onMounted(async () => {
       </form>
     </ModalBody>
     <ModalFooter class="text-right">
-      <button
-        type="button"
-        class="btn btn-outline-secondary w-32 mr-1"
-        @click="modal_utama = false"
-      >
+      <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
       <button type="submit" form="daftarAnggotaForm" class="btn btn-primary w-32">Simpan</button>
