@@ -10,13 +10,25 @@ export const useDaftarAnggotaStore = defineStore({
     items: (state) => state.rawItems
   },
   actions: {
-    async readItem() {
+    async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
-        const data = await request.fetchProduk()
-        this.rawItems = data
+        const data = await request.fetchProduk(
+          search_type,
+          search_data,
+          sort_by,
+          sort_mode,
+          page_number,
+          total_row_displayed
+        )
+        this.rawItems = data.rows
+        return data.total_page
       } catch (error) {
         throw new Error(error)
       }
+    },
+    async loadData(pageNumber, total_row_displayed) {
+      try {
+      } catch (error) {}
     }
   }
 })

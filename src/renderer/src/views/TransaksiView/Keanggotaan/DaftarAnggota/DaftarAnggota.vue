@@ -1,6 +1,6 @@
 <script setup>
 import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import moment from 'moment'
 import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/KeanggotaanBC.vue'
 import PP from '@renderer/assets/images/pp-placeholder.svg'
@@ -14,6 +14,15 @@ const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
 const modal_delete = ref(false)
+const sort_by = ref('iddata')
+const sort_mode = ref(true)
+const search_data = ref('')
+const search_type = ref('iddata')
+const page_number = ref(1)
+const total_pages = ref(0)
+const row_per_page = ref(10)
+const allSelected = ref(false)
+const userIds = ref([])
 const id_anggota = ref('')
 const foto_profile = ref()
 const previewFoto = ref(null)
@@ -65,7 +74,7 @@ const viewData = (e) => {
   const anggota = e
   isView.value = true
   id_anggota.value = anggota.iddata
-  console.log(anggota)
+  console.log(window)
   modal_utama.value = true
 }
 const previewPAImage = (event) => {
@@ -147,6 +156,15 @@ const deleteAnggota = () => {
   console.log('deleteAnggota')
 }
 const resetForm = () => {
+  search_data.value = ''
+  search_type.value = 'iddata'
+  sort_by.value = 'iddata'
+  sort_mode.value = true
+  page_number.value = 1
+  total_pages.value = 0
+  row_per_page.value = 10
+  allSelected.value = false
+  userIds.value = []
   id_anggota.value = ''
   foto_profile.value.value = null
   imageFoto.value = null
@@ -189,14 +207,218 @@ const resetForm = () => {
   isView.value = false
 }
 
-onMounted(async () => {
+const sorting = async (e) => {
+  isLoading.value = true
+  sort_by.value = e
+  sort_mode.value = !sort_mode.value
+
   try {
-    isLoading.value = true
-    await daftarAnggota.readItem()
+    await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      e,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Error Mounted')
+    alert('Gagal sorting' + error)
+  }
+}
+const firstPage = async () => {
+  page_number.value = 1
+  try {
+    isLoading.value = true
+    await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      1,
+      row_per_page.value
+    )
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page pertama' + error)
+  }
+}
+const previousPage = async () => {
+  try {
+    let page_no = parseInt(page_number.value)
+    isLoading.value = true
+    if (page_no > 1) {
+      await daftarAnggota.readItem(
+        search_type.value,
+        search_data.value,
+        sort_by.value,
+        sort_mode.value,
+        page_no - 1,
+        row_per_page.value
+      )
+    }
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page sebelumnya' + error)
+  }
+}
+
+const nextPage = () => {
+  try {
+    isLoading.value = true
+    if (page_number.value == '') {
+      page_number.value = 1
+    }
+    let page_no = parseInt(page_number.value)
+    if (page_no < total_pages.value) {
+      page_number.value = page_no + 1
+      daftarAnggota.readItem(
+        search_type.value,
+        search_data.value,
+        sort_by.value,
+        sort_mode.value,
+        page_no + 1,
+        row_per_page.value
+      )
+    }
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page selanjutnya' + error)
+  }
+}
+const lastPage = async () => {
+  page_number.value = total_pages.value
+  try {
+    isLoading.value = true
+    await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      total_pages.value,
+      row_per_page.value
+    )
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page terkhir' + error)
+  }
+}
+
+watch(page_number, async (e) => {
+  try {
+    isLoading.value = true
+    await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      e,
+      row_per_page.value
+    )
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti page' + error)
+  }
+})
+watch(row_per_page, async (e) => {
+  try {
+    isLoading.value = true
+    if (page_number.value > total_pages.value || page_number.value == '') {
+      page_number.value = 1
+    }
+    const data = await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      e
+    )
+    total_pages.value = data
+    userIds.value = []
+    allSelected.value = false
+    if (page_number.value > total_pages.value) {
+      page_number.value = 1
+    }
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti row/page' + error)
+  }
+})
+watch(search_data, async (e) => {
+  try {
+    isLoading.value = true
+    const data = await daftarAnggota.readItem(
+      search_type.value,
+      e,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti page' + error)
+  }
+})
+watch(search_type, async (e) => {
+  try {
+    isLoading.value = true
+    const data = await daftarAnggota.readItem(
+      e,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti page' + error)
+  }
+})
+
+const selectAll = (e) => {
+  userIds.value = []
+
+  if (!allSelected.value || e) {
+    for (let anggota = 0; anggota < daftarAnggota.items.length; anggota++) {
+      userIds.value.push(daftarAnggota.items[anggota].iddata)
+    }
+  }
+}
+const selectOne = () => {
+  allSelected.value = false
+}
+
+onMounted(async () => {
+  try {
+    isLoading.value = true
+    const data = await daftarAnggota.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+    isLoading.value = false
+    console.log(window)
+  } catch (error) {
+    isLoading.value = false
+    alert('Error Mounted' + error)
   }
 })
 </script>
@@ -254,7 +476,7 @@ onMounted(async () => {
         </button>
         <button
           class="inline-block hover:text-success align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-          onclick="selectAll()"
+          @click="selectAll(true), (allSelected = true)"
           id="select-all"
           title="Select All"
         >
@@ -263,7 +485,7 @@ onMounted(async () => {
         </button>
         <button
           class="inline-block align-middle hover:text-danger text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-          onclick="unSelectAll()"
+          @click=";(userIds = []), (allSelected = false)"
           id="unselect-all"
           title="Unselect All"
         >
@@ -286,28 +508,29 @@ onMounted(async () => {
                 class="inline-block align-middle text-center rounded-l-lg select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="first-page"
                 title="first page"
-                ><RewindIcon class="w-4 h-4 mx-auto my-[5px]"
+                @click="firstPage()"
+              >
+                <SkipBackIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
                 href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="previous-page"
                 title="previous page"
-              >
-                <SkipBackIcon class="w-4 h-4 mx-auto my-[5px]"
+                @click="previousPage()"
+                ><RewindIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
             </div>
             <div class="flex items-stretch w-full">
               <input
-                type="text"
+                type="number"
                 class="block appearance-none w-full mb-1 px-2 bg-white text-gray-800 border border-gray-200 text-xs leading-normal"
-                id="page_number"
-                value="1"
+                v-model="page_number"
               />
               <input
-                type="text"
+                type="number"
                 class="block appearance-none w-full px-2 mb-1 bg-gray-200 text-gray-800 border border-gray-200 text-xs leading-normal"
-                id="total_pages"
+                v-model="total_pages"
                 disabled
               />
             </div>
@@ -317,15 +540,16 @@ onMounted(async () => {
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="next-page"
                 title="next page"
-                ><SkipForwardIcon class="w-4 h-4 mx-auto my-[5px]"
+                @click="nextPage()"
+                ><FastForwardIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
               <a
                 href="javascript:void(0);"
                 class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap h-9 -mt-1 rounded-r-lg py-1 px-3 leading-normal no-underline bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
                 id="last-page"
                 title="last page"
-              >
-                <FastForwardIcon class="w-4 h-4 mx-auto my-[5px]"
+                @click="lastPage()"
+                ><SkipForwardIcon class="w-4 h-4 mx-auto my-[5px]"
               /></a>
             </div>
           </div>
@@ -333,11 +557,11 @@ onMounted(async () => {
       </div>
       <div class="items-center justify-center w-full flex h-10">
         <select
-          name=""
-          id="row_per_page"
+          name="row_per_page"
+          v-model="row_per_page"
           class="bg-gray-50 border border-gray-300 text-gray-900 pl-1 mr-2 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block -mt-1 w-[70px] h-9"
         >
-          <option value="2">10</option>
+          <option value="10">10</option>
           <option value="25">25</option>
           <option value="50">50</option>
           <option value="75">75</option>
@@ -347,129 +571,351 @@ onMounted(async () => {
         <div class="relative flex items-stretch w-full" id="search-input-group">
           <input
             type="text"
-            class="block appearance-none rounded-l-lg w-full mb-1 bg-white text-gray-800 border border-gray-200 px-2 text-xs leading-normal h-9"
-            id="search-data"
-            :placeholder="'Cari ' + $route.name.replace(/-/gi, ' ')"
+            class="block appearance-none border-y border-l rounded-l-lg w-full mb-1 bg-white text-gray-800 border-gray-200 px-2 text-xs leading-normal h-9"
+            v-model="search_data"
+            :placeholder="'Cari ' + search_type + ' ' + $route.name.replace(/-/gi, ' ')"
             name="search-data"
           />
           <div class="input-group-append">
             <button
-              class="inline-block align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-              id="search-btn"
+              v-if="search_data !== ''"
+              class="inline align-middle text-center select-none border-y border-[#d0d3d4] w-10 font-normal whitespace-no-wrap no-underline h-9 mx-auto px-2 leading-tight text-xs"
+              id="clear-btn"
+              @click="search_data = ''"
             >
-              <SearchIcon class="w-4 h-4 mx-auto my-[5px]" />
+              <DeleteIcon class="w-5 h-5 stroke-2 text-danger mx-auto my-[5px]" />
             </button>
+          </div>
+          <div class="input-group-append">
+            <select
+              name="search_type"
+              v-model="search_type"
+              class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+            >
+              <option value="iddata">ID</option>
+              <option value="cif">No Anggota</option>
+              <option value="nama">Nama</option>
+            </select>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <div class="flex flex-col max-h-[81vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
       <table class="relative w-full text-xs text-left text-gray-500">
         <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0">
           <tr>
-            <th scope="col" class="p-2 border pl-4">
+            <th scope="col" class="p-2 border pl-3">
               <div class="flex items-center">
                 <input
                   id="checkbox-all-search"
+                  v-model="allSelected"
+                  @click="selectAll(false)"
                   type="checkbox"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-blue-200 rounded focus:ring-blue-500 focus:ring-2"
                 />
                 <label for="checkbox-all-search" class="sr-only">checkbox</label>
               </div>
             </th>
-            <th scope="col" class="text-center uppercase border">No. Anggota</th>
-            <th scope="col" class="text-center uppercase border">Tanggal</th>
-            <th scope="col" class="text-center uppercase border">Resort</th>
-            <th scope="col" class="text-center uppercase border">Nomor KTP</th>
-            <th scope="col" class="text-center uppercase border">Kartu Keluarga</th>
-            <th scope="col" class="text-center uppercase border">Nama</th>
-            <th scope="col" class="text-center uppercase border">Alamat</th>
-            <th scope="col" class="text-center uppercase border">Desa</th>
-            <th scope="col" class="text-center uppercase border">Kecamatan</th>
-            <th scope="col" class="text-center uppercase border">Kota</th>
-            <th scope="col" class="text-center uppercase border">Nama Pendamping</th>
-            <th scope="col" class="text-center uppercase border">Kantor</th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('iddata')"
+            >
+              No. Anggota
+              <ChevronUpIcon
+                v-if="sort_by === 'iddata' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'iddata' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('tanggal')"
+            >
+              Tanggal
+              <ChevronUpIcon
+                v-if="sort_by === 'tanggal' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'tanggal' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('resort')"
+            >
+              Resort
+              <ChevronUpIcon
+                v-if="sort_by === 'resort' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'resort' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('noktp')"
+            >
+              Nomor KTP
+              <ChevronUpIcon
+                v-if="sort_by === 'noktp' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'noktp' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('nokk')"
+            >
+              Kartu Keluarga
+              <ChevronUpIcon
+                v-if="sort_by === 'nokk' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'nokk' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('nama')"
+            >
+              Nama
+              <ChevronUpIcon
+                v-if="sort_by === 'nama' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'nama' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('alamat')"
+            >
+              Alamat
+              <ChevronUpIcon
+                v-if="sort_by === 'alamat' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'alamat' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('desa')"
+            >
+              Desa
+              <ChevronUpIcon
+                v-if="sort_by === 'desa' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'desa' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('kecamatan')"
+            >
+              Kecamatan
+              <ChevronUpIcon
+                v-if="sort_by === 'kecamatan' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'kecamatan' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('kota')"
+            >
+              Kota
+              <ChevronUpIcon
+                v-if="sort_by === 'kota' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'kota' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('namapendamping')"
+            >
+              Nama Pendamping
+              <ChevronUpIcon
+                v-if="sort_by === 'namapendamping' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'namapendamping' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              @click="sorting('kantor')"
+            >
+              Kantor
+              <ChevronUpIcon
+                v-if="sort_by === 'kantor' && sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+              <ChevronDownIcon
+                v-if="sort_by === 'kantor' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
             <th scope="col" class="text-center uppercase border">Actions</th>
           </tr>
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
-            class="bg-white hover:bg-gray-200"
+            class="bg-white hover:bg-blue-200"
             v-for="anggota in daftarAnggota.items"
             :key="anggota.iddata"
             :anggota="anggota"
             :value="anggota.iddata"
-            @dblclick="viewData(anggota)"
           >
-            <td class="w-4 border-r border-b font-medium p-2 pl-4">
+            <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
                 <input
-                  :id="anggota.iddata"
+                  :value="anggota.iddata"
                   type="checkbox"
-                  class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                  v-model="userIds"
+                  @click="selectOne"
+                  class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2"
                 />
               </div>
             </td>
-            <th scope="row" class="p-2 border-r border-b font-medium whitespace-nowrap">
+            <th
+              @dblclick="viewData(anggota)"
+              scope="row"
+              class="border-r border-b font-medium whitespace-nowrap pl-2"
+            >
               {{ anggota.cif }}
             </th>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-center border-r border-b font-medium px-2"
+            >
               {{ moment(anggota.tanggal).format('DD-MM-YYYY') }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.resort }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.noktp }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.nokk }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.nama }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.alamat }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.desa }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.kecamatan }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.kota }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.namapendamping }}
             </td>
-            <td class="min-w-max text-left border-r border-b font-medium px-2">
+            <td
+              @dblclick="viewData(anggota)"
+              class="min-w-max text-left border-r border-b font-medium px-2"
+            >
               {{ anggota.kantor }}
             </td>
-            <td class="flex justify-center border-r border-b font-medium p-2">
-              <a
-                @click="editGet(anggota)"
-                class="flex items-center mr-4 text-blue-700"
-                href="javascript:;"
-              >
-                <CheckSquareIcon class="w-4 h-4 mr-1" /> Edit
-              </a>
-              <a
-                @click="modal_delete = true"
-                class="flex items-center text-danger"
-                href="javascript:;"
-              >
-                <Trash2Icon class="w-4 h-4 mr-1" /> Hapus
-              </a>
+            <td @dblclick="viewData(anggota)" class="min-w-max border-r border-b font-medium p-1">
+              <div class="flex justify-center">
+                <a
+                  @click="editGet(anggota)"
+                  class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
+                  href="javascript:;"
+                >
+                  <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
+                </a>
+                <a
+                  @click="modal_delete = true"
+                  class="flex items-center hover:text-red-800 text-danger"
+                  href="javascript:;"
+                >
+                  <Trash2Icon class="w-3 h-3 mr-1" /> Hapus
+                </a>
+              </div>
             </td>
           </tr>
         </tbody>
         <tbody v-show="isLoading">
           <div
-            class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"
+            class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center"
           >
             <Loader2Icon class="motion-safe:animate-spin stroke-[5px] text-white h-12 w-12 mb-2" />
             <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
@@ -500,11 +946,13 @@ onMounted(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <div v-if="isView" class="flex space-x-4 -mx-5 py-2 justify-center -mt-5 mb-3 bg-gray-100">
+      <div
+        v-if="isView || isEdit"
+        class="flex space-x-4 -mx-5 py-2 justify-center -mt-5 mb-3 bg-gray-100"
+      >
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-amber-800 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Fasilitas"
         >
           <BookIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -513,8 +961,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-slate-600 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan Pokok"
         >
           <BanknoteIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -523,8 +970,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-amber-400 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan Wajib"
         >
           <CoinsIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -533,8 +979,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-amber-700 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan SWK"
         >
           <ScaleIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -543,8 +988,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-red-300 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan Lain - Lain"
         >
           <PiggyBankIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -553,8 +997,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-primary bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan SHU"
         >
           <LandmarkIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -563,8 +1006,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-green-600 bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Simpanan Saldo"
         >
           <WalletIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -573,8 +1015,7 @@ onMounted(async () => {
         </button>
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-black bg-white hover:bg-slate-200"
-          title="Export PDF"
-          onclick="exportData('pdf')"
+          title="Catatan"
         >
           <FileIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
           <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
@@ -699,7 +1140,7 @@ onMounted(async () => {
               >
             </div>
           </div>
-          <div class="col-span-9 flex max-h-[64vh]">
+          <div class="col-span-9 flex max-h-[600px]">
             <div class="flex-grow overflow-auto pr-2">
               <div class="grid grid-cols-2 gap-4">
                 <div class="relative z-0 w-full mb-5 mt-2 group">
@@ -1234,11 +1675,11 @@ onMounted(async () => {
 
 <style scoped>
 .btn-light-bordered {
-  border: 1px solid #d0d3d4;
+  border: 1px solid #c0c1c2;
 }
 
 .btn-light-bordered:hover {
-  border: 1px solid #d0d3d4;
+  border: 1px solid #c0c1c2;
   background-color: #e5e7e9;
 }
 table {
@@ -1246,9 +1687,9 @@ table {
 }
 
 tr:nth-child(even) {
-  @apply bg-slate-100 hover:bg-gray-200;
+  @apply bg-slate-200 hover:bg-blue-200;
 }
 tr:nth-child(od) {
-  @apply bg-white hover:bg-gray-200;
+  @apply bg-white hover:bg-blue-200;
 }
 </style>

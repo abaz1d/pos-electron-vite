@@ -8,7 +8,7 @@ import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
       <ol class="inline-flex items-center space-x-1 md:space-x-3">
         <li class="inline-flex items-center">
           <a
-            href="#"
+            href="javascript:history.go(0)"
             class="inline-flex items-center text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
           >
             <img :src="TRANSAKSI" alt="transaksi" class="w-4 h-4 mx-2" />
@@ -19,7 +19,7 @@ import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
           <div class="flex items-center">
             <ChevronRightIcon class="w-4 h-4 stroke-2 stroke-current text-gray-400" />
             <a
-              href="#"
+              href="javascript:history.go(0)"
               class="ml-1 text-xs font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
               >Keanggotaan</a
             >
