@@ -67,6 +67,11 @@ const editGet = (e) => {
   const anggota = e
   isEdit.value = true
   id_anggota.value = anggota.iddata
+  tanggal.value = anggota.tanggal
+  no_anggota.value = anggota.cif
+  no_ktp.value = anggota.noktp
+  no_kk.value = anggota.nokk
+
   console.log(anggota)
   modal_utama.value = true
 }
@@ -415,7 +420,7 @@ onMounted(async () => {
     )
     total_pages.value = data
     isLoading.value = false
-    console.log(window)
+    // console.log(window)
   } catch (error) {
     isLoading.value = false
     alert('Error Mounted' + error)
@@ -620,7 +625,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('iddata')"
             >
               No. Anggota
@@ -635,7 +640,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('tanggal')"
             >
               Tanggal
@@ -650,7 +655,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('resort')"
             >
               Resort
@@ -665,7 +670,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('noktp')"
             >
               Nomor KTP
@@ -680,7 +685,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('nokk')"
             >
               Kartu Keluarga
@@ -695,7 +700,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('nama')"
             >
               Nama
@@ -710,7 +715,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('alamat')"
             >
               Alamat
@@ -725,7 +730,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('desa')"
             >
               Desa
@@ -740,7 +745,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('kecamatan')"
             >
               Kecamatan
@@ -755,7 +760,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('kota')"
             >
               Kota
@@ -770,7 +775,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('namapendamping')"
             >
               Nama Pendamping
@@ -785,7 +790,7 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-primary"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('kantor')"
             >
               Kantor
@@ -803,7 +808,7 @@ onMounted(async () => {
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
-            class="bg-white hover:bg-blue-200"
+            class="bg-white hover:bg-blue-200 drop-shadow-2xl group"
             v-for="anggota in daftarAnggota.items"
             :key="anggota.iddata"
             :anggota="anggota"
@@ -811,6 +816,10 @@ onMounted(async () => {
           >
             <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
+                <span
+                  class="hidden cursor-pointer -ml-3 mr-[1px] rotate-90 group-hover:block text-black"
+                  >:::</span
+                >
                 <input
                   :value="anggota.iddata"
                   type="checkbox"
@@ -1508,7 +1517,7 @@ onMounted(async () => {
                     class="block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="tanggal_bht"
-                    required
+                    disabled
                   />
                   <label
                     for="tanggal_bht"
@@ -1527,7 +1536,7 @@ onMounted(async () => {
                     class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="simpanan_pokok"
-                    required
+                    disabled
                   />
                   <div
                     class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
@@ -1548,7 +1557,7 @@ onMounted(async () => {
                     class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="simpanan_swk"
-                    required
+                    disabled
                   />
                   <div
                     class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
@@ -1571,7 +1580,7 @@ onMounted(async () => {
                     class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="simpanan_wajib"
-                    required
+                    disabled
                   />
                   <div
                     class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
@@ -1592,7 +1601,7 @@ onMounted(async () => {
                     class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="simpanan_lain"
-                    required
+                    disabled
                   />
                   <div
                     class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"
@@ -1615,7 +1624,7 @@ onMounted(async () => {
                     class="block py-2.5 px-10 w-full text-sm text-gray-900 bg-transparent border-2 rounded-md border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     placeholder=" "
                     v-model="total_simpanan"
-                    required
+                    disabled
                   />
                   <div
                     class="absolute rounded-l-md top-0 left-0 bottom-0 text-black p-2 bg-gray-300 peer-focus:bg-blue-600"

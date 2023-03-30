@@ -20,8 +20,10 @@ export const useDaftarAnggotaStore = defineStore({
           page_number,
           total_row_displayed
         )
-        this.rawItems = data.rows
-        return data.total_page
+        if (data.success) {
+          this.rawItems = data.data.rows
+          return data.data.total_page
+        }
       } catch (error) {
         throw new Error(error)
       }

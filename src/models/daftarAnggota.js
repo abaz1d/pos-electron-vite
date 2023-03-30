@@ -37,10 +37,10 @@ daftarAnggota.fetchProduk = async (
     }
     query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
     const [rows] = await db.query(query)
-    return { rows, total_page }
+    return new Response({ rows, total_page })
   } catch (error) {
     console.log(error)
-    throw error
+    return new Response(error, false)
   }
 }
 
