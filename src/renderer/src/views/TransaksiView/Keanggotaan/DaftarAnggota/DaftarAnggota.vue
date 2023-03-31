@@ -96,12 +96,19 @@ const editGet = (e) => {
   no_telepon.value = anggota.phone
   resort.value = anggota.resort
   tanggal_bht.value = moment(anggota.tanggalbht).format('YYYY-MM-DD')
-  simpanan_pokok.value = anggota.simpokok
-  simpanan_swk.value = anggota.simsuka
-  simpanan_wajib.value = anggota.simwajib
-  simpanan_lain.value = anggota.lain
-  total_simpanan.value = anggota.shu
+  simpanan_pokok.value = currencyFormatter.format(anggota.simpokok).replace('Rp', '').trim()
+  simpanan_swk.value = currencyFormatter.format(anggota.simsuka).replace('Rp', '').trim()
+  simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
+  simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
+  total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
 
+  previewFoto.value = URL.createObjectURL(
+    new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
+  )
+  console.log(
+    'Image',
+    URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
+  )
   modal_utama.value = true
 }
 const deleteGet = (e) => {
@@ -155,11 +162,6 @@ const viewData = (e) => {
   simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
-
-  // previewFoto.value = 'data:image/jpeg;base64,' + btoa(
-  //           new Uint8Array(this.info.image)
-  //           .reduce((data, byte) => data + String.fromCharCode(byte), '')
-  //       );
 
   previewFoto.value = URL.createObjectURL(
     new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
@@ -624,12 +626,12 @@ onMounted(async () => {
             <div class="flex items-stretch w-full">
               <input
                 type="number"
-                class="block appearance-none w-full mb-1 px-2 bg-white text-gray-800 border border-gray-200 text-xs leading-normal"
+                class="block appearance-none w-full mb-1 px-2 bg-white text-gray-800 border-y border-r border-gray-400 text-xs leading-normal"
                 v-model="page_number"
               />
               <input
                 type="number"
-                class="block appearance-none w-full px-2 mb-1 bg-gray-200 text-gray-800 border border-gray-200 text-xs leading-normal"
+                class="block appearance-none w-full px-2 mb-1 bg-gray-200 text-gray-800 border-y border-gray-400 text-xs leading-normal"
                 v-model="total_pages"
                 disabled
               />
