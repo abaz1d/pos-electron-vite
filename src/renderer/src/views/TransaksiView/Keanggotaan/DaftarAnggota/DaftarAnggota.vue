@@ -6,6 +6,8 @@ import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/Keanggotaa
 import PP from '@renderer/assets/images/pp-placeholder.svg'
 import TTD from '@renderer/assets/images/ttd-placeholder.svg'
 import PA from '@renderer/assets/images/pa-placeholder.svg'
+import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
+import { currencyFormatter } from '@renderer/utils/helper'
 
 const daftarAnggota = useDaftarAnggotaStore()
 const isLoading = ref(false)
@@ -14,13 +16,13 @@ const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
 const modal_delete = ref(false)
-const sort_by = ref('iddata')
+const sort_by = ref('cif')
 const sort_mode = ref(true)
 const search_data = ref('')
-const search_type = ref('iddata')
+const search_type = ref('nama')
 const page_number = ref(1)
 const total_pages = ref(0)
-const row_per_page = ref(10)
+const row_per_page = ref(30)
 const allSelected = ref(false)
 const userIds = ref([])
 const id_anggota = ref('')
@@ -67,19 +69,105 @@ const editGet = (e) => {
   const anggota = e
   isEdit.value = true
   id_anggota.value = anggota.iddata
-  tanggal.value = anggota.tanggal
+  tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
   no_anggota.value = anggota.cif
   no_ktp.value = anggota.noktp
-  no_kk.value = anggota.nokk
+  no_kk.value = anggota.nokK
+  nama_lengkap.value = anggota.nama
+  tempat_lahir.value = anggota.tempatlhr
+  tanggal_lahir.value = moment(anggota.tanggallhr).format('YYYY-MM-DD')
+  jenis_kelamin.value =
+    anggota.jeniskl == 'L'
+      ? 'L'
+      : anggota.jeniskl == 'LAKI-LAKI    '
+      ? 'L'
+      : anggota.jeniskl == 'PEREMPUAN'
+      ? 'P'
+      : 'P'
+  agama.value = anggota.agama
+  alamat.value = anggota.alamat
+  rt.value = anggota.rt
+  rw.value = anggota.rt
+  kelurahan.value = anggota.desa
+  kecamatan.value = anggota.kecamatan
+  kota.value = anggota.kota
+  pendamping.value = 'nama pendamping'
+  pekerjaan.value = anggota.pekerjaan
+  no_telepon.value = anggota.phone
+  resort.value = anggota.resort
+  tanggal_bht.value = moment(anggota.tanggalbht).format('YYYY-MM-DD')
+  simpanan_pokok.value = anggota.simpokok
+  simpanan_swk.value = anggota.simsuka
+  simpanan_wajib.value = anggota.simwajib
+  simpanan_lain.value = anggota.lain
+  total_simpanan.value = anggota.shu
 
-  console.log(anggota)
   modal_utama.value = true
+}
+const deleteGet = (e) => {
+  const anggota = e
+
+  if (anggota.iddata) {
+    userIds.value = []
+    userIds.value.push(anggota.iddata)
+    console.log('delete get 1', userIds.value)
+    modal_delete.value = true
+  } else {
+    if (userIds.value.length > 0) {
+      console.log('delete get 1+', userIds.value)
+      modal_delete.value = true
+    }
+  }
 }
 const viewData = (e) => {
   const anggota = e
   isView.value = true
   id_anggota.value = anggota.iddata
-  console.log(window)
+  tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
+  no_anggota.value = anggota.cif
+  no_ktp.value = anggota.noktp
+  no_kk.value = anggota.nokK
+  nama_lengkap.value = anggota.nama
+  tempat_lahir.value = anggota.tempatlhr
+  tanggal_lahir.value = moment(anggota.tanggallhr).format('YYYY-MM-DD')
+  jenis_kelamin.value =
+    anggota.jeniskl == 'L'
+      ? 'L'
+      : anggota.jeniskl == 'LAKI-LAKI    '
+      ? 'L'
+      : anggota.jeniskl == 'PEREMPUAN'
+      ? 'P'
+      : 'P'
+  agama.value = anggota.agama
+  alamat.value = anggota.alamat
+  rt.value = anggota.rt
+  rw.value = anggota.rt
+  kelurahan.value = anggota.desa
+  kecamatan.value = anggota.kecamatan
+  kota.value = anggota.kota
+  pendamping.value = 'nama pendamping'
+  pekerjaan.value = anggota.pekerjaan
+  no_telepon.value = anggota.phone
+  resort.value = anggota.resort
+  tanggal_bht.value = moment(anggota.tanggalbht).format('YYYY-MM-DD')
+  simpanan_pokok.value = currencyFormatter.format(anggota.simpokok).replace('Rp', '').trim()
+  simpanan_swk.value = currencyFormatter.format(anggota.simsuka).replace('Rp', '').trim()
+  simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
+  simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
+  total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
+
+  // previewFoto.value = 'data:image/jpeg;base64,' + btoa(
+  //           new Uint8Array(this.info.image)
+  //           .reduce((data, byte) => data + String.fromCharCode(byte), '')
+  //       );
+
+  previewFoto.value = URL.createObjectURL(
+    new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
+  )
+  console.log(
+    'Image',
+    URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
+  )
   modal_utama.value = true
 }
 const previewPAImage = (event) => {
@@ -158,16 +246,23 @@ const simpan_data = (e) => {
   resetForm()
 }
 const deleteAnggota = () => {
-  console.log('deleteAnggota')
+  if (userIds.value.length > 1) {
+    console.log('deleteAnggota 1+')
+  } else {
+    console.log('deleteAnggota 1')
+  }
+  resetForm()
 }
 const resetForm = () => {
-  search_data.value = ''
-  search_type.value = 'iddata'
-  sort_by.value = 'iddata'
-  sort_mode.value = true
-  page_number.value = 1
-  total_pages.value = 0
-  row_per_page.value = 10
+  if (isEdit.value == false && isView.value == false) {
+    search_data.value = ''
+    search_type.value = 'nama'
+    sort_by.value = 'iddata'
+    sort_mode.value = true
+    page_number.value = 1
+    total_pages.value = 0
+    row_per_page.value = 30
+  }
   allSelected.value = false
   userIds.value = []
   id_anggota.value = ''
@@ -443,7 +538,7 @@ onMounted(async () => {
         </button>
         <button
           class="inline-block align-middle hover:text-danger text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
-          onclick="deleteAction()"
+          @click="deleteGet"
           id="delete-multiple-data"
           data-bs-toggle="tooltip"
           title="Hapus Data"
@@ -566,8 +661,7 @@ onMounted(async () => {
           v-model="row_per_page"
           class="bg-gray-50 border border-gray-300 text-gray-900 pl-1 mr-2 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block -mt-1 w-[70px] h-9"
         >
-          <option value="10">10</option>
-          <option value="25">25</option>
+          <option value="30">30</option>
           <option value="50">50</option>
           <option value="75">75</option>
           <option value="100">100</option>
@@ -597,19 +691,26 @@ onMounted(async () => {
               v-model="search_type"
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
+              <option value="nama">Nama</option>
               <option value="iddata">ID</option>
               <option value="cif">No Anggota</option>
-              <option value="nama">Nama</option>
+              <option value="noktp">No KTP</option>
+              <option value="alamat">Alamat</option>
+              <option value="desa">Desa</option>
+              <option value="kecamatan">kecamatan</option>
+              <option value="kota">Kota</option>
             </select>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="flex flex-col max-h-[81vh] shadow-md rounded-lg">
+  <div class="flex flex-col max-h-[800px] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
       <table class="relative w-full text-xs text-left text-gray-500">
-        <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0">
+        <thead
+          class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-50 table-fixed"
+        >
           <tr>
             <th scope="col" class="p-2 border pl-3">
               <div class="flex items-center">
@@ -626,15 +727,15 @@ onMounted(async () => {
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('iddata')"
+              @click="sorting('cif')"
             >
               No. Anggota
               <ChevronUpIcon
-                v-if="sort_by === 'iddata' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                v-if="sort_by === 'cif' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
-                v-if="sort_by === 'iddata' && !sort_mode"
+                v-if="sort_by === 'cif' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
@@ -646,7 +747,7 @@ onMounted(async () => {
               Tanggal
               <ChevronUpIcon
                 v-if="sort_by === 'tanggal' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'tanggal' && !sort_mode"
@@ -661,7 +762,7 @@ onMounted(async () => {
               Resort
               <ChevronUpIcon
                 v-if="sort_by === 'resort' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'resort' && !sort_mode"
@@ -676,7 +777,7 @@ onMounted(async () => {
               Nomor KTP
               <ChevronUpIcon
                 v-if="sort_by === 'noktp' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'noktp' && !sort_mode"
@@ -686,15 +787,15 @@ onMounted(async () => {
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('nokk')"
+              @click="sorting('nokK')"
             >
               Kartu Keluarga
               <ChevronUpIcon
-                v-if="sort_by === 'nokk' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                v-if="sort_by === 'nokK' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
-                v-if="sort_by === 'nokk' && !sort_mode"
+                v-if="sort_by === 'nokK' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
@@ -706,7 +807,7 @@ onMounted(async () => {
               Nama
               <ChevronUpIcon
                 v-if="sort_by === 'nama' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'nama' && !sort_mode"
@@ -721,7 +822,7 @@ onMounted(async () => {
               Alamat
               <ChevronUpIcon
                 v-if="sort_by === 'alamat' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'alamat' && !sort_mode"
@@ -736,7 +837,7 @@ onMounted(async () => {
               Desa
               <ChevronUpIcon
                 v-if="sort_by === 'desa' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'desa' && !sort_mode"
@@ -751,7 +852,7 @@ onMounted(async () => {
               Kecamatan
               <ChevronUpIcon
                 v-if="sort_by === 'kecamatan' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'kecamatan' && !sort_mode"
@@ -766,7 +867,7 @@ onMounted(async () => {
               Kota
               <ChevronUpIcon
                 v-if="sort_by === 'kota' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
                 v-if="sort_by === 'kota' && !sort_mode"
@@ -776,15 +877,15 @@ onMounted(async () => {
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('namapendamping')"
+              @click="sorting('iddata')"
             >
               Nama Pendamping
               <ChevronUpIcon
-                v-if="sort_by === 'namapendamping' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                v-if="sort_by === 'iddata' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
-                v-if="sort_by === 'namapendamping' && !sort_mode"
+                v-if="sort_by === 'iddata' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
@@ -808,7 +909,7 @@ onMounted(async () => {
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
-            class="bg-white hover:bg-blue-200 drop-shadow-2xl group"
+            class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
             v-for="anggota in daftarAnggota.items"
             :key="anggota.iddata"
             :anggota="anggota"
@@ -858,7 +959,7 @@ onMounted(async () => {
               @dblclick="viewData(anggota)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ anggota.nokk }}
+              {{ anggota.nokK }}
             </td>
             <td
               @dblclick="viewData(anggota)"
@@ -894,7 +995,7 @@ onMounted(async () => {
               @dblclick="viewData(anggota)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ anggota.namapendamping }}
+              nama pendamping {{ anggota.iddata }}
             </td>
             <td
               @dblclick="viewData(anggota)"
@@ -912,7 +1013,7 @@ onMounted(async () => {
                   <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
                 </a>
                 <a
-                  @click="modal_delete = true"
+                  @click="deleteGet(anggota)"
                   class="flex items-center hover:text-red-800 text-danger"
                   href="javascript:;"
                 >
@@ -1053,10 +1154,10 @@ onMounted(async () => {
                     :src="previewFoto"
                     class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
                   />
-                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
+                  <!-- <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
                     {{ imageFoto.size / 1024 }}<span class="font-semibold"> KB</span>
-                  </p>
+                  </p> -->
                 </template>
               </div>
 
@@ -1266,7 +1367,7 @@ onMounted(async () => {
                   <label
                     for="tanggal_lahir"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Tanggal Lahir</label
+                    >Tanggal Lahir {{ tanggal_lahir }}</label
                   >
                 </div>
               </div>
@@ -1280,9 +1381,10 @@ onMounted(async () => {
                     v-model="jenis_kelamin"
                     required
                   >
-                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                    <option class="text-xs" value="Laki-Laki">Laki - Laki</option>
-                    <option class="text-xs" value="Perempuan">Perempuan</option>
+                    <option class="text-xs" value="" disabled>Pilihlah Salah Satu</option>
+                    <option v-for="jenis in list_jenis_kelamin" :value="jenis.value">
+                      {{ jenis.nama }}
+                    </option>
                   </select>
                   <label
                     for="jenis_kelamin"
@@ -1299,18 +1401,15 @@ onMounted(async () => {
                     v-model="agama"
                     required
                   >
-                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                    <option class="text-xs" value="Islam">Islam</option>
-                    <option class="text-xs" value="Kristen">Kristen</option>
-                    <option class="text-xs" value="Katolik">Katolik</option>
-                    <option class="text-xs" value="Hindu">Hindu</option>
-                    <option class="text-xs" value="Buddha">Buddha</option>
-                    <option class="text-xs" value="Konghucu">Konghucu</option>
+                    <option class="text-xs" value="" disabled>Pilihlah Salah Satu</option>
+                    <option v-for="agama in list_agama" :value="agama.value">
+                      {{ agama.nama }}
+                    </option>
                   </select>
                   <label
                     for="agama"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Agama</label
+                    >Agama {{ agama }}</label
                   >
                 </div>
               </div>
@@ -1478,35 +1577,15 @@ onMounted(async () => {
                     v-model="resort"
                     required
                   >
-                    <option class="text-xs" value="" selected disabled>Pilihlah Salah Satu</option>
-                    <option class="text-xs" value="050 - SMB">050 - SMB</option>
-                    <option class="text-xs" value="101 - KRESNA">101 - KRESNA</option>
-                    <option class="text-xs" value="102 - RAMA">102 - RAMA</option>
-                    <option class="text-xs" value="103 - SADEWA">103 - SADEWA</option>
-                    <option class="text-xs" value="104 - NAKULA">104 - NAKULA</option>
-                    <option class="text-xs" value="105 - SRIKANDI">105 - SRIKANDI</option>
-                    <option class="text-xs" value="106 - ARIMBI">106 - ARIMBI</option>
-                    <option class="text-xs" value="107 - ANJANI">107 - ANJANI</option>
-                    <option class="text-xs" value="108 - ABIMANYU">108 - ABIMANYU</option>
-                    <option class="text-xs" value="109 - BANOWATI">109 - BANOWATI</option>
-                    <option class="text-xs" value="110 - DRUPADI">109 - DRUPADI</option>
-                    <option class="text-xs" value="111 - GONDOMONO">110 - GONDOMONO</option>
-                    <option class="text-xs" value="112 - KUNTHI">112 - KUNTHI</option>
-                    <option class="text-xs" value="113 - LARASATI">113 - LARASATI</option>
-                    <option class="text-xs" value="114 - BALADEWA">114 - BALADEWA</option>
-                    <option class="text-xs" value="115 - ANTAREJA">115 - ANTAREJA</option>
-                    <option class="text-xs" value="116 - LESMANA">116 - LESMANA</option>
-                    <option class="text-xs" value="117 - SUBALI">117 - SUBALI</option>
-                    <option class="text-xs" value="118 - SUGRIWA">118 - SUGRIWA</option>
-                    <option class="text-xs" value="119 - PERMADI">119 - PERMADI</option>
-                    <option class="text-xs" value="120 - PERGIWO">120 - PERGIWO</option>
-                    <option class="text-xs" value="121 - UTARI">121 - UTARI</option>
-                    <option class="text-xs" value="122 - JATAYU">122 - JATAYU</option>
+                    <option class="text-xs" value="" disabled>Pilihlah Salah Satu</option>
+                    <option v-for="resort in list_resort" :value="resort.value">
+                      {{ resort.nama }}
+                    </option>
                   </select>
                   <label
                     for="resort"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Resort</label
+                    >Resort {{ resort }}</label
                   >
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
@@ -1522,7 +1601,7 @@ onMounted(async () => {
                   <label
                     for="tanggal_bht"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Tanggal BHT</label
+                    >Tanggal BHT {{ tanggal_bht }}</label
                   >
                 </div>
               </div>
@@ -1651,14 +1730,15 @@ onMounted(async () => {
     </ModalFooter>
   </Modal>
 
-  <Modal :show="modal_delete" @hidden="modal_delete = false">
+  <Modal backdrop="static" :show="modal_delete" @hidden="modal_delete = false">
     <ModalBody class="p-0">
       <div class="p-5 text-center">
         <XCircleIcon class="w-16 h-16 text-danger mx-auto mt-3" />
         <div class="text-3xl mt-5">Apakah Anda Yakin ?</div>
         <div class="text-slate-500 mt-2">
-          Anda yakin ingin menghapus data <b> username </b> ? <br />Data yang telah dihapus tidak
-          bisa kembali.
+          Ingin menghapus <span v-if="userIds.length > 1">Beberapa</span> data dengan ID <br />
+          <b> {{ userIds.length > 1 ? userIds : userIds[0] }} </b> ? <br />Data yang telah dihapus
+          tidak bisa kembali.
         </div>
       </div>
       <div class="px-5 pb-8 text-center">
@@ -1671,7 +1751,7 @@ onMounted(async () => {
           @click="
             (e) => {
               e.preventDefault()
-              deleteAnggota(id_anggota)
+              deleteAnggota()
             }
           "
         >
@@ -1696,9 +1776,12 @@ table {
 }
 
 tr:nth-child(even) {
-  @apply bg-slate-200 hover:bg-blue-200;
+  @apply bg-slate-200 hover:bg-lime-300 hover:text-slate-700;
 }
 tr:nth-child(od) {
-  @apply bg-white hover:bg-blue-200;
+  @apply bg-white hover:bg-lime-300 hover:text-slate-700;
+}
+.table-fixed {
+  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0);
 }
 </style>
