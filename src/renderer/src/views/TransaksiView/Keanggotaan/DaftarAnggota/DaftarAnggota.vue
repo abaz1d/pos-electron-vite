@@ -100,7 +100,7 @@ const editGet = (e) => {
   simpanan_swk.value = currencyFormatter.format(anggota.simsuka).replace('Rp', '').trim()
   simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
-  total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
+  total_simpanan.value = currencyFormatter.format(anggota.simshu).replace('Rp', '').trim()
 
   previewFoto.value = URL.createObjectURL(
     new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
@@ -205,53 +205,45 @@ const previewFotoImage = (event) => {
     reader.readAsDataURL(input.files[0])
   }
 }
-const simpan_data = (e) => {
-  console.log(
-    'e',
-    modal_utama.value,
-    foto_profile.value,
-    imageFoto.value,
-    previewFoto.value,
-    foto_pa.value,
-    imagePA.value,
-    previewPA.value,
-    foto_ttd.value,
-    imageTTD.value,
-    previewTTD.value,
-    tanggal.value,
-    no_anggota.value,
-    no_ktp.value,
-    no_kk.value,
-    nama_lengkap.value,
-    tempat_lahir.value,
-    tanggal_lahir.value,
-    jenis_kelamin.value,
-    agama.value,
-    alamat.value,
-    rt.value,
-    rw.value,
-    kelurahan.value,
-    kecamatan.value,
-    kota.value,
-    pendamping.value,
-    pekerjaan.value,
-    no_telepon.value,
-    resort.value,
-    tanggal_bht.value,
-    simpanan_pokok.value,
-    simpanan_swk.value,
-    simpanan_wajib.value,
-    simpanan_lain.value,
-    total_simpanan.value
-  )
-  e.target.reset()
-  resetForm()
+const simpan_data = async (e) => {
+  try {
+    await daftarAnggota.postItem(
+      imageFoto.value,
+      imageTTD.value,
+      imagePA.value,
+      tanggal.value,
+      no_anggota.value,
+      no_ktp.value,
+      no_kk.value,
+      nama_lengkap.value,
+      tempat_lahir.value,
+      tanggal_lahir.value,
+      jenis_kelamin.value,
+      agama.value,
+      alamat.value,
+      rt.value,
+      rw.value,
+      kelurahan.value,
+      kecamatan.value,
+      kota.value,
+      pendamping.value,
+      pekerjaan.value,
+      no_telepon.value,
+      resort.value
+    )
+    // e.target.reset()
+    // resetForm()
+  } catch (error) {
+    alert('ERROR SIMPAN DATA: ' + error)
+  }
 }
 const deleteAnggota = () => {
   if (userIds.value.length > 1) {
-    console.log('deleteAnggota 1+')
+    for (let idAnggota = 0; idAnggota < userIds.value.length; idAnggota++) {
+      console.log('delete post 1+', userIds.value[idAnggota])
+    }
   } else {
-    console.log('deleteAnggota 1')
+    console.log('delete post 1', userIds.value)
   }
   resetForm()
 }
@@ -520,7 +512,7 @@ onMounted(async () => {
     // console.log(window)
   } catch (error) {
     isLoading.value = false
-    alert('Error Mounted' + error)
+    alert('ERROR MOUNTED:' + error)
   }
 })
 </script>
@@ -672,7 +664,7 @@ onMounted(async () => {
         <div class="relative flex items-stretch w-full" id="search-input-group">
           <input
             type="text"
-            class="block appearance-none border-y border-l rounded-l-lg w-full mb-1 bg-white text-gray-800 border-gray-200 px-2 text-xs leading-normal h-9"
+            class="block appearance-none border-y border-l rounded-l-lg w-full mb-1 bg-white text-gray-800 border-gray-300 px-2 text-xs leading-normal h-9"
             v-model="search_data"
             :placeholder="'Cari ' + search_type + ' ' + $route.name.replace(/-/gi, ' ')"
             name="search-data"
@@ -879,15 +871,15 @@ onMounted(async () => {
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('iddata')"
+              @click="sorting('statuskawin')"
             >
               Nama Pendamping
               <ChevronUpIcon
-                v-if="sort_by === 'iddata' && sort_mode"
+                v-if="sort_by === 'statuskawin' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <ChevronDownIcon
-                v-if="sort_by === 'iddata' && !sort_mode"
+                v-if="sort_by === 'statuskawin' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
@@ -997,7 +989,7 @@ onMounted(async () => {
               @dblclick="viewData(anggota)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              nama pendamping {{ anggota.iddata }}
+              {{ anggota.statuskawin }}
             </td>
             <td
               @dblclick="viewData(anggota)"
@@ -1141,7 +1133,7 @@ onMounted(async () => {
           class="grid grid-cols-12 gap-4 pl-2"
           @submit.prevent="simpan_data"
         >
-          <div class="border-r-2 mx-auto col-span-3 overflow-hidden mt-0">
+          <div class="border-r-2 mx-auto col-span-3 overflow-y-auto mt-0">
             <div
               class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm mx-auto text-center mb-4 max-w-max h-[40%] bg-gray-100"
             >
@@ -1149,7 +1141,7 @@ onMounted(async () => {
                 <img
                   :src="PP"
                   v-if="!previewFoto"
-                  class="h-[125px] mx-auto mb-10 hover:scale-110 transition duration-500 ease-in-out"
+                  class="h-[135px] mx-auto items-center my-5 hover:scale-110 transition duration-500 ease-in-out"
                 />
                 <template v-if="previewFoto">
                   <img
@@ -1183,15 +1175,15 @@ onMounted(async () => {
               class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
             >
               <div class="border p-1">
-                <img
-                  :src="TTD"
+                <PointerIcon
                   v-if="!previewTTD"
-                  class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
+                  class="h-[90px] mx-auto items-center hover:scale-150 opacity-40 transition duration-500 ease-in-out"
+                  title="Tanda Tangan"
                 />
                 <template v-if="previewTTD">
                   <img
                     :src="previewTTD"
-                    class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
+                    class="h-[60px] mx-auto mb-2 hover:scale-110 hover:opacity-60 transition duration-500 ease-in-out"
                   />
                   <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageTTD.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
@@ -1219,10 +1211,9 @@ onMounted(async () => {
               class="border-4 relative rounded-md border-dashed p-2 m-2 text-sm text-center mb-4 bg-gray-100"
             >
               <div class="border p-1">
-                <img
-                  :src="PA"
+                <PenToolIcon
                   v-if="!previewPA"
-                  class="h-[60px] mx-auto mb-10 hover:scale-110 opacity-25 transition duration-500 ease-in-out"
+                  class="h-[90px] mx-auto items-center hover:scale-150 opacity-40 hover:opacity-60 transition duration-500 ease-in-out"
                 />
                 <template v-if="previewPA">
                   <img
@@ -1369,7 +1360,7 @@ onMounted(async () => {
                   <label
                     for="tanggal_lahir"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Tanggal Lahir {{ tanggal_lahir }}</label
+                    >Tanggal Lahir</label
                   >
                 </div>
               </div>
@@ -1411,7 +1402,7 @@ onMounted(async () => {
                   <label
                     for="agama"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Agama {{ agama }}</label
+                    >Agama</label
                   >
                 </div>
               </div>
@@ -1587,7 +1578,7 @@ onMounted(async () => {
                   <label
                     for="resort"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Resort {{ resort }}</label
+                    >Resort</label
                   >
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
@@ -1603,7 +1594,7 @@ onMounted(async () => {
                   <label
                     for="tanggal_bht"
                     class="peer-focus:font-medium rounded-lg bg-white px-2 absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3.5 peer-focus:top-3.5 z-10 origin-[0] left-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Tanggal BHT {{ tanggal_bht }}</label
+                    >Tanggal BHT</label
                   >
                 </div>
               </div>

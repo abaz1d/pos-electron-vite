@@ -12,7 +12,7 @@ export const useDaftarAnggotaStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
-        const data = await request.fetchProduk(
+        const data = await request.fetchAnggota(
           search_type,
           search_data,
           sort_by,
@@ -28,9 +28,62 @@ export const useDaftarAnggotaStore = defineStore({
         throw new Error(error)
       }
     },
-    async loadData(pageNumber, total_row_displayed) {
+    async postItem(
+      imageFoto,
+      imageTTD,
+      imagePA,
+
+      tanggal,
+      no_anggota,
+      no_ktp,
+      no_kk,
+      nama_lengkap,
+      tempat_lahir,
+      tanggal_lahir,
+      jenis_kelamin,
+      agama,
+      alamat,
+      rt,
+      rw,
+      kelurahan,
+      kecamatan,
+      kota,
+      pendamping,
+      pekerjaan,
+      no_telepon,
+      resort
+    ) {
       try {
-      } catch (error) {}
+        //console.log(
+        await request.postAnggota(
+          tanggal,
+          no_anggota,
+          no_ktp,
+          no_kk,
+          nama_lengkap,
+          tempat_lahir,
+          tanggal_lahir,
+          jenis_kelamin,
+          agama,
+          alamat,
+          rt,
+          rw,
+          kelurahan,
+          kecamatan,
+          kota,
+          pendamping,
+          pekerjaan,
+          no_telepon,
+          resort,
+
+          imageFoto,
+          imageTTD,
+          imagePA
+        )
+        // const data = request.postAnggota(anggota)
+      } catch (error) {
+        throw new Error(error)
+      }
     }
   }
 })

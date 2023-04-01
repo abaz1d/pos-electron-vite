@@ -3,7 +3,7 @@ const db = pool.promise()
 
 const daftarAnggota = {}
 
-daftarAnggota.fetchProduk = async (
+daftarAnggota.fetchAnggota = async (
   search_type,
   search_data,
   sort_by,
@@ -42,6 +42,67 @@ daftarAnggota.fetchProduk = async (
     console.log(error)
     return new Response(error, false)
   }
+}
+
+daftarAnggota.postAnggota = async (
+  tanggal,
+  no_anggota,
+  no_ktp,
+  no_kk,
+  nama_lengkap,
+  tempat_lahir,
+  tanggal_lahir,
+  jenis_kelamin,
+  agama,
+  alamat,
+  rt,
+  rw,
+  kelurahan,
+  kecamatan,
+  kota,
+  pendamping,
+  pekerjaan,
+  no_telepon,
+  resort,
+  imageFoto,
+  imageTTD,
+  imagePA
+) => {
+  try {
+    const [rows] = await db.query(
+      `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES (${no_anggota}, ${tanggal}, ${no_kk}, ${no_ktp}, ${nama_lengkap}, ${tempat_lahir}, ${tanggal_lahir}, ${jenis_kelamin}, ${alamat}, ${rt}, ${kelurahan}, ${kecamatan}, ${kota}, ${agama}, ${pekerjaan}, ${pendamping}, ${no_telepon}, ${imageFoto}, ${imageTTD}, ${imagePA}, ${resort})`
+    )
+    return new Response(rows)
+  } catch (error) {
+    console.log(error)
+    return new Response(error, false)
+  }
+  // console.log(
+  //   'POST AGT',
+
+  //   tanggal,
+  //   no_anggota,
+  //   no_ktp,
+  //   no_kk,
+  //   nama_lengkap,
+  //   tempat_lahir,
+  //   tanggal_lahir,
+  //   jenis_kelamin,
+  //   agama,
+  //   alamat,
+  //   rt,
+  //   rw,
+  //   kelurahan,
+  //   kecamatan,
+  //   kota,
+  //   pendamping,
+  //   pekerjaan,
+  //   no_telepon,
+  //   resort,
+  //   imageFoto,
+  //   imageTTD,
+  //   imagePA
+  // )
 }
 
 export default daftarAnggota
