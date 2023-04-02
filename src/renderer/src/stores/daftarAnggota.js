@@ -80,7 +80,6 @@ export const useDaftarAnggotaStore = defineStore({
           imageTTD,
           imagePA
         )
-        // const data = request.postAnggota(anggota)
       } catch (error) {
         throw new Error(error)
       }
