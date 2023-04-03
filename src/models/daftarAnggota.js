@@ -43,7 +43,15 @@ daftarAnggota.fetchAnggota = async (
     return new Response(error, false)
   }
 }
-
+daftarAnggota.getAnggota = async (iddata) => {
+  try {
+    const [rows] = await db.query(`SELECT * FROM anggota WHERE iddata = ${iddata};`)
+    return new Response({ rows }, true)
+  } catch (error) {
+    console.log(error)
+    return new Response(error, false)
+  }
+}
 daftarAnggota.postAnggota = async (
   tanggal,
   no_anggota,
@@ -69,40 +77,43 @@ daftarAnggota.postAnggota = async (
   imagePA
 ) => {
   try {
+    console.log(
+      'POST AGT',
+
+      tanggal,
+      no_anggota,
+      no_ktp,
+      no_kk,
+      nama_lengkap,
+      tempat_lahir,
+      tanggal_lahir,
+      jenis_kelamin,
+      agama,
+      alamat,
+      rt,
+      rw,
+      kelurahan,
+      kecamatan,
+      kota,
+      pendamping,
+      pekerjaan,
+      no_telepon,
+      resort,
+      imageFoto,
+      imageTTD,
+      imagePA
+    )
     const [rows] = await db.query(
-      `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES (${no_anggota}, ${tanggal}, ${no_kk}, ${no_ktp}, ${nama_lengkap}, ${tempat_lahir}, ${tanggal_lahir}, ${jenis_kelamin}, ${alamat}, ${rt}, ${kelurahan}, ${kecamatan}, ${kota}, ${agama}, ${pekerjaan}, ${pendamping}, ${no_telepon}, ${imageFoto}, ${imageTTD}, ${imagePA}, ${resort})`
+      `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone,    resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}',  '${resort}')`
     )
     return new Response(rows)
   } catch (error) {
-    console.log(error)
+    console.log('error models', error)
     return new Response(error, false)
   }
-  // console.log(
-  //   'POST AGT',
-
-  //   tanggal,
-  //   no_anggota,
-  //   no_ktp,
-  //   no_kk,
-  //   nama_lengkap,
-  //   tempat_lahir,
-  //   tanggal_lahir,
-  //   jenis_kelamin,
-  //   agama,
-  //   alamat,
-  //   rt,
-  //   rw,
-  //   kelurahan,
-  //   kecamatan,
-  //   kota,
-  //   pendamping,
-  //   pekerjaan,
-  //   no_telepon,
-  //   resort,
-  //   imageFoto,
-  //   imageTTD,
-  //   imagePA
-  // )
 }
-
+daftarAnggota.deleteAnggota = async (iddata) => {
+  console.log('delete', iddata)
+  return new Response({ message: 'success delete anggota' }, true)
+}
 export default daftarAnggota

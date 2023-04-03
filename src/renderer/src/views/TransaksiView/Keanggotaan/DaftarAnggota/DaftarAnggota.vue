@@ -65,8 +65,8 @@ const addGet = () => {
   isAdd.value = true
   modal_utama.value = true
 }
-const editGet = (e) => {
-  const anggota = e
+const editGet = async (e) => {
+  const anggota = await daftarAnggota.getItem(e)
   isEdit.value = true
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
@@ -126,8 +126,8 @@ const deleteGet = (e) => {
     }
   }
 }
-const viewData = (e) => {
-  const anggota = e
+const viewData = async (e) => {
+  const anggota = await daftarAnggota.getItem(e)
   isView.value = true
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
@@ -207,11 +207,30 @@ const previewFotoImage = (event) => {
 }
 const simpan_data = async (e) => {
   try {
+    async function readFile(e) {
+      let reader = new FileReader()
+      let file
+      reader.readAsArrayBuffer(e)
+
+      reader.onload = async function () {
+        file = reader.result
+        console.log(file)
+        // return reader.result
+      }
+      reader.onerror = function () {
+        console.log(reader.error)
+      }
+    }
     await daftarAnggota.postItem(
-      imageFoto.value,
-      imageTTD.value,
-      imagePA.value,
-      tanggal.value,
+      //console.log(
+      // fileimageFoto,
+      // fileimageTTD,
+      // fileimagePA,
+      new Blob([imageFoto.value], { type: 'image/png' }),
+      new Blob([imageTTD.value], { type: 'image/png' }),
+      new Blob([imagePA.value], { type: 'image/png' }),
+
+      moment(tanggal.value).format('YYYY-MM-DD'),
       no_anggota.value,
       no_ktp.value,
       no_kk.value,
@@ -237,13 +256,15 @@ const simpan_data = async (e) => {
     alert('ERROR SIMPAN DATA: ' + error)
   }
 }
-const deleteAnggota = () => {
+const deleteAnggota = async () => {
   if (userIds.value.length > 1) {
     for (let idAnggota = 0; idAnggota < userIds.value.length; idAnggota++) {
       console.log('delete post 1+', userIds.value[idAnggota])
+      await daftarAnggota.removeItem(userIds.value[idAnggota])
     }
   } else {
     console.log('delete post 1', userIds.value)
+    await daftarAnggota.removeItem(userIds.value[0])
   }
   resetForm()
 }
@@ -703,7 +724,7 @@ onMounted(async () => {
     <div class="flex-grow overflow-auto">
       <table class="relative w-full text-xs text-left text-gray-500">
         <thead
-          class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-50 table-fixed"
+          class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10 table-fixed"
         >
           <tr>
             <th scope="col" class="p-2 border pl-3">
@@ -925,82 +946,85 @@ onMounted(async () => {
               </div>
             </td>
             <th
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
               {{ anggota.cif }}
             </th>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
               {{ moment(anggota.tanggal).format('DD-MM-YYYY') }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.resort }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.noktp }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.nokK }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.nama }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.alamat }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.desa }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.kecamatan }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.kota }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.statuskawin }}
             </td>
             <td
-              @dblclick="viewData(anggota)"
+              @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
               {{ anggota.kantor }}
             </td>
-            <td @dblclick="viewData(anggota)" class="min-w-max border-r border-b font-medium p-1">
+            <td
+              @dblclick="viewData(anggota.iddata)"
+              class="min-w-max border-r border-b font-medium p-1"
+            >
               <div class="flex justify-center">
                 <a
-                  @click="editGet(anggota)"
+                  @click="editGet(anggota.iddata)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >

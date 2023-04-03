@@ -28,6 +28,16 @@ export const useDaftarAnggotaStore = defineStore({
         throw new Error(error)
       }
     },
+    async getItem(iddata) {
+      try {
+        const data = await request.getAnggota(iddata)
+        if (data.success) {
+          return data.data.rows[0]
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async postItem(
       imageFoto,
       imageTTD,
@@ -80,6 +90,18 @@ export const useDaftarAnggotaStore = defineStore({
           imageTTD,
           imagePA
         )
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    async removeItem(iddata) {
+      try {
+        const data = await request.deleteAnggota(iddata)
+        if (data.success) {
+          console.log(data)
+          // this.rawItems = data.data.rows
+          // return data.data.total_page
+        }
       } catch (error) {
         throw new Error(error)
       }
