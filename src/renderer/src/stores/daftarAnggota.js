@@ -64,6 +64,29 @@ export const useDaftarAnggotaStore = defineStore({
       resort
     ) {
       try {
+        const iddata = Date.now()
+        this.rawItems.push({
+          iddata,
+          tanggal,
+          no_anggota,
+          no_ktp,
+          no_kk,
+          nama_lengkap,
+          tempat_lahir,
+          tanggal_lahir,
+          jenis_kelamin,
+          agama,
+          alamat,
+          rt,
+          rw,
+          kelurahan,
+          kecamatan,
+          kota,
+          pendamping,
+          pekerjaan,
+          no_telepon,
+          resort
+        })
         //console.log(
         await request.postAnggota(
           tanggal,
@@ -96,12 +119,8 @@ export const useDaftarAnggotaStore = defineStore({
     },
     async removeItem(iddata) {
       try {
+        this.rawItems = this.rawItems.filter((item) => item.iddata !== iddata)
         const data = await request.deleteAnggota(iddata)
-        if (data.success) {
-          console.log(data)
-          // this.rawItems = data.data.rows
-          // return data.data.total_page
-        }
       } catch (error) {
         throw new Error(error)
       }

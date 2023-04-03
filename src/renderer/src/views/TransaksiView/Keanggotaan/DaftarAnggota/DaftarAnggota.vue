@@ -28,12 +28,15 @@ const userIds = ref([])
 const id_anggota = ref('')
 const foto_profile = ref()
 const previewFoto = ref(null)
+const fileFoto = ref(null)
 const imageFoto = ref(null)
 const foto_ttd = ref()
 const previewTTD = ref(null)
+const fileTTD = ref(null)
 const imageTTD = ref(null)
 const foto_pa = ref()
 const previewPA = ref(null)
+const filePA = ref(null)
 const imagePA = ref(null)
 const tanggal = ref(moment(Date.now()).format('DD-MM-YYYY'))
 const no_anggota = ref('')
@@ -163,14 +166,30 @@ const viewData = async (e) => {
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
 
-  previewFoto.value = URL.createObjectURL(
-    new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
-  )
+  // previewFoto.value = URL.createObjectURL(
+  //   new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
+  // )
   console.log(
     'Image',
-    URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
+    anggota
+    // URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
   )
   modal_utama.value = true
+}
+const readFile = async (file, event) => {
+  let reader = new FileReader()
+
+  reader.onload = async function (e) {
+    if (event == 'pp') {
+      imageFoto.value = e.target.result
+    } else if (event == 'ttd') {
+      imageTTD.value = e.target.result
+    } else if (event == 'pa') {
+      imagePA.value = e.target.result
+    }
+    // return reader.result
+  }
+  reader.readAsArrayBuffer(file)
 }
 const previewPAImage = (event) => {
   var input = event.target
@@ -178,8 +197,9 @@ const previewPAImage = (event) => {
     var reader = new FileReader()
     reader.onload = (e) => {
       previewPA.value = e.target.result
+      readFile(input.files[0], 'pa')
     }
-    imagePA.value = input.files[0]
+    filePA.value = input.files[0]
     reader.readAsDataURL(input.files[0])
   }
 }
@@ -189,8 +209,9 @@ const previewTTDImage = (event) => {
     var reader = new FileReader()
     reader.onload = (e) => {
       previewTTD.value = e.target.result
+      readFile(input.files[0], 'ttd')
     }
-    imageTTD.value = input.files[0]
+    fileTTD.value = input.files[0]
     reader.readAsDataURL(input.files[0])
   }
 }
@@ -200,37 +221,27 @@ const previewFotoImage = (event) => {
     var reader = new FileReader()
     reader.onload = (e) => {
       previewFoto.value = e.target.result
+      readFile(input.files[0], 'pp')
     }
-    imageFoto.value = input.files[0]
+    fileFoto.value = input.files[0]
     reader.readAsDataURL(input.files[0])
   }
 }
 const simpan_data = async (e) => {
   try {
-    async function readFile(e) {
-      let reader = new FileReader()
-      let file
-      reader.readAsArrayBuffer(e)
-
-      reader.onload = async function () {
-        file = reader.result
-        console.log(file)
-        // return reader.result
-      }
-      reader.onerror = function () {
-        console.log(reader.error)
-      }
-    }
     await daftarAnggota.postItem(
       //console.log(
-      // fileimageFoto,
-      // fileimageTTD,
-      // fileimagePA,
-      new Blob([imageFoto.value], { type: 'image/png' }),
-      new Blob([imageTTD.value], { type: 'image/png' }),
-      new Blob([imagePA.value], { type: 'image/png' }),
+      // new Blob([fileFoto.value], { type: 'image/png' }),
+      // new Blob([fileTTD.value], { type: 'image/png' }),
+      // new Blob([filePA.value], { type: 'image/png' }),
+      fileFoto.value,
+      fileTTD.value,
+      filePA.value,
 
-      moment(tanggal.value).format('YYYY-MM-DD'),
+      // imageFoto.value,
+      // imageTTD.value,
+      // imagePA.value,
+      moment(Date.now(tanggal.value)).format('YYYY-MM-DD'),
       no_anggota.value,
       no_ktp.value,
       no_kk.value,
@@ -282,12 +293,15 @@ const resetForm = () => {
   userIds.value = []
   id_anggota.value = ''
   foto_profile.value.value = null
+  fileFoto.value = null
   imageFoto.value = null
   previewFoto.value = null
   foto_pa.value.value = null
+  filePA.value = null
   imagePA.value = null
   previewPA.value = null
   foto_ttd.value.value = null
+  fileTTD.value = null
   imageTTD.value = null
   previewTTD.value = null
   tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
@@ -1172,9 +1186,9 @@ onMounted(async () => {
                     :src="previewFoto"
                     class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
                   />
-                  <!-- <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageFoto.name }}</p>
+                  <!-- <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ fileFoto.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
-                    {{ imageFoto.size / 1024 }}<span class="font-semibold"> KB</span>
+                    {{ fileFoto.size / 1024 }}<span class="font-semibold"> KB</span>
                   </p> -->
                 </template>
               </div>
@@ -1209,9 +1223,9 @@ onMounted(async () => {
                     :src="previewTTD"
                     class="h-[60px] mx-auto mb-2 hover:scale-110 hover:opacity-60 transition duration-500 ease-in-out"
                   />
-                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imageTTD.name }}</p>
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ fileTTD.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
-                    {{ imageTTD.size / 1024 }}<span class="font-semibold"> KB</span>
+                    {{ fileTTD.size / 1024 }}<span class="font-semibold"> KB</span>
                   </p>
                 </template>
               </div>
@@ -1244,9 +1258,9 @@ onMounted(async () => {
                     :src="previewPA"
                     class="h-[60px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
                   />
-                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ imagePA.name }}</p>
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ filePA.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
-                    {{ imagePA.size / 1024 }}<span class="font-semibold"> KB</span>
+                    {{ filePA.size / 1024 }}<span class="font-semibold"> KB</span>
                   </p>
                 </template>
               </div>
