@@ -51,7 +51,8 @@ defineExpose({ openMenu, closeMenu })
         class="items-center hover:scale-125 transition duration-700 ease-in-out hidden xl:flex"
       >
         <img :src="LOGO" alt="logo" class="h-4 mr-3 sm:h-7" />
-        <span class="self-center text-base font-semibold whitespace-nowrap dark:text-white"
+        <span
+          class="self-center text-base font-bold tracking-wide font-mono whitespace-nowrap dark:text-white"
           >Binaniaga</span
         >
       </a>

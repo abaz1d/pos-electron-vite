@@ -1,27 +1,31 @@
 <script setup>
-import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
+const props = defineProps({
+  title: String,
+  subTitle: String,
+  icon: String
+})
 </script>
 <template>
   <header class="mx-5 my-2 p-2 rounded-lg bg-slate-100">
-    <h1 class="text-xs font-semibold capitalize">{{ $route.name.replace(/-/gi, ' ') }}</h1>
+    <h1 class="text-xs font-bold capitalize">{{ $route.name.replace(/-/gi, ' ') }}</h1>
     <nav class="relative -top-5 float-right" aria-label="Breadcrumb">
       <ol class="inline-flex items-center space-x-1 md:space-x-3">
         <li class="inline-flex items-center">
           <a
-            href="javascript:history.go(0)"
+            href="javascript:void(0);"
             class="inline-flex items-center text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
           >
-            <img :src="TRANSAKSI" alt="transaksi" class="w-4 h-4 mx-2" />
-            Transaksi
+            <img :src="icon" alt="transaksi" class="w-4 h-4 mx-2" />
+            {{ title }}
           </a>
         </li>
         <li>
           <div class="flex items-center">
             <ChevronRightIcon class="w-4 h-4 stroke-2 stroke-current text-gray-400" />
             <a
-              href="javascript:history.go(0)"
+              href="javascript:void(0);"
               class="ml-1 text-xs font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-              >Keanggotaan</a
+              >{{ subTitle }}</a
             >
           </div>
         </li>
@@ -29,7 +33,7 @@ import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
           <div class="flex items-center">
             <ChevronRightIcon class="w-4 h-4 stroke-2 stroke-current text-gray-400" />
             <span
-              class="ml-1 text-xs font-medium text-gray-500 md:ml-2 dark:text-gray-400 capitalize"
+              class="ml-1 text-xs font-medium text-gray-500 md:ml-2 dark:text-gray-400 capitalize hover:text-blue-600 cursor-pointer"
             >
               {{ $route.name.replace(/-/gi, ' ') }}
             </span>

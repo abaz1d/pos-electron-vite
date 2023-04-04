@@ -2,12 +2,11 @@
 import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
 import { onMounted, ref, watch } from 'vue'
 import moment from 'moment'
-import KeanggotaanBC from '@renderer/components/Breadcrumbs/Transaksi/KeanggotaanBC.vue'
+import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import PP from '@renderer/assets/images/pp-placeholder.svg'
-import TTD from '@renderer/assets/images/ttd-placeholder.svg'
-import PA from '@renderer/assets/images/pa-placeholder.svg'
 import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
 import { currencyFormatter } from '@renderer/utils/helper'
+import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
 
 const daftarAnggota = useDaftarAnggotaStore()
 const isLoading = ref(false)
@@ -22,7 +21,7 @@ const search_data = ref('')
 const search_type = ref('nama')
 const page_number = ref(1)
 const total_pages = ref(0)
-const row_per_page = ref(30)
+const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 const id_anggota = ref('')
@@ -287,7 +286,7 @@ const resetForm = () => {
     sort_mode.value = true
     page_number.value = 1
     total_pages.value = 0
-    row_per_page.value = 30
+    row_per_page.value = 50
   }
   allSelected.value = false
   userIds.value = []
@@ -552,7 +551,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <KeanggotaanBC />
+  <Breadcrumbs title="Transaksi" subTitle="Keanggotaan" :icon="TRANSAKSI" />
   <div class="relative top-0 bg-white w-full border-y-2 border-[#d0d3d4]">
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
       <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
@@ -690,7 +689,6 @@ onMounted(async () => {
           v-model="row_per_page"
           class="bg-gray-50 border border-gray-300 text-gray-900 pl-1 mr-2 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block -mt-1 w-[70px] h-9"
         >
-          <option value="30">30</option>
           <option value="50">50</option>
           <option value="75">75</option>
           <option value="100">100</option>
@@ -734,7 +732,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="flex flex-col max-h-[800px] shadow-md rounded-lg">
+  <div class="flex flex-col h-[80vh] min-[1537px]:h-[85vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
       <table class="relative w-full text-xs text-left text-gray-500">
         <thead
@@ -947,7 +945,7 @@ onMounted(async () => {
             <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
                 <span
-                  class="hidden cursor-pointer -ml-3 mr-[1px] rotate-90 group-hover:block text-black"
+                  class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
                   >:::</span
                 >
                 <input
@@ -1792,27 +1790,3 @@ onMounted(async () => {
     </ModalBody>
   </Modal>
 </template>
-
-<style scoped>
-.btn-light-bordered {
-  border: 1px solid #c0c1c2;
-}
-
-.btn-light-bordered:hover {
-  border: 1px solid #c0c1c2;
-  background-color: #e5e7e9;
-}
-table {
-  border-collapse: collapse;
-}
-
-tr:nth-child(even) {
-  @apply bg-slate-200 hover:bg-lime-300 hover:text-slate-700;
-}
-tr:nth-child(od) {
-  @apply bg-white hover:bg-lime-300 hover:text-slate-700;
-}
-.table-fixed {
-  box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0);
-}
-</style>

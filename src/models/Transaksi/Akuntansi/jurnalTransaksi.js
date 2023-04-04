@@ -1,9 +1,9 @@
-import { pool, Response } from '../helpers/util'
+import { pool, Response } from '../../../helpers/util'
 const db = pool.promise()
 
-const daftarAnggota = {}
+const jurnalTransaksi = {}
 
-daftarAnggota.fetchAnggota = async (
+jurnalTransaksi.fetchJurnal = async (
   search_type,
   search_data,
   sort_by,
@@ -20,7 +20,7 @@ daftarAnggota.fetchAnggota = async (
   }
 
   try {
-    let query = `SELECT COUNT(*) AS total FROM anggota`
+    let query = `SELECT COUNT(*) AS total FROM jurnal`
     if (search_data !== '') {
       query += ` WHERE ${search_type} LIKE '%${search_data}%'`
     }
@@ -31,7 +31,7 @@ daftarAnggota.fetchAnggota = async (
     } else {
       total_page = parseInt(data[0].total / total_row_displayed) + 1
     }
-    query = `SELECT * FROM anggota`
+    query = `SELECT * FROM jurnal`
     if (search_data !== '') {
       query += ` WHERE ${search_type} LIKE '%${search_data}%'`
     }
@@ -43,18 +43,18 @@ daftarAnggota.fetchAnggota = async (
     return new Response(error, false)
   }
 }
-daftarAnggota.getAnggota = async (iddata) => {
+jurnalTransaksi.getJurnal = async (idtrans) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM anggota WHERE iddata = ${iddata};`)
+    const [rows] = await db.query(`SELECT * FROM jurnal WHERE idtrans = ${idtrans};`)
     return new Response({ rows }, true)
   } catch (error) {
     console.log(error)
     return new Response(error, false)
   }
 }
-daftarAnggota.postAnggota = async (
+jurnalTransaksi.postJurnal = async (
   tanggal,
-  no_anggota,
+  no_jurnal,
   no_ktp,
   no_kk,
   nama_lengkap,
@@ -81,7 +81,7 @@ daftarAnggota.postAnggota = async (
       'POST AGT',
 
       tanggal,
-      no_anggota,
+      no_jurnal,
       no_ktp,
       no_kk,
       nama_lengkap,
@@ -104,7 +104,7 @@ daftarAnggota.postAnggota = async (
       imagePA.path
     )
     const [rows] = await db.query(
-      `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', LOAD_FILE('${imageFoto.path}'), LOAD_FILE('${imageTTD.path}'), LOAD_FILE('${imagePA.path}'), '${resort}')`
+      `INSERT INTO jurnal(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_jurnal}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', LOAD_FILE('${imageFoto.path}'), LOAD_FILE('${imageTTD.path}'), LOAD_FILE('${imagePA.path}'), '${resort}')`
     )
     return new Response(rows)
   } catch (error) {
@@ -112,13 +112,13 @@ daftarAnggota.postAnggota = async (
     return new Response(error, false)
   }
 }
-daftarAnggota.deleteAnggota = async (iddata) => {
+jurnalTransaksi.deleteJurnal = async (idtrans) => {
   try {
-    await db.query(`DELETE FROM anggota WHERE iddata = ${iddata};`)
-    return new Response({ message: 'success delete anggota' }, true)
+    await db.query(`DELETE FROM jurnal WHERE idtrans = ${idtrans};`)
+    return new Response({ message: 'success delete jurnal' }, true)
   } catch (error) {
     console.log(error)
     return new Response(error, false)
   }
 }
-export default daftarAnggota
+export default jurnalTransaksi

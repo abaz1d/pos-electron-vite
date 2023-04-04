@@ -1,10 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import daftarAnggota from '../models/daftarAnggota'
+import daftarAnggota from '../models/Transaksi/Keanggotaan/daftarAnggota'
+import historyAnggota from '../models/Transaksi/Keanggotaan/historyAnggota'
+import jurnalTransaksi from '../models/Transaksi/Akuntansi/jurnalTransaksi'
 
 // Custom APIs for renderer
 const api = {
-  daftarAnggota
+  daftarAnggota,
+  historyAnggota,
+  jurnalTransaksi
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

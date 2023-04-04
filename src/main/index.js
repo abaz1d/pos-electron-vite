@@ -7,7 +7,7 @@ import { pool } from '../helpers/util.js'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    minWidth: 1366,
+    minWidth: 1466,
     minHeight: 768,
     show: false,
     autoHideMenuBar: true,

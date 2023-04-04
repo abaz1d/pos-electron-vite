@@ -7,5 +7,3 @@ import NavbarView from '@renderer/components/Navbar/NavbarView.vue'
   <NavbarView v-if="$route.name !== 'home'" />
   <RouterView />
 </template>
-
-<style></style>

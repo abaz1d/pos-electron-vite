@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '@renderer/views/HomeView.vue'
 import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
 import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota/HistoryAnggota.vue'
+import JurnalTransaksi from '@renderer/views/TransaksiView/Akuntansi/JurnalTransaksi/JurnalTransaksi.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/history-anggota-koperasi',
     name: 'history-anggota-koperasi',
     component: HistoryAnggota
+  },
+  {
+    path: '/jurnal-transaksi',
+    name: 'jurnal-transaksi',
+    component: JurnalTransaksi
   },
   {
     path: '/tentang-aplikasi',
