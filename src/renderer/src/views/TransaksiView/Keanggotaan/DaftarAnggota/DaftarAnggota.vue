@@ -104,13 +104,8 @@ const editGet = async (e) => {
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.simshu).replace('Rp', '').trim()
 
-  previewFoto.value = URL.createObjectURL(
-    new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
-  )
-  console.log(
-    'Image',
-    URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
-  )
+  previewFoto.value = URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' }))
+  console.log('Image', URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' })))
   modal_utama.value = true
 }
 const deleteGet = (e) => {
