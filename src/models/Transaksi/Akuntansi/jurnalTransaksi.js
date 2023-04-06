@@ -43,6 +43,15 @@ jurnalTransaksi.fetchJurnal = async (
     return new Response(error, false)
   }
 }
+jurnalTransaksi.getperkiraanJurnal = async (noper) => {
+  try {
+    const [rows] = await db.query(`SELECT nama FROM perkiraan WHERE noper = ${noper};`)
+    return new Response(rows, true)
+  } catch (error) {
+    console.log(error)
+    return new Response(error, false)
+  }
+}
 jurnalTransaksi.getJurnal = async (idtrans) => {
   try {
     const [rows] = await db.query(`SELECT * FROM jurnal WHERE idtrans = ${idtrans};`)

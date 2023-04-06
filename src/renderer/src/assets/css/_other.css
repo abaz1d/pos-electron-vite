@@ -10,10 +10,10 @@ table {
   border-collapse: collapse;
 }
 
-tr:nth-child(even) {
+table.table-interval tr:nth-child(even) {
   @apply bg-slate-200 hover:bg-lime-300 hover:text-slate-700;
 }
-tr:nth-child(od) {
+table.table-interval tr:nth-child(od) {
   @apply bg-white hover:bg-lime-300 hover:text-slate-700;
 }
 .table-fixed {

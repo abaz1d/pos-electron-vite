@@ -28,6 +28,18 @@ const addGet = () => {}
 const deleteGet = (e) => {}
 const editGet = async (e) => {}
 const simpan_data = async (e) => {}
+const viewData = async (e) => {
+  try {
+    if (e != '') {
+      const data = await jurnalTransaksi.readPerkiraan(e)
+      KETERANGAN.value = data
+    } else {
+      KETERANGAN.value = ''
+    }
+  } catch (error) {
+    alert('ERROR VIEW DATA: ' + error)
+  }
+}
 const resetForm = () => {
   if (isEdit.value == false && isView.value == false) {
     search_data.value = ''
@@ -434,12 +446,10 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="flex flex-col h-[80vh] min-[1537px]:h-[85vh] shadow-md rounded-lg">
+  <div class="flex flex-col h-[75vh] min-[1537px]:h-[80vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
       <table class="relative w-full text-xs text-left text-gray-500">
-        <thead
-          class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10 table-fixed"
-        >
+        <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
           <tr>
             <th scope="col" class="p-2 border pl-3">
               <div class="flex items-center">
@@ -459,11 +469,11 @@ onMounted(async () => {
               @click="sorting('idtrans')"
             >
               ID
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'idtrans' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'idtrans' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -474,11 +484,11 @@ onMounted(async () => {
               @click="sorting('TANGGAL')"
             >
               Tanggal
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'TANGGAL' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'TANGGAL' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -489,11 +499,11 @@ onMounted(async () => {
               @click="sorting('BUKTI')"
             >
               Bukti
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'BUKTI' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'BUKTI' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -504,11 +514,11 @@ onMounted(async () => {
               @click="sorting('NOPER')"
             >
               Noper
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'NOPER' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'NOPER' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -519,11 +529,11 @@ onMounted(async () => {
               @click="sorting('KETERANGAN')"
             >
               Keterangan
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'KETERANGAN' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'KETERANGAN' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -534,11 +544,11 @@ onMounted(async () => {
               @click="sorting('JUMLAH')"
             >
               Jumlah
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'JUMLAH' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'JUMLAH' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
@@ -548,11 +558,12 @@ onMounted(async () => {
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
-            class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="jurnal in jurnalTransaksi.items"
-            :key="jurnal.idtrans"
+            v-for="(jurnal, index) in jurnalTransaksi.items"
+            :class="'bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group'"
+            :key="index"
             :jurnal="jurnal"
             :value="jurnal.idtrans"
+            :id="jurnal.NOPER"
           >
             <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
@@ -570,46 +581,43 @@ onMounted(async () => {
               </div>
             </td>
             <th
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2 w-20"
             >
               {{ jurnal.idtrans }}
             </th>
             <td
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-center border-r border-b font-medium px-2 w-28"
             >
               {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
             </td>
             <td
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium px-2 w-20"
             >
               {{ jurnal.BUKTI }}
             </td>
             <td
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium px-2 w-20"
             >
               {{ jurnal.NOPER }}
             </td>
             <td
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium px-2 w-max"
             >
               {{ jurnal.KETERANGAN }}
             </td>
             <td
-              @dblclick="viewData(jurnal.idtrans)"
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-right border-r border-b font-medium px-2 w-max"
             >
               {{ currencyFormatter.format(jurnal.JUMLAH) }}
             </td>
-            <td
-              @dblclick="viewData(jurnal.idtrans)"
-              class="min-w-max border-r border-b font-medium p-1 w-44"
-            >
+            <td class="min-w-max border-r border-b font-medium p-1 w-44">
               <div class="flex justify-center">
                 <a
                   @click="editGet(jurnal.idtrans)"
@@ -723,3 +731,4 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+<style scoped></style>

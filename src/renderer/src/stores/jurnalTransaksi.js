@@ -28,6 +28,16 @@ export const useJurnalTransaksiStore = defineStore({
         throw new Error(error)
       }
     },
+    async readPerkiraan(noper) {
+      try {
+        const data = await request.getperkiraanJurnal(noper)
+        if (data.success && data.data.length > 0) {
+          return data.data[0].nama
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async getItem(iddata) {
       try {
         const data = await request.getJurnal(iddata)

@@ -3,22 +3,22 @@ import { useHistoryAnggotaStore } from '@renderer/stores/historyAnggota.js'
 import { onMounted, ref, watch } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
 import PP from '@renderer/assets/images/pp-placeholder.svg'
 import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
 import { currencyFormatter } from '@renderer/utils/helper'
+import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
 
-const daftarAnggota = useHistoryAnggotaStore()
+const historyAnggota = useHistoryAnggotaStore()
 const isLoading = ref(false)
 const isAdd = ref(false)
 const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
 const modal_delete = ref(false)
-const sort_by = ref('cif')
+const sort_by = ref('iddata')
 const sort_mode = ref(true)
 const search_data = ref('')
-const search_type = ref('nama')
+const search_type = ref('iddata')
 const page_number = ref(1)
 const total_pages = ref(0)
 const row_per_page = ref(50)
@@ -68,7 +68,7 @@ const addGet = () => {
   modal_utama.value = true
 }
 const editGet = async (e) => {
-  const anggota = await daftarAnggota.getItem(e)
+  const anggota = await historyAnggota.getItem(e)
   isEdit.value = true
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
@@ -104,13 +104,8 @@ const editGet = async (e) => {
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.simshu).replace('Rp', '').trim()
 
-  previewFoto.value = URL.createObjectURL(
-    new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
-  )
-  console.log(
-    'Image',
-    URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
-  )
+  // previewFoto.value = URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' }))
+  // console.log('Image', URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' })))
   modal_utama.value = true
 }
 const deleteGet = (e) => {
@@ -128,8 +123,60 @@ const deleteGet = (e) => {
     }
   }
 }
+
+const uint8ToBase64 = (arrayBuffer) => {
+  var base64 = ''
+  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+  var bytes = new Uint8Array(arrayBuffer)
+  var byteLength = bytes.byteLength
+  var byteRemainder = byteLength % 3
+  var mainLength = byteLength - byteRemainder
+
+  var a, b, c, d
+  var chunk
+
+  // Main loop deals with bytes in chunks of 3
+  for (var i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048) >> 12 // 258048   = (2^6 - 1) << 12
+    c = (chunk & 4032) >> 6 // 4032     = (2^6 - 1) << 6
+    d = chunk & 63 // 63       = 2^6 - 1
+
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+  }
+
+  // Deal with the remaining bytes and padding
+  if (byteRemainder == 1) {
+    chunk = bytes[mainLength]
+
+    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3) << 4 // 3   = 2^2 - 1
+
+    base64 += encodings[a] + encodings[b] + '=='
+  } else if (byteRemainder == 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+
+    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008) >> 4 // 1008  = (2^6 - 1) << 4
+
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15) << 2 // 15    = 2^4 - 1
+
+    base64 += encodings[a] + encodings[b] + encodings[c] + '='
+  }
+
+  return base64
+}
 const viewData = async (e) => {
-  const anggota = await daftarAnggota.getItem(e)
+  const anggota = await historyAnggota.getItem(e)
   isView.value = true
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
@@ -164,75 +211,76 @@ const viewData = async (e) => {
   simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
+  //previewFoto.value = anggota.foto.buffer
+  // var urlCreator = window.URL || window.webkitURL
+  // previewFoto.value = uint8ToBase64(anggota.foto.buffer)
 
-  // previewFoto.value = URL.createObjectURL(
-  //   new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */)
-  // )
   console.log(
-    'Image',
-    anggota
+    anggota.foto
     // URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
   )
   modal_utama.value = true
 }
-const readFile = async (file, event) => {
-  let reader = new FileReader()
 
-  reader.onload = async function (e) {
-    if (event == 'pp') {
-      imageFoto.value = e.target.result
-    } else if (event == 'ttd') {
-      imageTTD.value = e.target.result
-    } else if (event == 'pa') {
-      imagePA.value = e.target.result
+const getImgUrl = (gambar_varian) => {
+  if (gambar_varian) {
+    var images = gambar_varian.data.map((b) => String.fromCharCode(b)).join('')
+    gambar_lama_preview.value = new URL(`${publicPath}gambar/${images}`).href
+    if (isEdit.value) {
+      url.value = gambar_lama_preview.value
     }
-    // return reader.result
+    return gambar_lama_preview.value
+  } else {
+    return `${new URL(window.location.origin)}` + ' 404.png'
   }
-  reader.readAsArrayBuffer(file)
 }
-const previewPAImage = (event) => {
+const convertDataURIToBinary = (dataURI) => {
+  var BASE64_MARKER = ';base64,'
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length
+  var base64 = dataURI.substring(base64Index)
+  var raw = window.atob(base64)
+  var rawLength = raw.length
+  var array = new Uint8Array(new ArrayBuffer(rawLength))
+
+  for (let i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i)
+  }
+  return array
+}
+
+const previewImage = (event) => {
+  // console.log(event.target.id)
   var input = event.target
   if (input.files) {
     var reader = new FileReader()
     reader.onload = (e) => {
-      previewPA.value = e.target.result
-      readFile(input.files[0], 'pa')
+      var base64Img = e.target.result
+      if (event.target.id == 'foto_anggota') {
+        previewFoto.value = base64Img
+        imageFoto.value = convertDataURIToBinary(base64Img)
+      } else if (event.target.id == 'foto_ttd') {
+        previewTTD.value = base64Img
+        imageTTD.value = convertDataURIToBinary(base64Img)
+      } else if (event.target.id == 'foto_pa') {
+        previewPA.value = base64Img
+        imagePA.value = convertDataURIToBinary(base64Img)
+      }
     }
-    filePA.value = input.files[0]
-    reader.readAsDataURL(input.files[0])
-  }
-}
-const previewTTDImage = (event) => {
-  var input = event.target
-  if (input.files) {
-    var reader = new FileReader()
-    reader.onload = (e) => {
-      previewTTD.value = e.target.result
-      readFile(input.files[0], 'ttd')
+    if (event.target.id == 'foto_anggota') {
+      fileFoto.value = input.files[0]
+    } else if (event.target.id == 'foto_ttd') {
+      fileTTD.value = input.files[0]
+    } else if (event.target.id == 'foto_pa') {
+      filePA.value = input.files[0]
     }
-    fileTTD.value = input.files[0]
-    reader.readAsDataURL(input.files[0])
-  }
-}
-const previewFotoImage = (event) => {
-  var input = event.target
-  if (input.files) {
-    var reader = new FileReader()
-    reader.onload = (e) => {
-      previewFoto.value = e.target.result
-      readFile(input.files[0], 'pp')
-    }
-    fileFoto.value = input.files[0]
+
     reader.readAsDataURL(input.files[0])
   }
 }
 const simpan_data = async (e) => {
   try {
-    await daftarAnggota.postItem(
+    await historyAnggota.postItem(
       //console.log(
-      // new Blob([fileFoto.value], { type: 'image/png' }),
-      // new Blob([fileTTD.value], { type: 'image/png' }),
-      // new Blob([filePA.value], { type: 'image/png' }),
       fileFoto.value,
       fileTTD.value,
       filePA.value,
@@ -260,8 +308,8 @@ const simpan_data = async (e) => {
       no_telepon.value,
       resort.value
     )
-    // e.target.reset()
-    // resetForm()
+    e.target.reset()
+    resetForm()
   } catch (error) {
     alert('ERROR SIMPAN DATA: ' + error)
   }
@@ -270,18 +318,18 @@ const deleteAnggota = async () => {
   if (userIds.value.length > 1) {
     for (let idAnggota = 0; idAnggota < userIds.value.length; idAnggota++) {
       console.log('delete post 1+', userIds.value[idAnggota])
-      await daftarAnggota.removeItem(userIds.value[idAnggota])
+      await historyAnggota.removeItem(userIds.value[idAnggota])
     }
   } else {
     console.log('delete post 1', userIds.value)
-    await daftarAnggota.removeItem(userIds.value[0])
+    await historyAnggota.removeItem(userIds.value[0])
   }
   resetForm()
 }
 const resetForm = () => {
   if (isEdit.value == false && isView.value == false) {
     search_data.value = ''
-    search_type.value = 'nama'
+    search_type.value = 'iddata'
     sort_by.value = 'iddata'
     sort_mode.value = true
     page_number.value = 1
@@ -341,7 +389,7 @@ const sorting = async (e) => {
   sort_mode.value = !sort_mode.value
 
   try {
-    await daftarAnggota.readItem(
+    await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       e,
@@ -359,7 +407,7 @@ const firstPage = async () => {
   page_number.value = 1
   try {
     isLoading.value = true
-    await daftarAnggota.readItem(
+    await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -378,7 +426,7 @@ const previousPage = async () => {
     let page_no = parseInt(page_number.value)
     isLoading.value = true
     if (page_no > 1) {
-      await daftarAnggota.readItem(
+      await historyAnggota.readItem(
         search_type.value,
         search_data.value,
         sort_by.value,
@@ -403,7 +451,7 @@ const nextPage = () => {
     let page_no = parseInt(page_number.value)
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
-      daftarAnggota.readItem(
+      historyAnggota.readItem(
         search_type.value,
         search_data.value,
         sort_by.value,
@@ -422,7 +470,7 @@ const lastPage = async () => {
   page_number.value = total_pages.value
   try {
     isLoading.value = true
-    await daftarAnggota.readItem(
+    await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -440,7 +488,7 @@ const lastPage = async () => {
 watch(page_number, async (e) => {
   try {
     isLoading.value = true
-    await daftarAnggota.readItem(
+    await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -460,7 +508,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value || page_number.value == '') {
       page_number.value = 1
     }
-    const data = await daftarAnggota.readItem(
+    const data = await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -483,7 +531,7 @@ watch(row_per_page, async (e) => {
 watch(search_data, async (e) => {
   try {
     isLoading.value = true
-    const data = await daftarAnggota.readItem(
+    const data = await historyAnggota.readItem(
       search_type.value,
       e,
       sort_by.value,
@@ -501,7 +549,7 @@ watch(search_data, async (e) => {
 watch(search_type, async (e) => {
   try {
     isLoading.value = true
-    const data = await daftarAnggota.readItem(
+    const data = await historyAnggota.readItem(
       e,
       search_data.value,
       sort_by.value,
@@ -521,8 +569,8 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let anggota = 0; anggota < daftarAnggota.items.length; anggota++) {
-      userIds.value.push(daftarAnggota.items[anggota].iddata)
+    for (let anggota = 0; anggota < historyAnggota.items.length; anggota++) {
+      userIds.value.push(historyAnggota.items[anggota].iddata)
     }
   }
 }
@@ -533,7 +581,7 @@ const selectOne = () => {
 onMounted(async () => {
   try {
     isLoading.value = true
-    const data = await daftarAnggota.readItem(
+    const data = await historyAnggota.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -734,7 +782,7 @@ onMounted(async () => {
   </div>
   <div class="flex flex-col h-[80vh] min-[1537px]:h-[85vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
-      <table class="relative w-full text-xs text-left text-gray-500">
+      <table class="relative w-full text-xs text-left text-gray-500 table-interval">
         <thead
           class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10 table-fixed"
         >
@@ -753,17 +801,32 @@ onMounted(async () => {
             </th>
             <th
               scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300 w-[60px]"
+              @click="sorting('iddata')"
+            >
+              ID
+              <SortAscIcon
+                v-if="sort_by === 'iddata' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'iddata' && !sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
               @click="sorting('cif')"
             >
               No. Anggota
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'cif' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'cif' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -772,13 +835,13 @@ onMounted(async () => {
               @click="sorting('tanggal')"
             >
               Tanggal
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'tanggal' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'tanggal' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -787,13 +850,13 @@ onMounted(async () => {
               @click="sorting('resort')"
             >
               Resort
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'resort' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'resort' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -802,13 +865,13 @@ onMounted(async () => {
               @click="sorting('noktp')"
             >
               Nomor KTP
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'noktp' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'noktp' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -817,13 +880,13 @@ onMounted(async () => {
               @click="sorting('nokK')"
             >
               Kartu Keluarga
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'nokK' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'nokK' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -832,13 +895,13 @@ onMounted(async () => {
               @click="sorting('nama')"
             >
               Nama
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'nama' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'nama' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -847,13 +910,13 @@ onMounted(async () => {
               @click="sorting('alamat')"
             >
               Alamat
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'alamat' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'alamat' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -862,13 +925,13 @@ onMounted(async () => {
               @click="sorting('desa')"
             >
               Desa
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'desa' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'desa' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -877,13 +940,13 @@ onMounted(async () => {
               @click="sorting('kecamatan')"
             >
               Kecamatan
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'kecamatan' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'kecamatan' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -892,13 +955,13 @@ onMounted(async () => {
               @click="sorting('kota')"
             >
               Kota
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'kota' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'kota' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -907,13 +970,13 @@ onMounted(async () => {
               @click="sorting('statuskawin')"
             >
               Nama Pendamping
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'statuskawin' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'statuskawin' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
@@ -922,13 +985,13 @@ onMounted(async () => {
               @click="sorting('kantor')"
             >
               Kantor
-              <ChevronUpIcon
+              <SortAscIcon
                 v-if="sort_by === 'kantor' && sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
-              <ChevronDownIcon
+              <SortDescIcon
                 v-if="sort_by === 'kantor' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th scope="col" class="text-center uppercase border">Actions</th>
@@ -937,7 +1000,7 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="anggota in daftarAnggota.items"
+            v-for="anggota in historyAnggota.items"
             :key="anggota.iddata"
             :anggota="anggota"
             :value="anggota.iddata"
@@ -962,8 +1025,14 @@ onMounted(async () => {
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
-              {{ anggota.cif }}
+              {{ anggota.iddata }}
             </th>
+            <td
+              @dblclick="viewData(anggota.iddata)"
+              class="min-w-max text-center border-r border-b font-medium px-2"
+            >
+              {{ anggota.cif }}
+            </td>
             <td
               @dblclick="viewData(anggota.iddata)"
               class="min-w-max text-center border-r border-b font-medium px-2"
@@ -1030,10 +1099,7 @@ onMounted(async () => {
             >
               {{ anggota.kantor }}
             </td>
-            <td
-              @dblclick="viewData(anggota.iddata)"
-              class="min-w-max border-r border-b font-medium p-1"
-            >
+            <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
                 <a
                   @click="editGet(anggota.iddata)"
@@ -1165,7 +1231,7 @@ onMounted(async () => {
       </div>
       <div class="-mx-4">
         <form
-          id="daftarAnggotaForm"
+          id="historyAnggotaForm"
           class="grid grid-cols-12 gap-4 pl-2"
           @submit.prevent="simpan_data"
         >
@@ -1184,17 +1250,17 @@ onMounted(async () => {
                     :src="previewFoto"
                     class="h-[125px] mx-auto mb-2 hover:scale-110 transition duration-500 ease-in-out"
                   />
-                  <!-- <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ fileFoto.name }}</p>
+                  <p class="mb-0 text-xs rounded-t-md border-b bg-white">{{ fileFoto.name }}</p>
                   <p class="mb-1 text-xs rounded-b-md bg-white">
                     {{ fileFoto.size / 1024 }}<span class="font-semibold"> KB</span>
-                  </p> -->
+                  </p>
                 </template>
               </div>
 
               <input
                 type="file"
                 accept="image/*"
-                @change="previewFotoImage"
+                @change="previewImage"
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_anggota"
                 ref="foto_profile"
@@ -1231,7 +1297,7 @@ onMounted(async () => {
               <input
                 type="file"
                 accept="image/*"
-                @change="previewTTDImage"
+                @change="previewImage"
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_ttd"
                 ref="foto_ttd"
@@ -1266,7 +1332,7 @@ onMounted(async () => {
               <input
                 type="file"
                 accept="image/*"
-                @change="previewPAImage"
+                @change="previewImage"
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_pa"
                 ref="foto_pa"
@@ -1755,7 +1821,7 @@ onMounted(async () => {
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="daftarAnggotaForm" class="btn btn-primary w-32">Simpan</button>
+      <button type="submit" form="historyAnggotaForm" class="btn btn-primary w-32">Simpan</button>
     </ModalFooter>
   </Modal>
 

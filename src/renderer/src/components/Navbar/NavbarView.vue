@@ -1021,14 +1021,14 @@ defineExpose({ openMenu, closeMenu })
                           class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                       /></a>
                       <ul
-                        class="shadow-lg space-y-1 ring-1 p-2 ring-[#00913E] ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 -right-2 transition duration-150 ease-in-out origin-top-left min-w-max"
+                        class="shadow-lg space-y-1 ring-1 p-2 ring-[#00913E] ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 -right-[1px] transition duration-150 ease-in-out origin-top-left min-w-max"
                       >
                         <li class="px-2 hover:bg-slate-200 pb-1 rounded">
                           <RouterLink to="/rekapitulasi-npl">
                             <a
                               class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
                               href="javascript:void(0);"
-                              >rekapitulasi NPL</a
+                              >Rekapitulasi NPL</a
                             >
                           </RouterLink>
                         </li>
