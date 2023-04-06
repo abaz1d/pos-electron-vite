@@ -1,6 +1,6 @@
 <script setup>
 import { useJurnalTransaksiStore } from '@renderer/stores/jurnalTransaksi.js'
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUpdate, onBeforeMount, ref, watch } from 'vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import moment from 'moment'
@@ -23,6 +23,7 @@ const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 const KETERANGAN = ref('')
+const lastIds = ref(0)
 
 const addGet = () => {}
 const deleteGet = (e) => {}
@@ -68,6 +69,7 @@ const sorting = async (e) => {
       page_number.value,
       row_per_page.value
     )
+    configureClass(lastIds.value)
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -76,37 +78,40 @@ const sorting = async (e) => {
 }
 const firstPage = async () => {
   page_number.value = 1
-  try {
-    isLoading.value = true
-    await jurnalTransaksi.readItem(
-      search_type.value,
-      search_data.value,
-      sort_by.value,
-      sort_mode.value,
-      1,
-      row_per_page.value
-    )
-    isLoading.value = false
-  } catch (error) {
-    isLoading.value = false
-    alert('Gagal page pertama' + error)
-  }
+  // try {
+  //   isLoading.value = true
+  //   await jurnalTransaksi.readItem(
+  //     search_type.value,
+  //     search_data.value,
+  //     sort_by.value,
+  //     sort_mode.value,
+  //     1,
+  //     row_per_page.value
+  //   )
+  //   configureClass(lastIds.value)
+  //   isLoading.value = false
+  // } catch (error) {
+  //   isLoading.value = false
+  //   alert('Gagal page pertama' + error)
+  // }
 }
 const previousPage = async () => {
   try {
     let page_no = parseInt(page_number.value)
-    isLoading.value = true
+    // isLoading.value = true
     if (page_no > 1) {
-      await jurnalTransaksi.readItem(
-        search_type.value,
-        search_data.value,
-        sort_by.value,
-        sort_mode.value,
-        page_no - 1,
-        row_per_page.value
-      )
+      page_number.value = page_no - 1
+      // await jurnalTransaksi.readItem(
+      //   search_type.value,
+      //   search_data.value,
+      //   sort_by.value,
+      //   sort_mode.value,
+      //   page_no - 1,
+      //   row_per_page.value
+      // )
     }
-    isLoading.value = false
+    // configureClass(lastIds.value)
+    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page sebelumnya' + error)
@@ -114,23 +119,24 @@ const previousPage = async () => {
 }
 const nextPage = () => {
   try {
-    isLoading.value = true
+    // isLoading.value = true
     if (page_number.value == '') {
       page_number.value = 1
     }
     let page_no = parseInt(page_number.value)
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
-      jurnalTransaksi.readItem(
-        search_type.value,
-        search_data.value,
-        sort_by.value,
-        sort_mode.value,
-        page_no + 1,
-        row_per_page.value
-      )
+      // jurnalTransaksi.readItem(
+      //   search_type.value,
+      //   search_data.value,
+      //   sort_by.value,
+      //   sort_mode.value,
+      //   page_no + 1,
+      //   row_per_page.value
+      // )
     }
-    isLoading.value = false
+    // configureClass(lastIds.value)
+    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page selanjutnya' + error)
@@ -138,21 +144,22 @@ const nextPage = () => {
 }
 const lastPage = async () => {
   page_number.value = total_pages.value
-  try {
-    isLoading.value = true
-    await jurnalTransaksi.readItem(
-      search_type.value,
-      search_data.value,
-      sort_by.value,
-      sort_mode.value,
-      total_pages.value,
-      row_per_page.value
-    )
-    isLoading.value = false
-  } catch (error) {
-    isLoading.value = false
-    alert('Gagal page terkhir' + error)
-  }
+  // try {
+  //   isLoading.value = true
+  //   await jurnalTransaksi.readItem(
+  //     search_type.value,
+  //     search_data.value,
+  //     sort_by.value,
+  //     sort_mode.value,
+  //     total_pages.value,
+  //     row_per_page.value
+  //   )
+  //   configureClass(lastIds.value)
+  //   isLoading.value = false
+  // } catch (error) {
+  //   isLoading.value = false
+  //   alert('Gagal page terkhir' + error)
+  // }
 }
 
 watch(page_number, async (e) => {
@@ -166,10 +173,12 @@ watch(page_number, async (e) => {
       e,
       row_per_page.value
     )
+    configureClass(lastIds.value)
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal ganti page' + error)
+    console.log(error)
   }
 })
 watch(row_per_page, async (e) => {
@@ -192,6 +201,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value) {
       page_number.value = 1
     }
+    configureClass(lastIds.value)
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -210,10 +220,11 @@ watch(search_data, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
+    configureClass(lastIds.value)
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
+    alert('Gagal search page' + error)
   }
 })
 watch(search_type, async (e) => {
@@ -228,10 +239,11 @@ watch(search_type, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
+    configureClass(lastIds.value)
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
+    alert('Gagal search page' + error)
   }
 })
 
@@ -247,7 +259,30 @@ const selectAll = (e) => {
 const selectOne = () => {
   allSelected.value = false
 }
-onMounted(async () => {
+const configureClass = (e) => {
+  //console.log('ce', e, jurnalTransaksi.items.length, lastIds.value.JUMLAH)
+  let prevValue = 0
+  //e == 0 ? 0 : parseInt(lastIds.value.JUMLAH)
+  let currentClass = 'bg-white'
+  for (let i = 0; i < jurnalTransaksi.items.length; i++) {
+    let value = jurnalTransaksi.items[i].JUMLAH
+    if (prevValue === 0) {
+      currentClass == 'bg-white' ? (currentClass = 'bg-slate-200') : (currentClass = 'bg-white')
+    }
+    //console.log('after', i, prevValue, value, e)
+    document
+      .querySelector('#table_jurnal_transaksi tbody')
+      .children[i].classList.add(
+        currentClass,
+        'hover:bg-lime-300',
+        'hover:text-slate-700',
+        'drop-shadow-2xl',
+        'group'
+      )
+    prevValue = prevValue + value
+  }
+}
+onBeforeMount(async () => {
   try {
     isLoading.value = true
     const data = await jurnalTransaksi.readItem(
@@ -259,7 +294,9 @@ onMounted(async () => {
       row_per_page.value
     )
     total_pages.value = data
-    isLoading.value = false
+    configureClass(0)
+    ;(lastIds.value = jurnalTransaksi.items[jurnalTransaksi.items.length - 1]),
+      (isLoading.value = false)
   } catch (error) {
     isLoading.value = false
     alert('ERROR MOUNTED:' + error)
@@ -448,7 +485,7 @@ onMounted(async () => {
   </div>
   <div class="flex flex-col h-[75vh] min-[1537px]:h-[80vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
-      <table class="relative w-full text-xs text-left text-gray-500">
+      <table class="relative w-full text-xs text-left text-gray-500" id="table_jurnal_transaksi">
         <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
           <tr>
             <th scope="col" class="p-2 border pl-3">
@@ -559,13 +596,11 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             v-for="(jurnal, index) in jurnalTransaksi.items"
-            :class="'bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group'"
             :key="index"
             :jurnal="jurnal"
-            :value="jurnal.idtrans"
-            :id="jurnal.NOPER"
+            :value="jurnal.JUMLAH"
           >
-            <td class="w-4 border-r border-b font-medium p-0 pl-3">
+            <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
               <div class="flex items-center">
                 <span
                   class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
@@ -583,41 +618,42 @@ onMounted(async () => {
             <th
               @click="viewData(jurnal.NOPER)"
               scope="row"
-              class="border-r border-b font-medium whitespace-nowrap pl-2 w-20"
+              class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
             >
               {{ jurnal.idtrans }}
             </th>
             <td
               @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-center border-r border-b font-medium px-2 w-28"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
             >
               {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
             </td>
             <td
               @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium px-2 w-20"
+              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.BUKTI }}
             </td>
             <td
               @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium px-2 w-20"
+              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.NOPER }}
             </td>
             <td
               @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium px-2 w-max"
+              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ jurnal.KETERANGAN }}
             </td>
             <td
               @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-right border-r border-b font-medium px-2 w-max"
+              class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ currencyFormatter.format(jurnal.JUMLAH) }}
+              <span class="hidden">{{ jurnal.JUMLAH }}</span>
             </td>
-            <td class="min-w-max border-r border-b font-medium p-1 w-44">
+            <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
               <div class="flex justify-center">
                 <a
                   @click="editGet(jurnal.idtrans)"

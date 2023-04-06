@@ -405,37 +405,38 @@ const sorting = async (e) => {
 }
 const firstPage = async () => {
   page_number.value = 1
-  try {
-    isLoading.value = true
-    await daftarAnggota.readItem(
-      search_type.value,
-      search_data.value,
-      sort_by.value,
-      sort_mode.value,
-      1,
-      row_per_page.value
-    )
-    isLoading.value = false
-  } catch (error) {
-    isLoading.value = false
-    alert('Gagal page pertama' + error)
-  }
+  // try {
+  //   isLoading.value = true
+  //   await daftarAnggota.readItem(
+  //     search_type.value,
+  //     search_data.value,
+  //     sort_by.value,
+  //     sort_mode.value,
+  //     1,
+  //     row_per_page.value
+  //   )
+  //   isLoading.value = false
+  // } catch (error) {
+  //   isLoading.value = false
+  //   alert('Gagal page pertama' + error)
+  // }
 }
 const previousPage = async () => {
   try {
     let page_no = parseInt(page_number.value)
-    isLoading.value = true
+    // isLoading.value = true
     if (page_no > 1) {
-      await daftarAnggota.readItem(
-        search_type.value,
-        search_data.value,
-        sort_by.value,
-        sort_mode.value,
-        page_no - 1,
-        row_per_page.value
-      )
+      page_number.value = page_no - 1
+      // await daftarAnggota.readItem(
+      //   search_type.value,
+      //   search_data.value,
+      //   sort_by.value,
+      //   sort_mode.value,
+      //   page_no - 1,
+      //   row_per_page.value
+      // )
     }
-    isLoading.value = false
+    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page sebelumnya' + error)
@@ -444,23 +445,23 @@ const previousPage = async () => {
 
 const nextPage = () => {
   try {
-    isLoading.value = true
+    // isLoading.value = true
     if (page_number.value == '') {
       page_number.value = 1
     }
     let page_no = parseInt(page_number.value)
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
-      daftarAnggota.readItem(
-        search_type.value,
-        search_data.value,
-        sort_by.value,
-        sort_mode.value,
-        page_no + 1,
-        row_per_page.value
-      )
+      // daftarAnggota.readItem(
+      //   search_type.value,
+      //   search_data.value,
+      //   sort_by.value,
+      //   sort_mode.value,
+      //   page_no + 1,
+      //   row_per_page.value
+      // )
     }
-    isLoading.value = false
+    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page selanjutnya' + error)
@@ -468,21 +469,21 @@ const nextPage = () => {
 }
 const lastPage = async () => {
   page_number.value = total_pages.value
-  try {
-    isLoading.value = true
-    await daftarAnggota.readItem(
-      search_type.value,
-      search_data.value,
-      sort_by.value,
-      sort_mode.value,
-      total_pages.value,
-      row_per_page.value
-    )
-    isLoading.value = false
-  } catch (error) {
-    isLoading.value = false
-    alert('Gagal page terkhir' + error)
-  }
+  // try {
+  //   isLoading.value = true
+  //   await daftarAnggota.readItem(
+  //     search_type.value,
+  //     search_data.value,
+  //     sort_by.value,
+  //     sort_mode.value,
+  //     total_pages.value,
+  //     row_per_page.value
+  //   )
+  //   isLoading.value = false
+  // } catch (error) {
+  //   isLoading.value = false
+  //   alert('Gagal page terkhir' + error)
+  // }
 }
 
 watch(page_number, async (e) => {
