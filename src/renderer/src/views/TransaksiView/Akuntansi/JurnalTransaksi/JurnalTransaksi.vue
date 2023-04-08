@@ -1,6 +1,6 @@
 <script setup>
 import { useJurnalTransaksiStore } from '@renderer/stores/jurnalTransaksi.js'
-import { onBeforeUpdate, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import moment from 'moment'
@@ -23,9 +23,11 @@ const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 const KETERANGAN = ref('')
-const lastIds = ref(0)
 
-const addGet = () => {}
+const addGet = () => {
+  isAdd.value = true
+  modal_utama.value = true
+}
 const deleteGet = (e) => {}
 const editGet = async (e) => {}
 const simpan_data = async (e) => {}
@@ -54,6 +56,12 @@ const resetForm = () => {
   allSelected.value = false
   userIds.value = []
   KETERANGAN.value = ''
+
+  modal_utama.value = false
+  modal_delete.value = false
+  isAdd.value = false
+  isEdit.value = false
+  isView.value = false
 }
 const sorting = async (e) => {
   isLoading.value = true
@@ -69,7 +77,7 @@ const sorting = async (e) => {
       page_number.value,
       row_per_page.value
     )
-    configureClass(lastIds.value)
+    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -88,7 +96,7 @@ const firstPage = async () => {
   //     1,
   //     row_per_page.value
   //   )
-  //   configureClass(lastIds.value)
+  //    configureClass()
   //   isLoading.value = false
   // } catch (error) {
   //   isLoading.value = false
@@ -110,7 +118,7 @@ const previousPage = async () => {
       //   row_per_page.value
       // )
     }
-    // configureClass(lastIds.value)
+    //  configureClass()
     // isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -135,7 +143,7 @@ const nextPage = () => {
       //   row_per_page.value
       // )
     }
-    // configureClass(lastIds.value)
+    //  configureClass()
     // isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -154,14 +162,13 @@ const lastPage = async () => {
   //     total_pages.value,
   //     row_per_page.value
   //   )
-  //   configureClass(lastIds.value)
+  //    configureClass()
   //   isLoading.value = false
   // } catch (error) {
   //   isLoading.value = false
   //   alert('Gagal page terkhir' + error)
   // }
 }
-
 watch(page_number, async (e) => {
   try {
     isLoading.value = true
@@ -173,7 +180,7 @@ watch(page_number, async (e) => {
       e,
       row_per_page.value
     )
-    configureClass(lastIds.value)
+    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -201,7 +208,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value) {
       page_number.value = 1
     }
-    configureClass(lastIds.value)
+    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -220,7 +227,7 @@ watch(search_data, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
-    configureClass(lastIds.value)
+    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -239,7 +246,7 @@ watch(search_type, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
-    configureClass(lastIds.value)
+    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -259,27 +266,27 @@ const selectAll = (e) => {
 const selectOne = () => {
   allSelected.value = false
 }
-const configureClass = (e) => {
-  //console.log('ce', e, jurnalTransaksi.items.length, lastIds.value.JUMLAH)
-  let prevValue = 0
-  //e == 0 ? 0 : parseInt(lastIds.value.JUMLAH)
-  let currentClass = 'bg-white'
-  for (let i = 0; i < jurnalTransaksi.items.length; i++) {
-    let value = jurnalTransaksi.items[i].JUMLAH
-    if (prevValue === 0) {
-      currentClass == 'bg-white' ? (currentClass = 'bg-slate-200') : (currentClass = 'bg-white')
+const configureClass = () => {
+  if (jurnalTransaksi.items[0]) {
+    let prevValue = jurnalTransaksi.items[0].BUKTI
+    let currentClass = 'bg-white'
+    for (let i = 0; i < jurnalTransaksi.items.length; i++) {
+      let value = jurnalTransaksi.items[i].BUKTI
+      if (prevValue !== value) {
+        currentClass == 'bg-white' ? (currentClass = 'bg-slate-200') : (currentClass = 'bg-white')
+      }
+      document.querySelector('#table_jurnal_transaksi tbody').children[i].className = ''
+      document
+        .querySelector('#table_jurnal_transaksi tbody')
+        .children[i].classList.add(
+          currentClass,
+          'hover:bg-lime-300',
+          'hover:text-slate-700',
+          'drop-shadow-2xl',
+          'group'
+        )
+      prevValue = value
     }
-    //console.log('after', i, prevValue, value, e)
-    document
-      .querySelector('#table_jurnal_transaksi tbody')
-      .children[i].classList.add(
-        currentClass,
-        'hover:bg-lime-300',
-        'hover:text-slate-700',
-        'drop-shadow-2xl',
-        'group'
-      )
-    prevValue = prevValue + value
   }
 }
 onBeforeMount(async () => {
@@ -294,9 +301,8 @@ onBeforeMount(async () => {
       row_per_page.value
     )
     total_pages.value = data
-    configureClass(0)
-    ;(lastIds.value = jurnalTransaksi.items[jurnalTransaksi.items.length - 1]),
-      (isLoading.value = false)
+    configureClass()
+    isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('ERROR MOUNTED:' + error)
@@ -594,12 +600,7 @@ onBeforeMount(async () => {
           </tr>
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
-          <tr
-            v-for="(jurnal, index) in jurnalTransaksi.items"
-            :key="index"
-            :jurnal="jurnal"
-            :value="jurnal.JUMLAH"
-          >
+          <tr v-for="(jurnal, index) in jurnalTransaksi.items" :key="index" :jurnal="jurnal">
             <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
               <div class="flex items-center">
                 <span
@@ -651,7 +652,6 @@ onBeforeMount(async () => {
               class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ currencyFormatter.format(jurnal.JUMLAH) }}
-              <span class="hidden">{{ jurnal.JUMLAH }}</span>
             </td>
             <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
               <div class="flex justify-center">
@@ -686,6 +686,28 @@ onBeforeMount(async () => {
           </div>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div
+    class="fixed right-0 bottom-0 z-[9999] bg-blue-600 px-10 flex h-10 w-full items-center justify-center"
+  >
+    <div class="w-1/12">
+      <label
+        class="block text-[15px] font-semibold text-left text-white uppercase"
+        for="KETERANGAN"
+      >
+        Keterangan
+      </label>
+    </div>
+    <div class="w-11/12">
+      <input
+        v-model="KETERANGAN"
+        name="KETERANGAN"
+        type="text"
+        placeholder=""
+        disabled
+        class="w-full pl-3 text-left bg-white text-black rounded-md"
+      />
     </div>
   </div>
   <Modal backdrop="static" size="modal-xl" :show="modal_utama" @hidden="modal_utama = false">
@@ -744,27 +766,5 @@ onBeforeMount(async () => {
       </div>
     </ModalBody>
   </Modal>
-  <div
-    class="fixed right-0 bottom-0 z-[9999] bg-blue-600 px-10 flex h-10 w-full items-center justify-center"
-  >
-    <div class="w-1/12">
-      <label
-        class="block text-[15px] font-semibold text-left text-white uppercase"
-        for="KETERANGAN"
-      >
-        Keterangan
-      </label>
-    </div>
-    <div class="w-11/12">
-      <input
-        v-model="KETERANGAN"
-        name="KETERANGAN"
-        type="text"
-        placeholder=""
-        disabled
-        class="w-full pl-3 text-left bg-white text-black rounded-md"
-      />
-    </div>
-  </div>
 </template>
 <style scoped></style>
