@@ -28,8 +28,24 @@ const addGet = () => {
   isAdd.value = true
   modal_utama.value = true
 }
-const deleteGet = (e) => {}
-const editGet = async (e) => {}
+const deleteGet = (e) => {
+  const jurnal = e
+  if (jurnal.idtrans) {
+    userIds.value = []
+    userIds.value.push(jurnal.idtrans)
+    console.log('delete get 1', userIds.value)
+    modal_delete.value = true
+  } else {
+    if (userIds.value.length > 0) {
+      console.log('delete get 1+', userIds.value)
+      modal_delete.value = true
+    }
+  }
+}
+const editGet = async (e) => {
+  // const jurnal = await daftarAnggota.getItem(e)
+  isEdit.value = true
+}
 const simpan_data = async (e) => {}
 const viewData = async (e) => {
   try {
@@ -258,8 +274,8 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let anggota = 0; anggota < jurnalTransaksi.items.length; anggota++) {
-      userIds.value.push(jurnalTransaksi.items[anggota].idtrans)
+    for (let jurnal = 0; jurnal < jurnalTransaksi.items.length; jurnal++) {
+      userIds.value.push(jurnalTransaksi.items[jurnal].idtrans)
     }
   }
 }
