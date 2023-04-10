@@ -1838,12 +1838,16 @@ onMounted(async () => {
         </div>
       </div>
       <div class="px-5 pb-8 text-center">
-        <button type="button" @click="resetForm" class="btn btn-outline-secondary w-24 mr-1">
+        <button
+          type="button"
+          @click="resetForm"
+          class="btn btn-outline-secondary w-24 mr-1 text-xs"
+        >
           Batal
         </button>
         <button
           type="button"
-          class="btn btn-danger w-24"
+          class="btn btn-danger w-24 text-xs"
           @click="
             (e) => {
               e.preventDefault()

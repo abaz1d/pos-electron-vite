@@ -743,14 +743,638 @@ onBeforeMount(async () => {
         <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
       </a>
     </ModalHeader>
-    <ModalBody> sdefsdf </ModalBody>
+    <ModalBody>
+      <div class="flex flex-col h-40 shadow-md rounded-lg -mt-4">
+        <div class="flex-grow overflow-auto">
+          <table class="relative w-full text-xs text-left text-gray-500" id="table_input_jurnal">
+            <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
+              <tr>
+                <th scope="col" class="p-2 border pl-3">
+                  <div class="flex items-center">
+                    <input
+                      id="checkbox-all-search"
+                      v-model="allSelected"
+                      @click="selectAll(false)"
+                      type="checkbox"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-blue-200 rounded focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('idtrans')"
+                >
+                  ID
+                  <SortAscIcon
+                    v-if="sort_by === 'idtrans' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'idtrans' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('TANGGAL')"
+                >
+                  Tanggal
+                  <SortAscIcon
+                    v-if="sort_by === 'TANGGAL' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'TANGGAL' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('BUKTI')"
+                >
+                  Bukti
+                  <SortAscIcon
+                    v-if="sort_by === 'BUKTI' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'BUKTI' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('NOPER')"
+                >
+                  Noper
+                  <SortAscIcon
+                    v-if="sort_by === 'NOPER' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'NOPER' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('KETERANGAN')"
+                >
+                  Keterangan
+                  <SortAscIcon
+                    v-if="sort_by === 'KETERANGAN' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'KETERANGAN' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                  @click="sorting('JUMLAH')"
+                >
+                  Jumlah
+                  <SortAscIcon
+                    v-if="sort_by === 'JUMLAH' && sort_mode"
+                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                  />
+                  <SortDescIcon
+                    v-if="sort_by === 'JUMLAH' && !sort_mode"
+                    class="inline ml-2 -mr-2 w-5 h-4"
+                  />
+                </th>
+                <th scope="col" class="text-center uppercase border">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll" v-show="!isLoading">
+              <tr v-for="(jurnal, index) in jurnalTransaksi.items" :key="index" :jurnal="jurnal">
+                <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
+                  <div class="flex items-center">
+                    <span
+                      class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
+                      >:::</span
+                    >
+                    <input
+                      :value="jurnal.idtrans"
+                      type="checkbox"
+                      v-model="userIds"
+                      @click="selectOne"
+                      class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2"
+                    />
+                  </div>
+                </td>
+                <th
+                  @click="viewData(jurnal.NOPER)"
+                  scope="row"
+                  class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
+                >
+                  {{ jurnal.idtrans }}
+                </th>
+                <td
+                  @click="viewData(jurnal.NOPER)"
+                  class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
+                >
+                  {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
+                </td>
+                <td
+                  @click="viewData(jurnal.NOPER)"
+                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+                >
+                  {{ jurnal.BUKTI }}
+                </td>
+                <td
+                  @click="viewData(jurnal.NOPER)"
+                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+                >
+                  {{ jurnal.NOPER }}
+                </td>
+                <td
+                  @click="viewData(jurnal.NOPER)"
+                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                >
+                  {{ jurnal.KETERANGAN }}
+                </td>
+                <td
+                  @click="viewData(jurnal.NOPER)"
+                  class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                >
+                  {{ currencyFormatter.format(jurnal.JUMLAH) }}
+                </td>
+                <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
+                  <div class="flex justify-center">
+                    <a
+                      @click="editGet(jurnal.idtrans)"
+                      class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
+                      href="javascript:;"
+                    >
+                      <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
+                    </a>
+                    <a
+                      @click="deleteGet(jurnal)"
+                      class="flex items-center hover:text-red-800 text-danger"
+                      href="javascript:;"
+                    >
+                      <Trash2Icon class="w-3 h-3 mr-1" /> Hapus
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-show="isLoading">
+              <div
+                class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center"
+              >
+                <Loader2Icon
+                  class="motion-safe:animate-spin stroke-[5px] text-white h-12 w-12 mb-2"
+                />
+                <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
+                <p class="w-1/3 text-center text-white">Sedang Memuat Data</p>
+                <p class="w-1/3 text-center text-white">
+                  Ini mungkin memakan waktu beberapa saat, tolong jangan tutup halaman ini.
+                </p>
+              </div>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 p-3 bg-green-200">
+        <div class="text-gray-700 flex items-center col">
+          <input
+            class="w-full h-10 px-3 text-xs text-center placeholder-gray-600 border rounded focus:shadow-outline"
+            type="text"
+            placeholder="Status Balance"
+            id="forms-labelLeftInputCode"
+          />
+        </div>
+        <div class="text-gray-700 flex items-center col-start-3">
+          <div class="mb-1 w-1/5 text-xs">
+            <label>Balance</label>
+          </div>
+          <div class="w-4/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs placeholder-gray-600 border rounded focus:shadow-outline"
+              type="text"
+              placeholder="Balance"
+              id="forms-labelLeftInputCode"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-200 p-3">
+        <div class="text-gray-700 flex items-center mx-auto w-1/3">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>Tanggal</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>Bukti</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>No. Perkiraan</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>Keterangan Transaksi</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>Debet</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="mb-1 w-2/5 text-xs">
+            <label>Kredit</label>
+          </div>
+          <span class="mr-3">:</span>
+          <div class="w-3/5 flex-grow">
+            <input
+              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </ModalBody>
     <ModalFooter class="text-right">
-      <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
+      <button type="button" class="btn btn-outline-secondary w-32 text-xs mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="daftarAnggotaForm" class="btn btn-primary w-32">Simpan</button>
+      <button type="submit" form="daftarAnggotaForm" class="btn btn-primary text-xs w-32">
+        Simpan
+      </button>
     </ModalFooter>
   </Modal>
+  <!-- <Modal backdrop="static" :show="modal_utama" size="modal-xl" @hidden="modal_utama = false">
+    <ModalHeader>
+      <h2 class="font-medium text-base mr-auto w-full">
+        <p class="mx-auto" v-if="isEdit">Edit Jurnal Akuntansi {{ id_user }}</p>
+        <p class="mx-auto" v-else>Tambah Jurnal Akuntansi</p>
+      </h2>
+    </ModalHeader>
+    <ModalBody>
+      <form
+        id="userForm"
+        class="grid grid-cols-2 gap-2 bg-green-200 rounded-lg dark:bg-transparent mb-3"
+      >
+        <div class="overflow-auto col-span-2 p-2">
+          <div class="intro-y box">
+            <div class="flex-grow overflow-auto">
+              <table
+                class="relative w-full text-xs text-left text-gray-500"
+                id="table_jurnal_transaksi"
+              >
+                <thead
+                  class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10"
+                >
+                  <tr>
+                    <th scope="col" class="p-2 border pl-3">
+                      <div class="flex items-center">
+                        <input
+                          id="checkbox-all-search"
+                          v-model="allSelected"
+                          @click="selectAll(false)"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-blue-200 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                        <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('idtrans')"
+                    >
+                      ID
+                      <SortAscIcon
+                        v-if="sort_by === 'idtrans' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'idtrans' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('TANGGAL')"
+                    >
+                      Tanggal
+                      <SortAscIcon
+                        v-if="sort_by === 'TANGGAL' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'TANGGAL' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('BUKTI')"
+                    >
+                      Bukti
+                      <SortAscIcon
+                        v-if="sort_by === 'BUKTI' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'BUKTI' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('NOPER')"
+                    >
+                      Noper
+                      <SortAscIcon
+                        v-if="sort_by === 'NOPER' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'NOPER' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('KETERANGAN')"
+                    >
+                      Keterangan
+                      <SortAscIcon
+                        v-if="sort_by === 'KETERANGAN' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'KETERANGAN' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th
+                      scope="col"
+                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+                      @click="sorting('JUMLAH')"
+                    >
+                      Jumlah
+                      <SortAscIcon
+                        v-if="sort_by === 'JUMLAH' && sort_mode"
+                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                      />
+                      <SortDescIcon
+                        v-if="sort_by === 'JUMLAH' && !sort_mode"
+                        class="inline ml-2 -mr-2 w-5 h-4"
+                      />
+                    </th>
+                    <th scope="col" class="text-center uppercase border">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="overflow-y-scroll" v-show="!isLoading">
+                  <tr
+                    v-for="(jurnal, index) in jurnalTransaksi.items"
+                    :key="index"
+                    :jurnal="jurnal"
+                  >
+                    <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
+                      <div class="flex items-center">
+                        <span
+                          class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
+                          >:::</span
+                        >
+                        <input
+                          :value="jurnal.idtrans"
+                          type="checkbox"
+                          v-model="userIds"
+                          @click="selectOne"
+                          class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    </td>
+                    <th
+                      @click="viewData(jurnal.NOPER)"
+                      scope="row"
+                      class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
+                    >
+                      {{ jurnal.idtrans }}
+                    </th>
+                    <td
+                      @click="viewData(jurnal.NOPER)"
+                      class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
+                    >
+                      {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
+                    </td>
+                    <td
+                      @click="viewData(jurnal.NOPER)"
+                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+                    >
+                      {{ jurnal.BUKTI }}
+                    </td>
+                    <td
+                      @click="viewData(jurnal.NOPER)"
+                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+                    >
+                      {{ jurnal.NOPER }}
+                    </td>
+                    <td
+                      @click="viewData(jurnal.NOPER)"
+                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                    >
+                      {{ jurnal.KETERANGAN }}
+                    </td>
+                    <td
+                      @click="viewData(jurnal.NOPER)"
+                      class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                    >
+                      {{ currencyFormatter.format(jurnal.JUMLAH) }}
+                    </td>
+                    <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
+                      <div class="flex justify-center">
+                        <a
+                          @click="editGet(jurnal.idtrans)"
+                          class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
+                          href="javascript:;"
+                        >
+                          <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
+                        </a>
+                        <a
+                          @click="deleteGet(jurnal)"
+                          class="flex items-center hover:text-red-800 text-danger"
+                          href="javascript:;"
+                        >
+                          <Trash2Icon class="w-3 h-3 mr-1" /> Hapus
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody v-show="isLoading">
+                  <div
+                    class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center"
+                  >
+                    <Loader2Icon
+                      class="motion-safe:animate-spin stroke-[5px] text-white h-12 w-12 mb-2"
+                    />
+                    <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
+                    <p class="w-1/3 text-center text-white">Sedang Memuat Data</p>
+                    <p class="w-1/3 text-center text-white">
+                      Ini mungkin memakan waktu beberapa saat, tolong jangan tutup halaman ini.
+                    </p>
+                  </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-start-2 mb-1 p-2 -mt-3">
+          <div class="md:flex md:items-center">
+            <div class="md:w-1/3">
+              <label class="block md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
+                Balance
+              </label>
+            </div>
+            <div class="md:w-2/3">
+              <input
+                class="w-full pl-3 text-left bg-white text-black rounded"
+                id="inline-full-name"
+                type="number"
+                placeholder="0"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="flex-1 mt-0">
+        <div class="grid grid-cols-12 gap-x-2 sm:gap-x-3">
+          <div class="hidden sm:block col-span-4 mb-5">
+            <div class="md:flex md:items-center">
+              <div class="text-gray-700 md:flex md:items-center">
+                <div class="mb-1 md:mb-0 md:w-1/3">
+                  <label >Tanggal</label>
+                </div>
+                <div class="md:w-2/3 md:flex-grow">
+                  <input
+                    class="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    type="text"
+                    placeholder="Regular input"
+                    id="forms-labelLeftInputCode"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sm:col-span-8 col-span-12 mb-5">
+            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4"
+              >No. Perkiraan
+            </label>
+            <div class="flex w-full">
+              <select class="w-full" required>
+                <option value="kosong" disabled>--&gt; Pilih No Perkiraan &lt;--</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-span-12 sm:col-span-6 mb-5">
+            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Debet</label>
+            <input
+              id="pos-form-1"
+              type="text"
+              class="w-full pl-3 text-left bg-white text-black rounded-md"
+              placeholder="Masukan Debet"
+              required
+            />
+          </div>
+          <div class="col-span-12 sm:col-span-6 mb-5">
+            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Kredit</label>
+            <input
+              id="pos-form-1"
+              type="text"
+              class="w-full pl-3 text-left bg-white text-black rounded-md"
+              placeholder="Masukan Kredit"
+              required
+            />
+          </div>
+          <div class="col-span-12 sm:col-span-6 sm:mb-0 mb-5">
+            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Bukti</label>
+            <input
+              id="pos-form-1"
+              type="text"
+              class="w-full pl-3 text-left bg-white text-black rounded-md"
+              placeholder="Masukan Bukti"
+              required
+            />
+          </div>
+          <div class="col-span-12 sm:col-span-6 mb-5 sm:-mb-5">
+            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Keterangan</label>
+            <textarea
+              id="pos-form-1"
+              type="text"
+              class="flex-1 h-20 w-full pl-3 text-left bg-white text-black rounded-md"
+              placeholder="Masukan Keterangan"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary w-20">Tambah</button>
+      </div>
+    </ModalBody>
+    <ModalFooter class="text-right">
+      <button type="button" @click="resetForm" class="btn btn-outline-secondary w-32 mr-1">
+        Cancel
+      </button>
+      <button type="submit" form="userForm" class="btn btn-primary w-32">Simpan</button>
+    </ModalFooter>
+  </Modal> -->
 
   <Modal backdrop="static" :show="modal_delete" @hidden="modal_delete = false">
     <ModalBody class="p-0">
@@ -764,12 +1388,16 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="px-5 pb-8 text-center">
-        <button type="button" @click="resetForm" class="btn btn-outline-secondary w-24 mr-1">
+        <button
+          type="button"
+          @click="resetForm"
+          class="btn btn-outline-secondary w-24 mr-1 text-xs"
+        >
           Batal
         </button>
         <button
           type="button"
-          class="btn btn-danger w-24"
+          class="btn btn-danger w-24 text-xs"
           @click="
             (e) => {
               e.preventDefault()
