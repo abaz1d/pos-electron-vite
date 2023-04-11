@@ -730,7 +730,7 @@ onBeforeMount(async () => {
     <ModalHeader>
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
-        ><span v-if="isView">Data </span> Anggota
+        ><span v-if="isView">Data </span> Jurnal
         <span v-if="isEdit || isView">{{ id_anggota }}</span>
       </h2>
 
@@ -744,169 +744,59 @@ onBeforeMount(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <div class="flex flex-col h-40 shadow-md rounded-lg -mt-4">
+      <div class="flex flex-col h-40 shadow-md rounded-t-lg -mt-4 border-x border-slate-300">
         <div class="flex-grow overflow-auto">
           <table class="relative w-full text-xs text-left text-gray-500" id="table_input_jurnal">
             <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
               <tr>
-                <th scope="col" class="p-2 border pl-3">
-                  <div class="flex items-center">
-                    <input
-                      id="checkbox-all-search"
-                      v-model="allSelected"
-                      @click="selectAll(false)"
-                      type="checkbox"
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-blue-200 rounded focus:ring-blue-500 focus:ring-2"
-                    />
-                    <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                  </div>
-                </th>
                 <th
                   scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('idtrans')"
-                >
-                  ID
-                  <SortAscIcon
-                    v-if="sort_by === 'idtrans' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'idtrans' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('TANGGAL')"
-                >
-                  Tanggal
-                  <SortAscIcon
-                    v-if="sort_by === 'TANGGAL' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'TANGGAL' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('BUKTI')"
-                >
-                  Bukti
-                  <SortAscIcon
-                    v-if="sort_by === 'BUKTI' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'BUKTI' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('NOPER')"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
                 >
                   Noper
-                  <SortAscIcon
-                    v-if="sort_by === 'NOPER' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'NOPER' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
                 </th>
                 <th
                   scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('KETERANGAN')"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
                 >
                   Keterangan
-                  <SortAscIcon
-                    v-if="sort_by === 'KETERANGAN' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'KETERANGAN' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
                 </th>
                 <th
                   scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                  @click="sorting('JUMLAH')"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
                 >
-                  Jumlah
-                  <SortAscIcon
-                    v-if="sort_by === 'JUMLAH' && sort_mode"
-                    class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                  />
-                  <SortDescIcon
-                    v-if="sort_by === 'JUMLAH' && !sort_mode"
-                    class="inline ml-2 -mr-2 w-5 h-4"
-                  />
+                  Debet
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Kredit
                 </th>
                 <th scope="col" class="text-center uppercase border">Actions</th>
               </tr>
             </thead>
             <tbody class="overflow-y-scroll" v-show="!isLoading">
               <tr v-for="(jurnal, index) in jurnalTransaksi.items" :key="index" :jurnal="jurnal">
-                <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
-                  <div class="flex items-center">
-                    <span
-                      class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
-                      >:::</span
-                    >
-                    <input
-                      :value="jurnal.idtrans"
-                      type="checkbox"
-                      v-model="userIds"
-                      @click="selectOne"
-                      class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2"
-                    />
-                  </div>
-                </td>
-                <th
-                  @click="viewData(jurnal.NOPER)"
-                  scope="row"
-                  class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
-                >
-                  {{ jurnal.idtrans }}
-                </th>
                 <td
-                  @click="viewData(jurnal.NOPER)"
-                  class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
-                >
-                  {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
-                </td>
-                <td
-                  @click="viewData(jurnal.NOPER)"
-                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
-                >
-                  {{ jurnal.BUKTI }}
-                </td>
-                <td
-                  @click="viewData(jurnal.NOPER)"
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
                 >
                   {{ jurnal.NOPER }}
                 </td>
                 <td
-                  @click="viewData(jurnal.NOPER)"
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
                 >
                   {{ jurnal.KETERANGAN }}
                 </td>
                 <td
-                  @click="viewData(jurnal.NOPER)"
-                  class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
                 >
-                  {{ currencyFormatter.format(jurnal.JUMLAH) }}
+                  {{ jurnal.DEBET }}
+                </td>
+                <td
+                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+                >
+                  {{ jurnal.KREDIT }}
                 </td>
                 <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
                   <div class="flex justify-center">
@@ -928,30 +818,16 @@ onBeforeMount(async () => {
                 </td>
               </tr>
             </tbody>
-            <tbody v-show="isLoading">
-              <div
-                class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center"
-              >
-                <Loader2Icon
-                  class="motion-safe:animate-spin stroke-[5px] text-white h-12 w-12 mb-2"
-                />
-                <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
-                <p class="w-1/3 text-center text-white">Sedang Memuat Data</p>
-                <p class="w-1/3 text-center text-white">
-                  Ini mungkin memakan waktu beberapa saat, tolong jangan tutup halaman ini.
-                </p>
-              </div>
-            </tbody>
           </table>
         </div>
       </div>
       <div class="grid grid-cols-3 p-3 bg-green-200">
         <div class="text-gray-700 flex items-center col">
           <input
-            class="w-full h-10 px-3 text-xs text-center placeholder-gray-600 border rounded focus:shadow-outline"
+            class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
             type="text"
             placeholder="Status Balance"
-            id="forms-labelLeftInputCode"
+            disable
           />
         </div>
         <div class="text-gray-700 flex items-center col-start-3">
@@ -960,15 +836,15 @@ onBeforeMount(async () => {
           </div>
           <div class="w-4/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs placeholder-gray-600 border rounded focus:shadow-outline"
-              type="text"
-              placeholder="Balance"
-              id="forms-labelLeftInputCode"
+              class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
+              type="number"
+              placeholder="0"
+              readonly
             />
           </div>
         </div>
       </div>
-      <div class="bg-slate-200 p-3">
+      <div class="bg-slate-200 p-3 rounded-b">
         <div class="text-gray-700 flex items-center mx-auto w-1/3">
           <div class="mb-1 w-2/5 text-xs">
             <label>Tanggal</label>
@@ -976,7 +852,7 @@ onBeforeMount(async () => {
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
               type="text"
             />
           </div>
@@ -988,7 +864,7 @@ onBeforeMount(async () => {
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
               type="text"
             />
           </div>
@@ -1000,7 +876,7 @@ onBeforeMount(async () => {
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
               type="text"
             />
           </div>
@@ -1011,10 +887,10 @@ onBeforeMount(async () => {
           </div>
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+            <textarea
+              class="w-full h-12 -mb-[3px] px-3 text-xs border rounded focus:shadow-outline"
               type="text"
-            />
+            ></textarea>
           </div>
         </div>
         <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
@@ -1024,7 +900,7 @@ onBeforeMount(async () => {
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
               type="text"
             />
           </div>
@@ -1036,11 +912,14 @@ onBeforeMount(async () => {
           <span class="mr-3">:</span>
           <div class="w-3/5 flex-grow">
             <input
-              class="w-full h-10 px-3 text-xs border rounded focus:shadow-outline"
+              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
               type="text"
             />
           </div>
         </div>
+        <button type="submit" class="btn items-center flex mx-auto btn-primary text-xs w-1/3 mt-3">
+          <PlusIcon class="w-4 h-4 mr-1" /> Tambah
+        </button>
       </div>
     </ModalBody>
     <ModalFooter class="text-right">
@@ -1308,7 +1187,7 @@ onBeforeMount(async () => {
                     class="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                     type="text"
                     placeholder="Regular input"
-                    id="forms-labelLeftInputCode"
+                   
                   />
                 </div>
               </div>
