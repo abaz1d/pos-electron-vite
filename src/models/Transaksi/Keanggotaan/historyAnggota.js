@@ -20,9 +20,9 @@ historyAnggota.fetchAnggota = async (
   }
 
   try {
-    let query = `SELECT COUNT(*) AS total FROM anggota`
+    let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht != '0000-00-00'`
     if (search_data !== '') {
-      query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+      query += ` AND ${search_type} LIKE '%${search_data}%'`
     }
     const [data] = await db.query(query)
     let total_page
@@ -31,9 +31,9 @@ historyAnggota.fetchAnggota = async (
     } else {
       total_page = parseInt(data[0].total / total_row_displayed) + 1
     }
-    query = `SELECT * FROM anggota`
+    query = `SELECT * FROM anggota WHERE tglbht != '0000-00-00'`
     if (search_data !== '') {
-      query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+      query += ` AND ${search_type} LIKE '%${search_data}%'`
     }
     query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
     const [rows] = await db.query(query)

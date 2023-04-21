@@ -39,6 +39,7 @@ export const useDaftarAnggotaStore = defineStore({
       }
     },
     async postItem(
+      iddata,
       imageFoto,
       imageTTD,
       imagePA,
@@ -64,7 +65,7 @@ export const useDaftarAnggotaStore = defineStore({
       resort
     ) {
       try {
-        const iddata = Date.now()
+        //const iddata = Date.now()
         this.rawItems.push({
           iddata,
           tanggal,
@@ -89,6 +90,7 @@ export const useDaftarAnggotaStore = defineStore({
         })
         //console.log(
         await request.postAnggota(
+          iddata,
           tanggal,
           no_anggota,
           no_ktp,

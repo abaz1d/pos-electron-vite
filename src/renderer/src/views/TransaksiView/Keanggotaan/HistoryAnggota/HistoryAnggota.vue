@@ -606,7 +606,7 @@ onMounted(async () => {
       <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
         <button
           class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:text-blue-700 hover:bg-gray-200 btn-light-bordered"
-          @click="addGet"
+          disabled
           id="delete-multiple-data"
           data-bs-toggle="tooltip"
           title="Tambah Data"
@@ -1265,7 +1265,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_anggota"
                 ref="foto_profile"
-                required
               />
 
               <label
@@ -1302,7 +1301,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_ttd"
                 ref="foto_ttd"
-                required
               />
               <label
                 for="foto"
@@ -1337,7 +1335,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_pa"
                 ref="foto_pa"
-                required
               />
               <label
                 for="foto"

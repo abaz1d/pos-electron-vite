@@ -23,6 +23,17 @@ const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 const KETERANGAN = ref('')
+const Perkiraan_list = ref('')
+
+const idtrans = ref('')
+const status_balance = ref('')
+const balance = ref(0)
+const tanggal = ref(moment(Date.now()).format('YYYY-MM-DD'))
+const bukti = ref('')
+const noper = ref('noper')
+const Keterangan = ref('')
+const debet = ref(0)
+const kredit = ref(0)
 
 const addGet = () => {
   isAdd.value = true
@@ -43,8 +54,13 @@ const deleteGet = (e) => {
   }
 }
 const editGet = async (e) => {
-  // const jurnal = await daftarAnggota.getItem(e)
+  const jurnal = await jurnalTransaksi.getItem(e)
+  for (let i = 0; i < jurnal.length; i++) {
+    balance.value = balance.value + jurnal[i].JUMLAH
+  }
+  status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
   isEdit.value = true
+  modal_utama.value = true
 }
 const simpan_data = async (e) => {}
 const viewData = async (e) => {
@@ -78,6 +94,15 @@ const resetForm = () => {
   isAdd.value = false
   isEdit.value = false
   isView.value = false
+  idtrans.value = ''
+  status_balance.value = ''
+  balance.value = 0
+  tanggal.value = moment(Date.now()).format('YYYY-MM-DD')
+  bukti.value = ''
+  noper.value = 'noper'
+  Keterangan.value = ''
+  debet.value = 0
+  kredit.value = 0
 }
 const sorting = async (e) => {
   isLoading.value = true
@@ -316,7 +341,8 @@ onBeforeMount(async () => {
       page_number.value,
       row_per_page.value
     )
-    total_pages.value = data
+    Perkiraan_list.value = data.perkiraan
+    total_pages.value = data.total_pages
     configureClass()
     isLoading.value = false
   } catch (error) {
@@ -633,38 +659,32 @@ onBeforeMount(async () => {
               </div>
             </td>
             <th
-              @click="viewData(jurnal.NOPER)"
               scope="row"
               class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
             >
               {{ jurnal.idtrans }}
             </th>
             <td
-              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
             >
               {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.BUKTI }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.NOPER }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ jurnal.KETERANGAN }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ currencyFormatter.format(jurnal.JUMLAH) }}
@@ -672,7 +692,7 @@ onBeforeMount(async () => {
             <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(jurnal.idtrans)"
+                  @click="editGet(jurnal.BUKTI)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
@@ -731,7 +751,7 @@ onBeforeMount(async () => {
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
         ><span v-if="isView">Data </span> Jurnal
-        <span v-if="isEdit || isView">{{ id_anggota }}</span>
+        <span v-if="isEdit || isView">{{ idtrans }}</span>
       </h2>
 
       <a
@@ -777,7 +797,7 @@ onBeforeMount(async () => {
               </tr>
             </thead>
             <tbody class="overflow-y-scroll" v-show="!isLoading">
-              <tr v-for="(jurnal, index) in jurnalTransaksi.items" :key="index" :jurnal="jurnal">
+              <tr v-for="(jurnal, index) in jurnalTransaksi.jurnals" :key="index" :jurnal="jurnal">
                 <td
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
                 >
@@ -791,12 +811,12 @@ onBeforeMount(async () => {
                 <td
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
                 >
-                  {{ jurnal.DEBET }}
+                  {{ jurnal.JUMLAH > 0 ? jurnal.JUMLAH : '' }}
                 </td>
                 <td
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
                 >
-                  {{ jurnal.KREDIT }}
+                  {{ jurnal.JUMLAH < 0 ? jurnal.JUMLAH : '' }}
                 </td>
                 <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
                   <div class="flex justify-center">
@@ -821,112 +841,143 @@ onBeforeMount(async () => {
           </table>
         </div>
       </div>
-      <div class="grid grid-cols-3 p-3 bg-green-200">
-        <div class="text-gray-700 flex items-center col">
-          <input
-            class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
-            type="text"
-            placeholder="Status Balance"
-            disable
-          />
-        </div>
-        <div class="text-gray-700 flex items-center col-start-3">
-          <div class="mb-1 w-1/5 text-xs">
-            <label>Balance</label>
+      <form action="">
+        <div class="grid grid-cols-3 p-3 bg-green-200">
+          <div class="text-gray-700 flex items-center col">
+            <div class="mb-1 w-1/5 text-xs">
+              <label>Status Balance</label>
+            </div>
+            <div class="w-4/5 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
+                type="text"
+                placeholder="Status Balance"
+                v-model="status_balance"
+                readonly
+              />
+            </div>
           </div>
-          <div class="w-4/5 flex-grow">
-            <input
-              class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
-              type="number"
-              placeholder="0"
-              readonly
-            />
-          </div>
-        </div>
-      </div>
-      <div class="bg-slate-200 p-3 rounded-b">
-        <div class="text-gray-700 flex items-center mx-auto w-1/3">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>Tanggal</label>
-          </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            />
+          <div class="text-gray-700 flex items-center col-start-3">
+            <div class="mb-1 w-1/5 text-xs">
+              <label>Balance</label>
+            </div>
+            <div class="w-4/5 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
+                type="number"
+                placeholder="0"
+                v-model="balance"
+                readonly
+              />
+            </div>
           </div>
         </div>
-        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>Bukti</label>
+        <div class="bg-slate-200 p-3 rounded-b">
+          <div class="text-gray-700 flex items-center mx-auto w-1/3">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Tanggal</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="date"
+                v-model="tanggal"
+                readonly
+                required
+              />
+            </div>
           </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            />
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Bukti</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="text"
+                v-model="bukti"
+                required
+              />
+            </div>
           </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>No. Perkiraan</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <select
+                v-model="noper"
+                name="perkiraan_list"
+                id="perkiraan_list"
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                required
+              >
+                <option value="noper" selected disabled>Pilih Nomor Perkiraan</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Keterangan Transaksi</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <textarea
+                class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
+                type="text"
+                v-model="Keterangan"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Debet</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                v-model="debet"
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Kredit</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                v-model="kredit"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="btn items-center flex mx-auto btn-primary text-xs w-1/3 mt-3"
+          >
+            <PlusIcon class="w-4 h-4 mr-1" /> Tambah
+          </button>
         </div>
-        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>No. Perkiraan</label>
-          </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            />
-          </div>
-        </div>
-        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>Keterangan Transaksi</label>
-          </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <textarea
-              class="w-full h-12 -mb-[3px] px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            ></textarea>
-          </div>
-        </div>
-        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>Debet</label>
-          </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            />
-          </div>
-        </div>
-        <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-          <div class="mb-1 w-2/5 text-xs">
-            <label>Kredit</label>
-          </div>
-          <span class="mr-3">:</span>
-          <div class="w-3/5 flex-grow">
-            <input
-              class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-              type="text"
-            />
-          </div>
-        </div>
-        <button type="submit" class="btn items-center flex mx-auto btn-primary text-xs w-1/3 mt-3">
-          <PlusIcon class="w-4 h-4 mr-1" /> Tambah
-        </button>
-      </div>
+      </form>
     </ModalBody>
     <ModalFooter class="text-right">
       <button type="button" class="btn btn-outline-secondary w-32 text-xs mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="daftarAnggotaForm" class="btn btn-primary text-xs w-32">
+      <button type="submit" form="jurnalTransaksiForm" class="btn btn-primary text-xs w-32">
         Simpan
       </button>
     </ModalFooter>

@@ -39,7 +39,7 @@ daftarAnggota.fetchAnggota = async (
     const [rows] = await db.query(query)
     return new Response({ rows, total_page })
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }
@@ -48,11 +48,12 @@ daftarAnggota.getAnggota = async (iddata) => {
     const [rows] = await db.query(`SELECT * FROM anggota WHERE iddata = ${iddata};`)
     return new Response({ rows }, true)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }
 daftarAnggota.postAnggota = async (
+  iddata,
   tanggal,
   no_anggota,
   no_ktp,
@@ -77,43 +78,66 @@ daftarAnggota.postAnggota = async (
   imagePA
 ) => {
   try {
-    console.log(
-      'POST AGT',
+    // console.log(
+    //   'POST AGT',
 
-      tanggal,
-      no_anggota,
-      no_ktp,
-      no_kk,
-      nama_lengkap,
-      tempat_lahir,
-      tanggal_lahir,
-      jenis_kelamin,
-      agama,
-      alamat,
-      rt,
-      rw,
-      kelurahan,
-      kecamatan,
-      kota,
-      pendamping,
-      pekerjaan,
-      no_telepon,
-      resort,
-      imageFoto,
-      imageTTD,
-      imagePA.path
-    )
-    const [rows] = await db.query(
-      `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
-        [imageFoto],
-        { type: imageFoto.type }
-      )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
-        type: imagePA.type
-      })}', '${resort}')`
-    )
-    // const [rows] = await db.query(
-    //   `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', LOAD_FILE('${imageFoto.path}'), LOAD_FILE('${imageTTD.path}'), LOAD_FILE('${imagePA.path}'), '${resort}')`
+    //   tanggal,
+    //   no_anggota,
+    //   no_ktp,
+    //   no_kk,
+    //   nama_lengkap,
+    //   tempat_lahir,
+    //   tanggal_lahir,
+    //   jenis_kelamin,
+    //   agama,
+    //   alamat,
+    //   rt,
+    //   rw,
+    //   kelurahan,
+    //   kecamatan,
+    //   kota,
+    //   pendamping,
+    //   pekerjaan,
+    //   no_telepon,
+    //   resort,
+    //   imageFoto,
+    //   imageTTD,
+    //   imagePA
     // )
+    let rows
+    if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
+      if (iddata == '') {
+        ;[rows] = await db.query(
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
+            [imageFoto],
+            { type: imageFoto.type }
+          )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
+            type: imagePA.type
+          })}', '${resort}')`
+        )
+      } else {
+        ;[rows] = await db.query(
+          `UPDATE anggota SET cif = '${no_anggota}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', foto = ${new Blob(
+            [imageFoto],
+            { type: imageFoto.type }
+          )}', tandatangan = '${new Blob([imageTTD], {
+            type: imageTTD.type
+          })}', paraf = '${new Blob([imagePA], {
+            type: imagePA.type
+          })}', resort = '${resort}' WHERE iddata = '${iddata}'`
+        )
+      }
+    } else {
+      if (iddata == '') {
+        ;[rows] = await db.query(
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', '${resort}')`
+        )
+      } else {
+        ;[rows] = await db.query(
+          `UPDATE anggota SET cif = '${no_anggota}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', resort = '${resort}' WHERE iddata = '${iddata}'`
+        )
+      }
+    }
     return new Response(rows)
   } catch (error) {
     console.log('error models', error)
@@ -125,7 +149,7 @@ daftarAnggota.deleteAnggota = async (iddata) => {
     await db.query(`DELETE FROM anggota WHERE iddata = ${iddata};`)
     return new Response({ message: 'success delete anggota' }, true)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }

@@ -37,7 +37,8 @@ jurnalTransaksi.fetchJurnal = async (
     }
     query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
     const [rows] = await db.query(query)
-    return new Response({ rows, total_page })
+    const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`)
+    return new Response({ rows, total_page, perkiraan })
   } catch (error) {
     console.log(error)
     return new Response(error, false)
@@ -52,9 +53,9 @@ jurnalTransaksi.getperkiraanJurnal = async (noper) => {
     return new Response(error, false)
   }
 }
-jurnalTransaksi.getJurnal = async (idtrans) => {
+jurnalTransaksi.getJurnal = async (bukti) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM jurnal WHERE idtrans = ${idtrans};`)
+    const [rows] = await db.query(`SELECT * FROM jurnal WHERE BUKTI = ${bukti};`)
     return new Response({ rows }, true)
   } catch (error) {
     console.log(error)

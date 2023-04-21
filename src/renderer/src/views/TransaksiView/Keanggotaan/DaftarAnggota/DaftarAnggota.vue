@@ -88,8 +88,8 @@ const editGet = async (e) => {
       : 'P'
   agama.value = anggota.agama
   alamat.value = anggota.alamat
-  rt.value = anggota.rt
-  rw.value = anggota.rt
+  rt.value = anggota.rt.split('/') ? anggota.rt.split('/')[0] : anggota.rt
+  rw.value = anggota.rt.split('/') ? anggota.rt.split('/')[1] : anggota.rt
   kelurahan.value = anggota.desa
   kecamatan.value = anggota.kecamatan
   kota.value = anggota.kota
@@ -281,6 +281,7 @@ const simpan_data = async (e) => {
   try {
     await daftarAnggota.postItem(
       //console.log(
+      id_anggota.value,
       fileFoto.value,
       fileTTD.value,
       filePA.value,
@@ -1265,7 +1266,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_anggota"
                 ref="foto_profile"
-                required
               />
 
               <label
@@ -1302,7 +1302,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_ttd"
                 ref="foto_ttd"
-                required
               />
               <label
                 for="foto"
@@ -1337,7 +1336,6 @@ onMounted(async () => {
                 class="text-[10px] w-full cursor-pointer"
                 id="foto_pa"
                 ref="foto_pa"
-                required
               />
               <label
                 for="foto"
