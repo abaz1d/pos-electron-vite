@@ -797,7 +797,8 @@ onBeforeMount(async () => {
               </tr>
             </thead>
             <tbody class="overflow-y-scroll" v-show="!isLoading">
-              <tr v-for="(jurnal, index) in jurnalTransaksi.jurnals" :key="index" :jurnal="jurnal">
+              <TableDetail v-for="(jurnal, index) in jurnalTransaksi.jurnals" :key="index" :jurnal="jurnal" />
+              <tr >
                 <td
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
                 >
