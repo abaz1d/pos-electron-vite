@@ -150,14 +150,6 @@ const previousPage = async () => {
     // isLoading.value = true
     if (page_no > 1) {
       page_number.value = page_no - 1
-      // await jurnalTransaksi.readItem(
-      //   search_type.value,
-      //   search_data.value,
-      //   sort_by.value,
-      //   sort_mode.value,
-      //   page_no - 1,
-      //   row_per_page.value
-      // )
     }
     //  configureClass()
     // isLoading.value = false
@@ -797,8 +789,12 @@ onBeforeMount(async () => {
               </tr>
             </thead>
             <tbody class="overflow-y-scroll" v-show="!isLoading">
-              <TableDetail v-for="(jurnal, index) in jurnalTransaksi.jurnals" :key="index" :jurnal="jurnal" />
-              <tr >
+              <TableDetail
+                v-for="(jurnal, index) in jurnalTransaksi.jurnals"
+                :key="index"
+                :jurnal="jurnal"
+              />
+              <tr>
                 <td
                   class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
                 >
