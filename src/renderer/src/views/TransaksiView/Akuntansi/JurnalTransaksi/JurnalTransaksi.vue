@@ -151,8 +151,6 @@ const previousPage = async () => {
     if (page_no > 1) {
       page_number.value = page_no - 1
     }
-    //  configureClass()
-    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page sebelumnya' + error)
