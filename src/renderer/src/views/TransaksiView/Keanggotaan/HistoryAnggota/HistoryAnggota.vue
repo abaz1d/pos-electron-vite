@@ -327,7 +327,7 @@ const deleteAnggota = async () => {
   resetForm()
 }
 const resetForm = () => {
-  if (isEdit.value == false && isView.value == false) {
+  if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
     search_data.value = ''
     search_type.value = 'iddata'
     sort_by.value = 'iddata'

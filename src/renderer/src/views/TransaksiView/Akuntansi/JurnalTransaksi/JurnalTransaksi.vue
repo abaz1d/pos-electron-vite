@@ -5,6 +5,7 @@ import { currencyFormatter } from '@renderer/utils/helper'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import moment from 'moment'
 import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
+import TableDetail from './TabelDetail.vue'
 
 const jurnalTransaksi = useJurnalTransaksiStore()
 const isLoading = ref(false)
@@ -76,7 +77,7 @@ const viewData = async (e) => {
   }
 }
 const resetForm = () => {
-  if (isEdit.value == false && isView.value == false) {
+  if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
     search_data.value = ''
     search_type.value = 'nama'
     sort_by.value = 'idtrans'
@@ -103,6 +104,7 @@ const resetForm = () => {
   Keterangan.value = ''
   debet.value = 0
   kredit.value = 0
+  jurnalTransaksi.detailJurnal = []
 }
 const sorting = async (e) => {
   isLoading.value = true
@@ -792,46 +794,6 @@ onBeforeMount(async () => {
                 :key="index"
                 :jurnal="jurnal"
               />
-              <tr>
-                <td
-                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
-                >
-                  {{ jurnal.NOPER }}
-                </td>
-                <td
-                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-                >
-                  {{ jurnal.KETERANGAN }}
-                </td>
-                <td
-                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-                >
-                  {{ jurnal.JUMLAH > 0 ? jurnal.JUMLAH : '' }}
-                </td>
-                <td
-                  class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-                >
-                  {{ jurnal.JUMLAH < 0 ? jurnal.JUMLAH : '' }}
-                </td>
-                <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
-                  <div class="flex justify-center">
-                    <a
-                      @click="editGet(jurnal.idtrans)"
-                      class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
-                      href="javascript:;"
-                    >
-                      <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
-                    </a>
-                    <a
-                      @click="deleteGet(jurnal)"
-                      class="flex items-center hover:text-red-800 text-danger"
-                      href="javascript:;"
-                    >
-                      <Trash2Icon class="w-3 h-3 mr-1" /> Hapus
-                    </a>
-                  </div>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
