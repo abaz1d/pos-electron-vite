@@ -12,6 +12,13 @@ const emit = defineEmits(['updateData'])
 const updateItem = (e) => {
   emit('updateData', e)
 }
+const deleteItem = (e) => {
+  modal_delete.value = false
+
+  setTimeout(() => {
+    jurnalTransaksi.removeItem(e)
+  }, 100)
+}
 </script>
 <template>
   <tr>
@@ -70,7 +77,7 @@ const updateItem = (e) => {
         <button
           type="button"
           class="border bg-danger text-white p-2 rounded-md border-danger w-24"
-          @click=";(modal_delete = false), jurnalTransaksi.removeItem(props.jurnal.idtrans)"
+          @click="deleteItem(props.jurnal.idtrans)"
         >
           Yes
         </button>

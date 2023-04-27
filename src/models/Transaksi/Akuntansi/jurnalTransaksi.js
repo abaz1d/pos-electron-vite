@@ -40,7 +40,7 @@ jurnalTransaksi.fetchJurnal = async (
     const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`)
     return new Response({ rows, total_page, perkiraan })
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }
@@ -49,7 +49,7 @@ jurnalTransaksi.getperkiraanJurnal = async (noper) => {
     const [rows] = await db.query(`SELECT nama FROM perkiraan WHERE noper = ${noper};`)
     return new Response(rows, true)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }
@@ -58,67 +58,29 @@ jurnalTransaksi.getJurnal = async (bukti) => {
     const [rows] = await db.query(`SELECT * FROM jurnal WHERE BUKTI = ${bukti};`)
     return new Response({ rows }, true)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }
-jurnalTransaksi.postJurnal = async (
-  tanggal,
-  no_jurnal,
-  no_ktp,
-  no_kk,
-  nama_lengkap,
-  tempat_lahir,
-  tanggal_lahir,
-  jenis_kelamin,
-  agama,
-  alamat,
-  rt,
-  rw,
-  kelurahan,
-  kecamatan,
-  kota,
-  pendamping,
-  pekerjaan,
-  no_telepon,
-  resort,
-  imageFoto,
-  imageTTD,
-  imagePA
-) => {
+jurnalTransaksi.createJurnal = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
   try {
-    console.log(
-      'POST AGT',
-
-      tanggal,
-      no_jurnal,
-      no_ktp,
-      no_kk,
-      nama_lengkap,
-      tempat_lahir,
-      tanggal_lahir,
-      jenis_kelamin,
-      agama,
-      alamat,
-      rt,
-      rw,
-      kelurahan,
-      kecamatan,
-      kota,
-      pendamping,
-      pekerjaan,
-      no_telepon,
-      resort,
-      imageFoto,
-      imageTTD,
-      imagePA.path
-    )
     const [rows] = await db.query(
-      `INSERT INTO jurnal(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_jurnal}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', LOAD_FILE('${imageFoto.path}'), LOAD_FILE('${imageTTD.path}'), LOAD_FILE('${imagePA.path}'), '${resort}')`
+      `INSERT INTO jurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}')`
     )
     return new Response(rows)
   } catch (error) {
-    console.log('error models', error)
+    console.error('error models', error)
+    return new Response(error, false)
+  }
+}
+jurnalTransaksi.updateJurnal = async (idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
+  try {
+    const [rows] = await db.query(
+      `UPDATE jurnal SET TANGGAL = '${TANGGAL}', BUKTI = '${BUKTI}', NOPER = '${NOPER}', KETERANGAN = '${KETERANGAN}', JUMLAH = '${JUMLAH}' WHERE idtrans = '${idtrans}'`
+    )
+    return new Response(rows)
+  } catch (error) {
+    console.error('error models', error)
     return new Response(error, false)
   }
 }
@@ -127,7 +89,7 @@ jurnalTransaksi.deleteJurnal = async (idtrans) => {
     await db.query(`DELETE FROM jurnal WHERE idtrans = ${idtrans};`)
     return new Response({ message: 'success delete jurnal' }, true)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return new Response(error, false)
   }
 }

@@ -53,8 +53,26 @@ export const useJurnalTransaksiStore = defineStore({
     },
     async postItem(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, isEdit) {
       try {
+        let id = Date.now()
+        let data
         if (!isEdit && idtrans == '') {
           this.detailJurnal.push({ idtrans: Date.now(), TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH })
+          data = await request.createJurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
+          if (data.success) {
+            this.detailJurnal = this.detailJurnal.map((item) => {
+              if (item.idtrans === id) {
+                return {
+                  idtrans: data.data.insertId,
+                  TANGGAL: item.TANGGAL,
+                  BUKTI: item.BUKTI,
+                  NOPER: item.NOPER,
+                  KETERANGAN: item.KETERANGAN,
+                  JUMLAH: item.JUMLAH
+                }
+              }
+              return item
+            })
+          }
         } else {
           this.detailJurnal = this.detailJurnal.map((item) => {
             if (item.idtrans === idtrans) {
@@ -62,8 +80,13 @@ export const useJurnalTransaksiStore = defineStore({
             }
             return item
           })
+          data = await request.updateJurnal(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
         }
-        return true
+        if (data.success) {
+          return true
+        } else {
+          return false
+        }
       } catch (error) {
         throw new Error(error)
       }
@@ -72,6 +95,7 @@ export const useJurnalTransaksiStore = defineStore({
       this.detailJurnal = this.detailJurnal.filter((item) => {
         return item.idtrans !== idtrans
       })
+      request.deleteJurnal(idtrans)
     }
   }
 })

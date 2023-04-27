@@ -43,15 +43,15 @@ const addGet = () => {
   modal_utama.value = true
 }
 const deleteGet = (e) => {
+  //alert('Untuk menghapus data harus melalui fitur Edit terlebih dahulu')
+  //  userIds.value = []
   const jurnal = e
   if (jurnal.idtrans) {
     userIds.value = []
     userIds.value.push(jurnal.idtrans)
-    console.log('delete get 1', userIds.value)
     modal_delete.value = true
   } else {
     if (userIds.value.length > 0) {
-      console.log('delete get 1+', userIds.value)
       modal_delete.value = true
     }
   }
@@ -69,7 +69,19 @@ const editGet = async (e) => {
     modal_utama.value = true
   }
 }
-const simpan_data = async (e) => {}
+const deleteJurnal = async () => {
+  if (userIds.value.length > 1) {
+    for (let idTrans = 0; idTrans < userIds.value.length; idTrans++) {
+      await jurnalTransaksi.removeItem(userIds.value[idTrans])
+    }
+  } else {
+    await jurnalTransaksi.removeItem(userIds.value[0])
+  }
+  resetForm()
+}
+const simpan_data = async (e) => {
+  resetForm()
+}
 const add_data = async (e) => {
   try {
     const data = await jurnalTransaksi.postItem(
@@ -303,11 +315,13 @@ watch(search_type, async (e) => {
   }
 })
 watch(noper, async (e) => {
-  Perkiraan_list.value.map((item) => {
-    if (item.noper == e) {
-      Keterangan.value = item.nama
-    }
-  })
+  if (Keterangan.value == '') {
+    Perkiraan_list.value.map((item) => {
+      if (item.noper == e) {
+        Keterangan.value = item.nama
+      }
+    })
+  }
 })
 
 const selectAll = (e) => {
@@ -959,13 +973,6 @@ onBeforeMount(async () => {
             </div>
           </div>
           <div class="flex w-1/3 mx-auto space-x-4">
-            <button
-              :disabled="debet - kredit == 0"
-              type="submit"
-              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
-            >
-              <PlusIcon class="w-4 h-4 mr-1" /> Tambah
-            </button>
             <a
               href="javascript:;"
               @click="miniReset"
@@ -973,6 +980,13 @@ onBeforeMount(async () => {
             >
               <XIcon class="w-4 h-4 mr-1" /> Reset
             </a>
+            <button
+              :disabled="debet - kredit == 0"
+              type="submit"
+              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
+            >
+              <PlusIcon class="w-4 h-4 mr-1" /> Tambah
+            </button>
           </div>
         </div>
       </form>
@@ -982,337 +996,16 @@ onBeforeMount(async () => {
         Cancel
       </button>
       <button
-        :disabled="status_balance == 'Tidak Balance' && balance != 0"
+        :disabled="
+          (status_balance == 'Tidak Balance' && balance != 0) || jurnalTransaksi.jurnals.length == 0
+        "
         class="btn btn-primary text-xs w-32"
+        @click="simpan_data"
       >
         Simpan
       </button>
     </ModalFooter>
   </Modal>
-  <!-- <Modal backdrop="static" :show="modal_utama" size="modal-xl" @hidden="modal_utama = false">
-    <ModalHeader>
-      <h2 class="font-medium text-base mr-auto w-full">
-        <p class="mx-auto" v-if="isEdit">Edit Jurnal Akuntansi {{ id_user }}</p>
-        <p class="mx-auto" v-else>Tambah Jurnal Akuntansi</p>
-      </h2>
-    </ModalHeader>
-    <ModalBody>
-      <form
-        id="userForm"
-        class="grid grid-cols-2 gap-2 bg-green-200 rounded-lg dark:bg-transparent mb-3"
-      >
-        <div class="overflow-auto col-span-2 p-2">
-          <div class="intro-y box">
-            <div class="flex-grow overflow-auto">
-              <table
-                class="relative w-full text-xs text-left text-gray-500"
-                id="table_jurnal_transaksi"
-              >
-                <thead
-                  class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10"
-                >
-                  <tr>
-                    <th scope="col" class="p-2 border pl-3">
-                      <div class="flex items-center">
-                        <input
-                          id="checkbox-all-search"
-                          v-model="allSelected"
-                          @click="selectAll(false)"
-                          type="checkbox"
-                          class="w-4 h-4 text-blue-600 bg-gray-100 border-blue-200 rounded focus:ring-blue-500 focus:ring-2"
-                        />
-                        <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                      </div>
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('idtrans')"
-                    >
-                      ID
-                      <SortAscIcon
-                        v-if="sort_by === 'idtrans' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'idtrans' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('TANGGAL')"
-                    >
-                      Tanggal
-                      <SortAscIcon
-                        v-if="sort_by === 'TANGGAL' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'TANGGAL' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('BUKTI')"
-                    >
-                      Bukti
-                      <SortAscIcon
-                        v-if="sort_by === 'BUKTI' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'BUKTI' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('NOPER')"
-                    >
-                      Noper
-                      <SortAscIcon
-                        v-if="sort_by === 'NOPER' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'NOPER' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('KETERANGAN')"
-                    >
-                      Keterangan
-                      <SortAscIcon
-                        v-if="sort_by === 'KETERANGAN' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'KETERANGAN' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-                      @click="sorting('JUMLAH')"
-                    >
-                      Jumlah
-                      <SortAscIcon
-                        v-if="sort_by === 'JUMLAH' && sort_mode"
-                        class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-                      />
-                      <SortDescIcon
-                        v-if="sort_by === 'JUMLAH' && !sort_mode"
-                        class="inline ml-2 -mr-2 w-5 h-4"
-                      />
-                    </th>
-                    <th scope="col" class="text-center uppercase border">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="overflow-y-scroll" v-show="!isLoading">
-                  <tr
-                    v-for="(jurnal, index) in jurnalTransaksi.items"
-                    :key="index"
-                    :jurnal="jurnal"
-                  >
-                    <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
-                      <div class="flex items-center">
-                        <span
-                          class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
-                          >:::</span
-                        >
-                        <input
-                          :value="jurnal.idtrans"
-                          type="checkbox"
-                          v-model="userIds"
-                          @click="selectOne"
-                          class="data-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-blue-500 focus:ring-2"
-                        />
-                      </div>
-                    </td>
-                    <th
-                      @click="viewData(jurnal.NOPER)"
-                      scope="row"
-                      class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
-                    >
-                      {{ jurnal.idtrans }}
-                    </th>
-                    <td
-                      @click="viewData(jurnal.NOPER)"
-                      class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
-                    >
-                      {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
-                    </td>
-                    <td
-                      @click="viewData(jurnal.NOPER)"
-                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
-                    >
-                      {{ jurnal.BUKTI }}
-                    </td>
-                    <td
-                      @click="viewData(jurnal.NOPER)"
-                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
-                    >
-                      {{ jurnal.NOPER }}
-                    </td>
-                    <td
-                      @click="viewData(jurnal.NOPER)"
-                      class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-                    >
-                      {{ jurnal.KETERANGAN }}
-                    </td>
-                    <td
-                      @click="viewData(jurnal.NOPER)"
-                      class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-                    >
-                      {{ currencyFormatter.format(jurnal.JUMLAH) }}
-                    </td>
-                    <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
-                      <div class="flex justify-center">
-                        <a
-                          @click="editGet(jurnal.idtrans)"
-                          class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
-                          href="javascript:;"
-                        >
-                          <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
-                        </a>
-                        <a
-                          @click="deleteGet(jurnal)"
-                          class="flex items-center hover:text-red-800 text-danger"
-                          href="javascript:;"
-                        >
-                          <Trash2Icon class="w-3 h-3 mr-1" /> Hapus
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-                <tbody v-show="isLoading">
-                  <div
-                    class="fixed intleft-2 right-0 top-0 bottom-0 w-full h-[100vh] z-50 overflow-hidden bg-gray-500 opacity-75 flex flex-col items-center justify-center"
-                  >
-                    <Loader2Icon
-                      class="motion-safe:animate-spin stroke-[5px] text-white h-12 w-12 mb-2"
-                    />
-                    <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
-                    <p class="w-1/3 text-center text-white">Sedang Memuat Data</p>
-                    <p class="w-1/3 text-center text-white">
-                      Ini mungkin memakan waktu beberapa saat, tolong jangan tutup halaman ini.
-                    </p>
-                  </div>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-start-2 mb-1 p-2 -mt-3">
-          <div class="md:flex md:items-center">
-            <div class="md:w-1/3">
-              <label class="block md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
-                Balance
-              </label>
-            </div>
-            <div class="md:w-2/3">
-              <input
-                class="w-full pl-3 text-left bg-white text-black rounded"
-                id="inline-full-name"
-                type="number"
-                placeholder="0"
-                readonly
-              />
-            </div>
-          </div>
-        </div>
-      </form>
-      <div class="flex-1 mt-0">
-        <div class="grid grid-cols-12 gap-x-2 sm:gap-x-3">
-          <div class="hidden sm:block col-span-4 mb-5">
-            <div class="md:flex md:items-center">
-              <div class="text-gray-700 md:flex md:items-center">
-                <div class="mb-1 md:mb-0 md:w-1/3">
-                  <label >Tanggal</label>
-                </div>
-                <div class="md:w-2/3 md:flex-grow">
-                  <input
-                    class="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-                    type="text"
-                    placeholder="Regular input"
-                   
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="sm:col-span-8 col-span-12 mb-5">
-            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4"
-              >No. Perkiraan
-            </label>
-            <div class="flex w-full">
-              <select class="w-full" required>
-                <option value="kosong" disabled>--&gt; Pilih No Perkiraan &lt;--</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-span-12 sm:col-span-6 mb-5">
-            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Debet</label>
-            <input
-              id="pos-form-1"
-              type="text"
-              class="w-full pl-3 text-left bg-white text-black rounded-md"
-              placeholder="Masukan Debet"
-              required
-            />
-          </div>
-          <div class="col-span-12 sm:col-span-6 mb-5">
-            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Kredit</label>
-            <input
-              id="pos-form-1"
-              type="text"
-              class="w-full pl-3 text-left bg-white text-black rounded-md"
-              placeholder="Masukan Kredit"
-              required
-            />
-          </div>
-          <div class="col-span-12 sm:col-span-6 sm:mb-0 mb-5">
-            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Bukti</label>
-            <input
-              id="pos-form-1"
-              type="text"
-              class="w-full pl-3 text-left bg-white text-black rounded-md"
-              placeholder="Masukan Bukti"
-              required
-            />
-          </div>
-          <div class="col-span-12 sm:col-span-6 mb-5 sm:-mb-5">
-            <label for="pos-form-1" class="block md:text-right mb-1 md:mb-0 pr-4">Keterangan</label>
-            <textarea
-              id="pos-form-1"
-              type="text"
-              class="flex-1 h-20 w-full pl-3 text-left bg-white text-black rounded-md"
-              placeholder="Masukan Keterangan"
-              required
-            ></textarea>
-          </div>
-        </div>
-        <button type="button" class="btn btn-primary w-20">Tambah</button>
-      </div>
-    </ModalBody>
-    <ModalFooter class="text-right">
-      <button type="button" @click="resetForm" class="btn btn-outline-secondary w-32 mr-1">
-        Cancel
-      </button>
-      <button type="submit" form="userForm" class="btn btn-primary w-32">Simpan</button>
-    </ModalFooter>
-  </Modal> -->
-
   <Modal backdrop="static" :show="modal_delete" @hidden="modal_delete = false">
     <ModalBody class="p-0">
       <div class="p-5 text-center">
@@ -1338,7 +1031,7 @@ onBeforeMount(async () => {
           @click="
             (e) => {
               e.preventDefault()
-              deleteAnggota()
+              deleteJurnal()
             }
           "
         >
