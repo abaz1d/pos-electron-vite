@@ -3,6 +3,7 @@ import HomeView from '@renderer/views/HomeView.vue'
 import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
 import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota/HistoryAnggota.vue'
 import JurnalTransaksi from '@renderer/views/TransaksiView/Akuntansi/JurnalTransaksi/JurnalTransaksi.vue'
+import PerkiraanAkuntansi from '@renderer/views/TransaksiView/Akuntansi/PerkiraanAkuntansi/PerkiraanAkuntansi.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/jurnal-transaksi',
     name: 'jurnal-transaksi',
     component: JurnalTransaksi
+  },
+  {
+    path: '/daftar-perkiraan-akuntansi',
+    name: 'daftar-perkiraan-akuntansi',
+    component: PerkiraanAkuntansi
   },
   {
     path: '/tentang-aplikasi',
