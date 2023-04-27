@@ -51,92 +51,27 @@ export const useJurnalTransaksiStore = defineStore({
         throw new Error(error)
       }
     },
-    async postItem(
-      imageFoto,
-      imageTTD,
-      imagePA,
-
-      tanggal,
-      no_anggota,
-      no_ktp,
-      no_kk,
-      nama_lengkap,
-      tempat_lahir,
-      tanggal_lahir,
-      jenis_kelamin,
-      agama,
-      alamat,
-      rt,
-      rw,
-      kelurahan,
-      kecamatan,
-      kota,
-      pendamping,
-      pekerjaan,
-      no_telepon,
-      resort
-    ) {
+    async postItem(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, isEdit) {
       try {
-        const iddata = Date.now()
-        this.rawItems.push({
-          iddata,
-          tanggal,
-          no_anggota,
-          no_ktp,
-          no_kk,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          jenis_kelamin,
-          agama,
-          alamat,
-          rt,
-          rw,
-          kelurahan,
-          kecamatan,
-          kota,
-          pendamping,
-          pekerjaan,
-          no_telepon,
-          resort
-        })
-        //console.log(
-        await request.postJurnal(
-          tanggal,
-          no_anggota,
-          no_ktp,
-          no_kk,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          jenis_kelamin,
-          agama,
-          alamat,
-          rt,
-          rw,
-          kelurahan,
-          kecamatan,
-          kota,
-          pendamping,
-          pekerjaan,
-          no_telepon,
-          resort,
-
-          imageFoto,
-          imageTTD,
-          imagePA
-        )
+        if (!isEdit && idtrans == '') {
+          this.detailJurnal.push({ idtrans: Date.now(), TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH })
+        } else {
+          this.detailJurnal = this.detailJurnal.map((item) => {
+            if (item.idtrans === idtrans) {
+              return { idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH }
+            }
+            return item
+          })
+        }
+        return true
       } catch (error) {
         throw new Error(error)
       }
     },
-    async removeItem(iddata) {
-      try {
-        this.rawItems = this.rawItems.filter((item) => item.iddata !== iddata)
-        const data = await request.deleteJurnal(iddata)
-      } catch (error) {
-        throw new Error(error)
-      }
+    removeItem(idtrans) {
+      this.detailJurnal = this.detailJurnal.filter((item) => {
+        return item.idtrans !== idtrans
+      })
     }
   }
 })

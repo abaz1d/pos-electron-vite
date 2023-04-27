@@ -11,6 +11,7 @@ const jurnalTransaksi = useJurnalTransaksiStore()
 const isLoading = ref(false)
 const isAdd = ref(false)
 const isEdit = ref(false)
+const isEditItem = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
 const modal_delete = ref(false)
@@ -27,6 +28,7 @@ const KETERANGAN = ref('')
 const Perkiraan_list = ref('')
 
 const idtrans = ref('')
+const idItem = ref('')
 const status_balance = ref('')
 const balance = ref(0)
 const tanggal = ref(moment(Date.now()).format('YYYY-MM-DD'))
@@ -55,20 +57,54 @@ const deleteGet = (e) => {
   }
 }
 const editGet = async (e) => {
-  const jurnal = await jurnalTransaksi.getItem(e)
-  for (let i = 0; i < jurnal.length; i++) {
-    balance.value = balance.value + jurnal[i].JUMLAH
+  if (e !== '') {
+    idtrans.value = e
+    const jurnal = await jurnalTransaksi.getItem(e)
+    for (let i = 0; i < jurnal.length; i++) {
+      balance.value = balance.value + jurnal[i].JUMLAH
+    }
+    status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
+    bukti.value = jurnal[0].BUKTI
+    isEdit.value = true
+    modal_utama.value = true
   }
-  status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
-  isEdit.value = true
-  modal_utama.value = true
 }
 const simpan_data = async (e) => {}
+const add_data = async (e) => {
+  try {
+    const data = await jurnalTransaksi.postItem(
+      idItem.value,
+      tanggal.value,
+      bukti.value,
+      noper.value,
+      Keterangan.value,
+      debet.value - kredit.value,
+      isEditItem.value
+    )
+
+    if (data) {
+      miniReset()
+    }
+  } catch (error) {
+    alert('ERROR ADD ITEM: ' + error)
+  }
+}
+const update_data = async (e) => {
+  const jurnal = e
+  isEditItem.value = true
+  idItem.value = jurnal.idtrans
+  tanggal.value = moment(jurnal.TANGGAL).format('YYYY-MM-DD')
+  bukti.value = jurnal.BUKTI
+  noper.value = jurnal.NOPER
+  Keterangan.value = jurnal.KETERANGAN
+  debet.value = jurnal.JUMLAH > 0 ? jurnal.JUMLAH : 0
+  kredit.value = jurnal.JUMLAH < 0 ? Math.abs(jurnal.JUMLAH) : 0
+}
 const viewData = async (e) => {
   try {
     if (e != '') {
       const data = await jurnalTransaksi.readPerkiraan(e)
-      KETERANGAN.value = data
+      KETERANGAN.value = data == undefined ? '' : data
     } else {
       KETERANGAN.value = ''
     }
@@ -94,8 +130,10 @@ const resetForm = () => {
   modal_delete.value = false
   isAdd.value = false
   isEdit.value = false
+  isEditItem.value = false
   isView.value = false
   idtrans.value = ''
+  idItem.value = ''
   status_balance.value = ''
   balance.value = 0
   tanggal.value = moment(Date.now()).format('YYYY-MM-DD')
@@ -105,6 +143,26 @@ const resetForm = () => {
   debet.value = 0
   kredit.value = 0
   jurnalTransaksi.detailJurnal = []
+}
+const miniReset = () => {
+  tanggal.value = moment(Date.now()).format('YYYY-MM-DD')
+  if (jurnalTransaksi.jurnals.length > 0) {
+    bukti.value = jurnalTransaksi.jurnals[0].BUKTI
+  } else {
+    bukti.value = ''
+  }
+  noper.value = 'noper'
+  Keterangan.value = ''
+  debet.value = 0
+  kredit.value = 0
+  idItem.value = ''
+  isEditItem.value = false
+  balance.value = 0
+  const jurnal = jurnalTransaksi.jurnals
+  for (let i = 0; i < jurnal.length; i++) {
+    balance.value = balance.value + jurnal[i].JUMLAH
+  }
+  status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
 }
 const sorting = async (e) => {
   isLoading.value = true
@@ -129,22 +187,6 @@ const sorting = async (e) => {
 }
 const firstPage = async () => {
   page_number.value = 1
-  // try {
-  //   isLoading.value = true
-  //   await jurnalTransaksi.readItem(
-  //     search_type.value,
-  //     search_data.value,
-  //     sort_by.value,
-  //     sort_mode.value,
-  //     1,
-  //     row_per_page.value
-  //   )
-  //    configureClass()
-  //   isLoading.value = false
-  // } catch (error) {
-  //   isLoading.value = false
-  //   alert('Gagal page pertama' + error)
-  // }
 }
 const previousPage = async () => {
   try {
@@ -167,17 +209,7 @@ const nextPage = () => {
     let page_no = parseInt(page_number.value)
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
-      // jurnalTransaksi.readItem(
-      //   search_type.value,
-      //   search_data.value,
-      //   sort_by.value,
-      //   sort_mode.value,
-      //   page_no + 1,
-      //   row_per_page.value
-      // )
     }
-    //  configureClass()
-    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page selanjutnya' + error)
@@ -185,22 +217,6 @@ const nextPage = () => {
 }
 const lastPage = async () => {
   page_number.value = total_pages.value
-  // try {
-  //   isLoading.value = true
-  //   await jurnalTransaksi.readItem(
-  //     search_type.value,
-  //     search_data.value,
-  //     sort_by.value,
-  //     sort_mode.value,
-  //     total_pages.value,
-  //     row_per_page.value
-  //   )
-  //    configureClass()
-  //   isLoading.value = false
-  // } catch (error) {
-  //   isLoading.value = false
-  //   alert('Gagal page terkhir' + error)
-  // }
 }
 watch(page_number, async (e) => {
   try {
@@ -285,6 +301,13 @@ watch(search_type, async (e) => {
     isLoading.value = false
     alert('Gagal search page' + error)
   }
+})
+watch(noper, async (e) => {
+  Perkiraan_list.value.map((item) => {
+    if (item.noper == e) {
+      Keterangan.value = item.nama
+    }
+  })
 })
 
 const selectAll = (e) => {
@@ -651,32 +674,38 @@ onBeforeMount(async () => {
               </div>
             </td>
             <th
+              @click="viewData(jurnal.NOPER)"
               scope="row"
               class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
             >
               {{ jurnal.idtrans }}
             </th>
             <td
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
             >
               {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
             </td>
             <td
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.BUKTI }}
             </td>
             <td
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
               {{ jurnal.NOPER }}
             </td>
             <td
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ jurnal.KETERANGAN }}
             </td>
             <td
+              @click="viewData(jurnal.NOPER)"
               class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
               {{ currencyFormatter.format(jurnal.JUMLAH) }}
@@ -765,6 +794,12 @@ onBeforeMount(async () => {
                   scope="col"
                   class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
                 >
+                  Bukti
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
                   Noper
                 </th>
                 <th
@@ -793,12 +828,13 @@ onBeforeMount(async () => {
                 v-for="(jurnal, index) in jurnalTransaksi.jurnals"
                 :key="index"
                 :jurnal="jurnal"
+                @updateData="update_data"
               />
             </tbody>
           </table>
         </div>
       </div>
-      <form action="">
+      <form @submit.prevent="add_data" method="post">
         <div class="grid grid-cols-3 p-3 bg-green-200">
           <div class="text-gray-700 flex items-center col">
             <div class="mb-1 w-1/5 text-xs">
@@ -855,6 +891,7 @@ onBeforeMount(async () => {
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="bukti"
+                :readonly="jurnalTransaksi.jurnals.length > 0"
                 required
               />
             </div>
@@ -921,12 +958,22 @@ onBeforeMount(async () => {
               />
             </div>
           </div>
-          <button
-            type="submit"
-            class="btn items-center flex mx-auto btn-primary text-xs w-1/3 mt-3"
-          >
-            <PlusIcon class="w-4 h-4 mr-1" /> Tambah
-          </button>
+          <div class="flex w-1/3 mx-auto space-x-4">
+            <button
+              :disabled="debet - kredit == 0"
+              type="submit"
+              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
+            >
+              <PlusIcon class="w-4 h-4 mr-1" /> Tambah
+            </button>
+            <a
+              href="javascript:;"
+              @click="miniReset"
+              class="btn items-center flex mx-auto btn-danger text-xs w-3/12 mt-3"
+            >
+              <XIcon class="w-4 h-4 mr-1" /> Reset
+            </a>
+          </div>
         </div>
       </form>
     </ModalBody>
@@ -934,7 +981,10 @@ onBeforeMount(async () => {
       <button type="button" class="btn btn-outline-secondary w-32 text-xs mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="jurnalTransaksiForm" class="btn btn-primary text-xs w-32">
+      <button
+        :disabled="status_balance == 'Tidak Balance' && balance != 0"
+        class="btn btn-primary text-xs w-32"
+      >
         Simpan
       </button>
     </ModalFooter>
