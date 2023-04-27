@@ -3,12 +3,14 @@ import { electronAPI } from '@electron-toolkit/preload'
 import daftarAnggota from '../models/Transaksi/Keanggotaan/daftarAnggota'
 import historyAnggota from '../models/Transaksi/Keanggotaan/historyAnggota'
 import jurnalTransaksi from '../models/Transaksi/Akuntansi/jurnalTransaksi'
+import perkiraanAkuntansi from '../models/Transaksi/Akuntansi/perkiraanAkuntansi'
 
 // Custom APIs for renderer
 const api = {
   daftarAnggota,
   historyAnggota,
-  jurnalTransaksi
+  jurnalTransaksi,
+  perkiraanAkuntansi
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

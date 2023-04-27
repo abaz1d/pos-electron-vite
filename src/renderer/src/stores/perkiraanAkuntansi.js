@@ -14,7 +14,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
-        const data = await request.fetchJurnal(
+        const data = await request.fetchPerkiraan(
           search_type,
           search_data,
           sort_by,
@@ -24,7 +24,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
         )
         if (data.success) {
           this.rawItems = data.data.rows
-          return { total_pages: data.data.total_page, perkiraan: data.data.perkiraan }
+          return data.data.total_page
         }
       } catch (error) {
         throw new Error(error)
@@ -32,7 +32,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
     },
     async readPerkiraan(noper) {
       try {
-        const data = await request.getperkiraanJurnal(noper)
+        const data = await request.getperkiraanPerkiraan(noper)
         if (data.success && data.data.length > 0) {
           return data.data[0].nama
         }
@@ -42,7 +42,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
     },
     async getItem(bukti) {
       try {
-        const data = await request.getJurnal(bukti)
+        const data = await request.getPerkiraan(bukti)
         if (data.success) {
           this.detailPerkiraan = data.data.rows
           return data.data.rows
@@ -64,7 +64,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
             KETERANGAN,
             JUMLAH
           })
-          data = await request.createJurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
+          data = await request.createPerkiraan(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
           if (data.success) {
             this.detailPerkiraan = this.detailPerkiraan.map((item) => {
               if (item.idtrans === id) {
@@ -87,7 +87,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
             }
             return item
           })
-          data = await request.updateJurnal(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
+          data = await request.updatePerkiraan(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
         }
         if (data.success) {
           return true
@@ -102,7 +102,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
       this.detailPerkiraan = this.detailPerkiraan.filter((item) => {
         return item.idtrans !== idtrans
       })
-      request.deleteJurnal(idtrans)
+      request.deletePerkiraan(idtrans)
     }
   }
 })

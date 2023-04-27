@@ -5,15 +5,211 @@ import { onBeforeMount, ref, watch } from 'vue'
 import { usePerkiraanAkuntansiStore } from '@renderer/stores/perkiraanAkuntansi.js'
 
 const perkiraanAkuntansi = usePerkiraanAkuntansiStore()
-const sort_by = ref('idtrans')
+const isLoading = ref(false)
+const sort_by = ref('noper')
 const sort_mode = ref(true)
 const search_data = ref('')
-const search_type = ref('idtrans')
+const search_type = ref('noper')
 const page_number = ref(1)
 const total_pages = ref(0)
 const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
+
+const isAdd = ref(false)
+const isEdit = ref(false)
+const isView = ref(false)
+const modal_utama = ref(false)
+const modal_delete = ref(false)
+
+const addGet = () => {
+  isAdd.value = true
+  modal_utama.value = true
+}
+const deleteGet = (e) => {
+  //alert('Untuk menghapus data harus melalui fitur Edit terlebih dahulu')
+  //  userIds.value = []
+  const jurnal = e
+  if (jurnal.noper) {
+    userIds.value = []
+    userIds.value.push(jurnal.noper)
+    modal_delete.value = true
+  } else {
+    if (userIds.value.length > 0) {
+      modal_delete.value = true
+    }
+  }
+}
+const sorting = async (e) => {
+  isLoading.value = true
+  sort_by.value = e
+  sort_mode.value = !sort_mode.value
+
+  try {
+    await perkiraanAkuntansi.readItem(
+      search_type.value,
+      search_data.value,
+      e,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal sorting' + error)
+  }
+}
+const firstPage = async () => {
+  page_number.value = 1
+}
+const previousPage = async () => {
+  try {
+    let page_no = parseInt(page_number.value)
+    // isLoading.value = true
+    if (page_no > 1) {
+      page_number.value = page_no - 1
+    }
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page sebelumnya' + error)
+  }
+}
+const nextPage = () => {
+  try {
+    // isLoading.value = true
+    if (page_number.value == '') {
+      page_number.value = 1
+    }
+    let page_no = parseInt(page_number.value)
+    if (page_no < total_pages.value) {
+      page_number.value = page_no + 1
+    }
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal page selanjutnya' + error)
+  }
+}
+const lastPage = async () => {
+  page_number.value = total_pages.value
+}
+watch(page_number, async (e) => {
+  try {
+    isLoading.value = true
+    await perkiraanAkuntansi.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      e,
+      row_per_page.value
+    )
+
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti page' + error)
+    console.log(error)
+  }
+})
+watch(row_per_page, async (e) => {
+  try {
+    isLoading.value = true
+    if (page_number.value > total_pages.value || page_number.value == '') {
+      page_number.value = 1
+    }
+    const data = await perkiraanAkuntansi.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      e
+    )
+    total_pages.value = data
+    userIds.value = []
+    allSelected.value = false
+    if (page_number.value > total_pages.value) {
+      page_number.value = 1
+    }
+
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal ganti row/page' + error)
+  }
+})
+watch(search_data, async (e) => {
+  try {
+    isLoading.value = true
+    const data = await perkiraanAkuntansi.readItem(
+      search_type.value,
+      e,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal search page' + error)
+  }
+})
+watch(search_type, async (e) => {
+  try {
+    isLoading.value = true
+    const data = await perkiraanAkuntansi.readItem(
+      e,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('Gagal search page' + error)
+  }
+})
+
+const selectAll = (e) => {
+  userIds.value = []
+
+  if (!allSelected.value || e) {
+    for (let perkiraan = 0; perkiraan < perkiraanAkuntansi.items.length; perkiraan++) {
+      userIds.value.push(perkiraanAkuntansi.items[perkiraan].noper)
+    }
+  }
+}
+const selectOne = () => {
+  allSelected.value = false
+}
+
+onBeforeMount(async () => {
+  try {
+    isLoading.value = true
+    const data = await perkiraanAkuntansi.readItem(
+      search_type.value,
+      search_data.value,
+      sort_by.value,
+      sort_mode.value,
+      page_number.value,
+      row_per_page.value
+    )
+    total_pages.value = data
+    isLoading.value = false
+  } catch (error) {
+    isLoading.value = false
+    alert('ERROR MOUNTED:' + error)
+  }
+})
 </script>
 <template>
   <Breadcrumbs title="Transaksi" subTitle="Akuntansi" :icon="TRANSAKSI" />
@@ -183,10 +379,10 @@ const userIds = ref([])
               v-model="search_type"
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
-              <option value="idtrans">ID</option>
+              <option value="noper">ID</option>
               <option value="TANGGAL">Tanggal</option>
               <option value="BUKTI">Bukti</option>
-              <option value="NOPER">Noper</option>
+              <option value="noper">Noper</option>
               <option value="KETERANGAN">Keterangan</option>
               <option value="JUMLAH">Jumlah</option>
             </select>
@@ -195,9 +391,9 @@ const userIds = ref([])
       </div>
     </div>
   </div>
-  <div class="flex flex-col h-[75vh] min-[1537px]:h-[80vh] shadow-md rounded-lg">
+  <div class="flex flex-col h-[80vh] min-[1537px]:h-[80vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
-      <table class="relative w-full text-xs text-left text-gray-500" id="table_jurnal_transaksi">
+      <table class="relative w-full text-xs text-left text-gray-500 table-interval">
         <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
           <tr>
             <th scope="col" class="p-2 border pl-3">
@@ -215,90 +411,135 @@ const userIds = ref([])
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('idtrans')"
-            >
-              ID
-              <SortAscIcon
-                v-if="sort_by === 'idtrans' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'idtrans' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('TANGGAL')"
-            >
-              Tanggal
-              <SortAscIcon
-                v-if="sort_by === 'TANGGAL' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'TANGGAL' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('BUKTI')"
-            >
-              Bukti
-              <SortAscIcon
-                v-if="sort_by === 'BUKTI' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'BUKTI' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('NOPER')"
+              @click="sorting('noper')"
             >
               Noper
               <SortAscIcon
-                v-if="sort_by === 'NOPER' && sort_mode"
+                v-if="sort_by === 'noper' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'NOPER' && !sort_mode"
+                v-if="sort_by === 'noper' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('KETERANGAN')"
+              @click="sorting('nama')"
             >
-              Keterangan
+              Nama
               <SortAscIcon
-                v-if="sort_by === 'KETERANGAN' && sort_mode"
+                v-if="sort_by === 'nama' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'KETERANGAN' && !sort_mode"
+                v-if="sort_by === 'nama' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('JUMLAH')"
+              @click="sorting('kel')"
             >
-              Jumlah
+              Kel
               <SortAscIcon
-                v-if="sort_by === 'JUMLAH' && sort_mode"
+                v-if="sort_by === 'kel' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'JUMLAH' && !sort_mode"
+                v-if="sort_by === 'kel' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('bukubantu')"
+            >
+              BK Bantu
+              <SortAscIcon
+                v-if="sort_by === 'bukubantu' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'bukubantu' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('keldata')"
+            >
+              KEL DATA
+              <SortAscIcon
+                v-if="sort_by === 'keldata' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'keldata' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('level')"
+            >
+              Level
+              <SortAscIcon
+                v-if="sort_by === 'level' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'level' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('font')"
+            >
+              Font
+              <SortAscIcon
+                v-if="sort_by === 'font' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'font' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('detail')"
+            >
+              Detail
+              <SortAscIcon
+                v-if="sort_by === 'detail' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'detail' && !sort_mode"
+                class="inline ml-2 -mr-2 w-5 h-4"
+              />
+            </th>
+            <th
+              scope="col"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
+              @click="sorting('saldo')"
+            >
+              Saldo
+              <SortAscIcon
+                v-if="sort_by === 'saldo' && sort_mode"
+                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+              />
+              <SortDescIcon
+                v-if="sort_by === 'saldo' && !sort_mode"
                 class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
@@ -306,7 +547,11 @@ const userIds = ref([])
           </tr>
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
-          <tr v-for="(jurnal, index) in perkiraanAkuntansi.items" :key="index" :jurnal="jurnal">
+          <tr
+            v-for="(perkiraan, index) in perkiraanAkuntansi.items"
+            :key="index"
+            :perkiraan="perkiraan"
+          >
             <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
               <div class="flex items-center">
                 <span
@@ -314,7 +559,7 @@ const userIds = ref([])
                   >:::</span
                 >
                 <input
-                  :value="jurnal.idtrans"
+                  :value="perkiraan.noper"
                   type="checkbox"
                   v-model="userIds"
                   @click="selectOne"
@@ -323,53 +568,71 @@ const userIds = ref([])
               </div>
             </td>
             <th
-              @click="viewData(jurnal.NOPER)"
+              @click="viewData(perkiraan.noper)"
               scope="row"
               class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
             >
-              {{ jurnal.idtrans }}
+              {{ perkiraan.noper }}
             </th>
             <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2"
             >
-              {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
+              {{ perkiraan.nama }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+            >
+              {{ perkiraan.kel }}
+            </td>
+            <td
+              @click="viewData(perkiraan.noper)"
               class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
-              {{ jurnal.BUKTI }}
+              {{ perkiraan.bukubantu }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
-              {{ jurnal.NOPER }}
+              {{ perkiraan.keldata }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
             >
-              {{ jurnal.KETERANGAN }}
+              {{ perkiraan.level }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+            >
+              {{ perkiraan.font }}
+            </td>
+            <td
+              @click="viewData(perkiraan.noper)"
+              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+            >
+              {{ perkiraan.detail }}
+            </td>
+            <td
+              @click="viewData(perkiraan.noper)"
               class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
             >
-              {{ currencyFormatter.format(jurnal.JUMLAH) }}
+              {{ perkiraan.saldo }}
             </td>
             <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(jurnal.BUKTI)"
+                  @click="editGet(perkiraan.BUKTI)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
                   <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
                 </a>
                 <a
-                  @click="deleteGet(jurnal)"
+                  @click="deleteGet(perkiraan)"
                   class="flex items-center hover:text-red-800 text-danger"
                   href="javascript:;"
                 >
@@ -394,4 +657,263 @@ const userIds = ref([])
       </table>
     </div>
   </div>
+  <Modal backdrop="static" size="modal-xl" :show="modal_utama" @hidden="modal_utama = false">
+    <ModalHeader>
+      <h2 class="font-medium text-base mr-auto">
+        <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
+        ><span v-if="isView">Data </span> Jurnal
+        <span v-if="isEdit || isView">{{ noper }}</span>
+      </h2>
+
+      <a
+        data-tw-dismiss="modal"
+        @click="resetForm"
+        href="javascript:;"
+        class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
+      >
+        <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
+      </a>
+    </ModalHeader>
+    <ModalBody>
+      <!-- <div class="flex flex-col h-40 shadow-md rounded-t-lg -mt-4 border-x border-slate-300">
+        <div class="flex-grow overflow-auto">
+          <table class="relative w-full text-xs text-left text-gray-500" id="table_input_jurnal">
+            <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
+              <tr>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Bukti
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Noper
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Keterangan
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Debet
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Kredit
+                </th>
+                <th scope="col" class="text-center uppercase border">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll" v-show="!isLoading">
+              <TableDetail
+                v-for="(jurnal, index) in jurnalTransaksi.jurnals"
+                :key="index"
+                :jurnal="jurnal"
+                @updateData="update_data"
+              />
+            </tbody>
+          </table>
+        </div>
+      </div> -->
+      <form @submit.prevent="add_data" method="post">
+        <div class="grid grid-cols-3 p-3 bg-green-200">
+          <div class="text-gray-700 flex items-center col">
+            <div class="mb-1 w-1/5 text-xs">
+              <label>Status Balance</label>
+            </div>
+            <div class="w-4/5 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
+                type="text"
+                placeholder="Status Balance"
+                v-model="status_balance"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center col-start-3">
+            <div class="mb-1 w-1/5 text-xs">
+              <label>Balance</label>
+            </div>
+            <div class="w-4/5 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
+                type="number"
+                placeholder="0"
+                v-model="balance"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div class="bg-slate-200 p-3 rounded-b">
+          <div class="text-gray-700 flex items-center mx-auto w-1/3">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Tanggal</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="date"
+                v-model="tanggal"
+                readonly
+                required
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Bukti</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="text"
+                v-model="bukti"
+                :readonly="jurnalTransaksi.jurnals.length > 0"
+                required
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>No. Perkiraan</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <select
+                v-model="noper"
+                name="perkiraan_list"
+                id="perkiraan_list"
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                required
+              >
+                <option value="noper" selected disabled>Pilih Nomor Perkiraan</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Keterangan Transaksi</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <textarea
+                class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
+                type="text"
+                v-model="Keterangan"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Debet</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                v-model="debet"
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Kredit</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                v-model="kredit"
+              />
+            </div>
+          </div>
+          <div class="flex w-1/3 mx-auto space-x-4">
+            <a
+              href="javascript:;"
+              @click="miniReset"
+              class="btn items-center flex mx-auto btn-danger text-xs w-3/12 mt-3"
+            >
+              <XIcon class="w-4 h-4 mr-1" /> Reset
+            </a>
+            <button
+              :disabled="debet - kredit == 0"
+              type="submit"
+              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
+            >
+              <PlusIcon class="w-4 h-4 mr-1" /> Tambah
+            </button>
+          </div>
+        </div>
+      </form>
+    </ModalBody>
+    <ModalFooter class="text-right">
+      <button type="button" class="btn btn-outline-secondary w-32 text-xs mr-1" @click="resetForm">
+        Cancel
+      </button>
+      <button
+        :disabled="
+          (status_balance == 'Tidak Balance' && balance != 0) || jurnalTransaksi.jurnals.length == 0
+        "
+        class="btn btn-primary text-xs w-32"
+        @click="simpan_data"
+      >
+        Simpan
+      </button>
+    </ModalFooter>
+  </Modal>
+  <Modal backdrop="static" :show="modal_delete" @hidden="modal_delete = false">
+    <ModalBody class="p-0">
+      <div class="p-5 text-center">
+        <XCircleIcon class="w-16 h-16 text-danger mx-auto mt-3" />
+        <div class="text-3xl mt-5">Apakah Anda Yakin ?</div>
+        <div class="text-slate-500 mt-2">
+          Ingin menghapus <span v-if="userIds.length > 1">Beberapa</span> data dengan ID <br />
+          <b> {{ userIds.length > 1 ? userIds : userIds[0] }} </b> ? <br />Data yang telah dihapus
+          tidak bisa kembali.
+        </div>
+      </div>
+      <div class="px-5 pb-8 text-center">
+        <button
+          type="button"
+          @click="resetForm"
+          class="btn btn-outline-secondary w-24 mr-1 text-xs"
+        >
+          Batal
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger w-24 text-xs"
+          @click="
+            (e) => {
+              e.preventDefault()
+              deleteJurnal()
+            }
+          "
+        >
+          Hapus
+        </button>
+      </div>
+    </ModalBody>
+  </Modal>
 </template>
