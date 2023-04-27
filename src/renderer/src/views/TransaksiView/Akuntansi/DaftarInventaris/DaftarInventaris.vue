@@ -394,5 +394,4 @@ const userIds = ref([])
       </table>
     </div>
   </div>
-  ini daftar perkiraan akuntansi
 </template>
