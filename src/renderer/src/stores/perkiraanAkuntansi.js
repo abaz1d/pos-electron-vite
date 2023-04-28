@@ -32,9 +32,9 @@ export const usePerkiraanAkuntansiStore = defineStore({
     },
     async readPerkiraan(noper) {
       try {
-        const data = await request.getperkiraanPerkiraan(noper)
-        if (data.success && data.data.length > 0) {
-          return data.data[0].nama
+        const data = await request.getperkiraanAkuntansi(noper)
+        if (data.success) {
+          return data.data[0]
         }
       } catch (error) {
         throw new Error(error)
@@ -51,43 +51,36 @@ export const usePerkiraanAkuntansiStore = defineStore({
         throw new Error(error)
       }
     },
-    async postItem(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, isEdit) {
+    async postItem(noper, nama, level, bukubantu, kelompok, kelompok_data, detail, isEdit) {
       try {
-        let id = Date.now()
         let data
-        if (!isEdit && idtrans == '') {
-          this.detailPerkiraan.push({
-            idtrans: Date.now(),
-            TANGGAL,
-            BUKTI,
-            NOPER,
-            KETERANGAN,
-            JUMLAH
-          })
-          data = await request.createPerkiraan(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
-          if (data.success) {
-            this.detailPerkiraan = this.detailPerkiraan.map((item) => {
-              if (item.idtrans === id) {
-                return {
-                  idtrans: data.data.insertId,
-                  TANGGAL: item.TANGGAL,
-                  BUKTI: item.BUKTI,
-                  NOPER: item.NOPER,
-                  KETERANGAN: item.KETERANGAN,
-                  JUMLAH: item.JUMLAH
-                }
-              }
-              return item
-            })
-          }
+        if (!isEdit) {
+          this.detailPerkiraan.push(noper, nama, level, bukubantu, kelompok, kelompok_data, detail)
+          data = await request.createPerkiraan(
+            noper,
+            nama,
+            level,
+            bukubantu,
+            kelompok,
+            kelompok_data,
+            detail
+          )
         } else {
           this.detailPerkiraan = this.detailPerkiraan.map((item) => {
-            if (item.idtrans === idtrans) {
-              return { idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH }
+            if (item.noper === noper) {
+              return { noper, nama, level, bukubantu, kelompok, kelompok_data, detail }
             }
             return item
           })
-          data = await request.updatePerkiraan(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
+          data = await request.updatePerkiraan(
+            noper,
+            nama,
+            level,
+            bukubantu,
+            kelompok,
+            kelompok_data,
+            detail
+          )
         }
         if (data.success) {
           return true
@@ -98,11 +91,11 @@ export const usePerkiraanAkuntansiStore = defineStore({
         throw new Error(error)
       }
     },
-    removeItem(idtrans) {
+    removeItem(noper) {
       this.detailPerkiraan = this.detailPerkiraan.filter((item) => {
-        return item.idtrans !== idtrans
+        return item.noper !== noper
       })
-      request.deletePerkiraan(idtrans)
+      request.deletePerkiraan(noper)
     }
   }
 })

@@ -45,7 +45,7 @@ perkiraanAkuntansi.fetchPerkiraan = async (
 }
 perkiraanAkuntansi.getperkiraanAkuntansi = async (noper) => {
   try {
-    const [rows] = await db.query(`SELECT nama FROM perkiraan WHERE noper = ${noper};`)
+    const [rows] = await db.query(`SELECT * FROM perkiraan WHERE noper = ${noper};`)
     return new Response(rows, true)
   } catch (error) {
     console.error(error)
@@ -61,10 +61,18 @@ perkiraanAkuntansi.getPerkiraan = async (bukti) => {
     return new Response(error, false)
   }
 }
-perkiraanAkuntansi.createPerkiraan = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
+perkiraanAkuntansi.createPerkiraan = async (
+  noper,
+  nama,
+  level,
+  bukubantu,
+  kelompok,
+  kelompok_data,
+  detail
+) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO perkiraan(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}')`
+      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}')`
     )
     return new Response(rows)
   } catch (error) {
@@ -72,10 +80,18 @@ perkiraanAkuntansi.createPerkiraan = async (TANGGAL, BUKTI, NOPER, KETERANGAN, J
     return new Response(error, false)
   }
 }
-perkiraanAkuntansi.updatePerkiraan = async (idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
+perkiraanAkuntansi.updatePerkiraan = async (
+  noper,
+  nama,
+  level,
+  bukubantu,
+  kelompok,
+  kelompok_data,
+  detail
+) => {
   try {
     const [rows] = await db.query(
-      `UPDATE perkiraan SET TANGGAL = '${TANGGAL}', BUKTI = '${BUKTI}', NOPER = '${NOPER}', KETERANGAN = '${KETERANGAN}', JUMLAH = '${JUMLAH}' WHERE idtrans = '${idtrans}'`
+      `UPDATE perkiraan SET nama = '${nama}', level = '${level}', bukubantu = '${bukubantu}', kel = '${kelompok}', keldata = '${kelompok_data}', detail = '${detail}' WHERE noper = '${noper}'`
     )
     return new Response(rows)
   } catch (error) {
@@ -83,9 +99,9 @@ perkiraanAkuntansi.updatePerkiraan = async (idtrans, TANGGAL, BUKTI, NOPER, KETE
     return new Response(error, false)
   }
 }
-perkiraanAkuntansi.deletePerkiraan = async (idtrans) => {
+perkiraanAkuntansi.deletePerkiraan = async (noper) => {
   try {
-    await db.query(`DELETE FROM perkiraan WHERE idtrans = ${idtrans};`)
+    await db.query(`DELETE FROM perkiraan WHERE noper = ${noper};`)
     return new Response({ message: 'success delete perkiraan' }, true)
   } catch (error) {
     console.error(error)

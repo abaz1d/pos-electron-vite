@@ -3,7 +3,6 @@ import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
 import { onBeforeMount, ref, watch } from 'vue'
 import { usePerkiraanAkuntansiStore } from '@renderer/stores/perkiraanAkuntansi.js'
-import moment from 'moment'
 
 const perkiraanAkuntansi = usePerkiraanAkuntansiStore()
 const isLoading = ref(false)
@@ -24,8 +23,8 @@ const modal_utama = ref(false)
 const modal_delete = ref(false)
 
 const noper = ref('')
-const Keterangan = ref('')
-const level = ref(0)
+const nama = ref('')
+const level = ref('')
 const bukubantu = ref('')
 const kelompok = ref('')
 const kelompok_data = ref('')
@@ -34,6 +33,20 @@ const detail = ref('')
 const addGet = () => {
   isAdd.value = true
   modal_utama.value = true
+}
+const editGet = async (e) => {
+  if (e !== '') {
+    noper.value = e
+    const perkiraan = await perkiraanAkuntansi.readPerkiraan(e)
+    nama.value = perkiraan.nama
+    level.value = perkiraan.level
+    bukubantu.value = perkiraan.bukubantu
+    kelompok.value = perkiraan.kel
+    kelompok_data.value = perkiraan.keldata
+    detail.value = perkiraan.detail
+    isEdit.value = true
+    modal_utama.value = true
+  }
 }
 const deleteGet = (e) => {
   const perkiraan = e
@@ -47,6 +60,26 @@ const deleteGet = (e) => {
     }
   }
 }
+const add_data = async (e) => {
+  try {
+    const data = await perkiraanAkuntansi.postItem(
+      noper.value,
+      nama.value,
+      level.value,
+      bukubantu.value,
+      kelompok.value,
+      kelompok_data.value,
+      detail.value,
+      isEdit.value
+    )
+
+    if (data) {
+      resetForm()
+    }
+  } catch (error) {
+    alert('ERROR ADD ITEM: ' + error)
+  }
+}
 const deletePerkiraan = async () => {
   if (userIds.value.length > 1) {
     for (let noper = 0; noper < userIds.value.length; noper++) {
@@ -56,6 +89,33 @@ const deletePerkiraan = async () => {
     await perkiraanAkuntansi.removeItem(userIds.value[0])
   }
   resetForm()
+}
+const resetForm = () => {
+  if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
+    search_data.value = ''
+    search_type.value = 'nama'
+    sort_by.value = 'noper'
+    sort_mode.value = true
+    page_number.value = 1
+    total_pages.value = 0
+    row_per_page.value = 50
+  }
+  allSelected.value = false
+  userIds.value = []
+
+  modal_utama.value = false
+  modal_delete.value = false
+  isAdd.value = false
+  isEdit.value = false
+  isView.value = false
+
+  noper.value = ''
+  nama.value = ''
+  level.value = ''
+  bukubantu.value = ''
+  kelompok.value = ''
+  kelompok_data.value = ''
+  detail.value = ''
 }
 const sorting = async (e) => {
   isLoading.value = true
@@ -396,12 +456,8 @@ onBeforeMount(async () => {
               v-model="search_type"
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
-              <option value="noper">ID</option>
-              <option value="TANGGAL">Tanggal</option>
-              <option value="BUKTI">Bukti</option>
               <option value="noper">Noper</option>
-              <option value="KETERANGAN">Keterangan</option>
-              <option value="JUMLAH">Jumlah</option>
+              <option value="nama">Nama</option>
             </select>
           </div>
         </div>
@@ -642,7 +698,7 @@ onBeforeMount(async () => {
             <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(perkiraan.BUKTI)"
+                  @click="editGet(perkiraan.noper)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
@@ -710,14 +766,14 @@ onBeforeMount(async () => {
           </div>
           <div class="text-gray-700 flex items-center mx-auto w-1/2 mt-0">
             <div class="mb-1 w-2/5 text-xs">
-              <label>Keterangan</label>
+              <label>Nama</label>
             </div>
             <span class="mr-3">:</span>
             <div class="w-3/5 flex-grow">
               <textarea
                 class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
                 type="text"
-                v-model="Keterangan"
+                v-model="nama"
                 required
               ></textarea>
             </div>
@@ -730,7 +786,7 @@ onBeforeMount(async () => {
             <div class="w-3/5 flex-grow">
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="number"
+                type="text"
                 v-model="level"
                 required
               />
@@ -771,7 +827,7 @@ onBeforeMount(async () => {
             <div class="w-3/5 flex-grow">
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="number"
+                type="text"
                 v-model="kelompok_data"
               />
             </div>
@@ -784,7 +840,7 @@ onBeforeMount(async () => {
             <div class="w-3/5 flex-grow">
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="number"
+                type="text"
                 v-model="detail"
               />
             </div>
