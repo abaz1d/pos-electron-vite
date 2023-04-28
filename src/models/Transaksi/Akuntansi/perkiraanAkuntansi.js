@@ -72,7 +72,7 @@ perkiraanAkuntansi.createPerkiraan = async (
 ) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}')`
+      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail, font) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}', '')`
     )
     return new Response(rows)
   } catch (error) {

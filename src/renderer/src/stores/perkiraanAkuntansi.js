@@ -40,22 +40,11 @@ export const usePerkiraanAkuntansiStore = defineStore({
         throw new Error(error)
       }
     },
-    async getItem(bukti) {
-      try {
-        const data = await request.getPerkiraan(bukti)
-        if (data.success) {
-          this.detailPerkiraan = data.data.rows
-          return data.data.rows
-        }
-      } catch (error) {
-        throw new Error(error)
-      }
-    },
     async postItem(noper, nama, level, bukubantu, kelompok, kelompok_data, detail, isEdit) {
       try {
         let data
         if (!isEdit) {
-          this.detailPerkiraan.push(noper, nama, level, bukubantu, kelompok, kelompok_data, detail)
+          this.rawItems.push(noper, nama, level, bukubantu, kelompok, kelompok_data, detail)
           data = await request.createPerkiraan(
             noper,
             nama,
@@ -66,7 +55,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
             detail
           )
         } else {
-          this.detailPerkiraan = this.detailPerkiraan.map((item) => {
+          this.rawItems = this.rawItems.map((item) => {
             if (item.noper === noper) {
               return { noper, nama, level, bukubantu, kelompok, kelompok_data, detail }
             }
@@ -92,10 +81,22 @@ export const usePerkiraanAkuntansiStore = defineStore({
       }
     },
     removeItem(noper) {
-      this.detailPerkiraan = this.detailPerkiraan.filter((item) => {
+      this.rawItems = this.rawItems.filter((item) => {
         return item.noper !== noper
       })
       request.deletePerkiraan(noper)
+    },
+
+    async getItem(bukti) {
+      try {
+        const data = await request.getPerkiraan(bukti)
+        if (data.success) {
+          this.detailPerkiraan = data.data.rows
+          return data.data.rows
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
     }
   }
 })

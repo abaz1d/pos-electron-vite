@@ -60,7 +60,7 @@ const deleteGet = (e) => {
     }
   }
 }
-const add_data = async (e) => {
+const simpan_data = async (e) => {
   try {
     const data = await perkiraanAkuntansi.postItem(
       noper.value,
@@ -89,6 +89,9 @@ const deletePerkiraan = async () => {
     await perkiraanAkuntansi.removeItem(userIds.value[0])
   }
   resetForm()
+}
+const viewData = async (e) => {
+  isView.value = true
 }
 const resetForm = () => {
   if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
@@ -748,7 +751,7 @@ onBeforeMount(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <form @submit.prevent="add_data" method="post">
+      <form method="post">
         <div class="bg-slate-200 p-3 rounded-b">
           <div class="text-gray-700 flex items-center mx-auto w-1/2">
             <div class="mb-1 w-2/5 text-xs">
@@ -760,6 +763,7 @@ onBeforeMount(async () => {
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="noper"
+                maxlength="10"
                 required
               />
             </div>
@@ -774,6 +778,7 @@ onBeforeMount(async () => {
                 class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="nama"
+                maxlength="40"
                 required
               ></textarea>
             </div>
@@ -788,6 +793,7 @@ onBeforeMount(async () => {
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="level"
+                maxlength="1"
                 required
               />
             </div>
@@ -802,6 +808,7 @@ onBeforeMount(async () => {
                 class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="bukubantu"
+                maxlength="5"
                 required
               ></textarea>
             </div>
@@ -815,6 +822,7 @@ onBeforeMount(async () => {
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
+                maxlength="3"
                 v-model="kelompok"
               />
             </div>
@@ -828,6 +836,7 @@ onBeforeMount(async () => {
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
+                maxlength="3"
                 v-model="kelompok_data"
               />
             </div>
@@ -841,6 +850,7 @@ onBeforeMount(async () => {
               <input
                 class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
                 type="text"
+                maxlength="1"
                 v-model="detail"
               />
             </div>
@@ -887,6 +897,188 @@ onBeforeMount(async () => {
           Hapus
         </button>
       </div>
+    </ModalBody>
+  </Modal>
+
+  <Modal backdrop="static" size="modal-xl" :show="isView" @hidden="isView = false">
+    <ModalHeader>
+      <h2 class="font-medium text-base mr-auto">
+        <!-- <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
+        ><span v-if="isView">Data </span> Jurnal
+        <span v-if="isEdit || isView">{{ noper }}</span> -->
+        BUKU BESAR
+      </h2>
+
+      <a
+        data-tw-dismiss="modal"
+        @click="resetForm"
+        href="javascript:;"
+        class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
+      >
+        <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
+      </a>
+    </ModalHeader>
+    <ModalBody>
+      <div class="flex flex-col h-40 shadow-md rounded-t-lg -mt-4 border-x border-slate-300">
+        <div class="grid grid-cols-3 p-3 bg-green-200">
+          <div class="text-gray-700 flex items-center col">
+            <div class="mb-1 w-2/6 text-xs">
+              <label>No Perkiraan</label>
+            </div>
+            <div class="w-4/6 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
+                type="text"
+                placeholder="Nomor Perkiraan"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center col-start-3">
+            <div class="mb-1 w-2/6 text-xs">
+              <label>Nama</label>
+            </div>
+            <div class="w-4/6 flex-grow">
+              <input
+                class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
+                type="text"
+                placeholder="Nama Perkiraan"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div class="flex-grow overflow-auto">
+          <table class="relative w-full text-xs text-left text-gray-500" id="table_input_jurnal">
+            <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
+              <tr>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Tanggal
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Saldo Awal
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Mutasi Debet
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Mutasi Kredit
+                </th>
+                <th
+                  scope="col"
+                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
+                >
+                  Saldo Akhir
+                </th>
+                <th scope="col" class="text-center uppercase border">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="overflow-y-scroll" v-show="!isLoading">
+              <!-- <TableDetail
+                v-for="(jurnal, index) in jurnalTransaksi.jurnals"
+                :key="index"
+                :jurnal="jurnal"
+                @updateData="update_data"
+              /> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <form @submit.prevent="add_data" method="post">
+        <div class="bg-slate-200 p-3 rounded-b">
+          <div class="text-gray-700 flex items-center mx-auto w-1/3">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Tanggal</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="date"
+                readonly
+                required
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Saldo Awal</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                required
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Mutasi Debet</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <textarea
+                class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Mutasi Kredit</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+              />
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Saldo Akhir</label>
+            </div>
+            <span class="mr-3">:</span>
+            <div class="w-3/5 flex-grow">
+              <input
+                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                type="number"
+              />
+            </div>
+          </div>
+          <div class="flex w-1/3 mx-auto space-x-4">
+            <a
+              href="javascript:;"
+              @click="miniReset"
+              class="btn items-center flex mx-auto btn-danger text-xs w-3/12 mt-3"
+            >
+              <XIcon class="w-4 h-4 mr-1" /> Batal
+            </a>
+            <button
+              type="submit"
+              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
+            >
+              <SaveIcon class="w-4 h-4 mr-1" /> Simpan
+            </button>
+          </div>
+        </div>
+      </form>
     </ModalBody>
   </Modal>
 </template>
