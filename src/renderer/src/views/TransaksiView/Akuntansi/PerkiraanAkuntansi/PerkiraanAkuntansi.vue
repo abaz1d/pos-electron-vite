@@ -147,7 +147,6 @@ const firstPage = async () => {
 const previousPage = async () => {
   try {
     let page_no = parseInt(page_number.value)
-    // isLoading.value = true
     if (page_no > 1) {
       page_number.value = page_no - 1
     }
