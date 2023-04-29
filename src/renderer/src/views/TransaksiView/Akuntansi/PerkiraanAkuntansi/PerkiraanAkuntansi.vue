@@ -158,7 +158,6 @@ const previousPage = async () => {
 }
 const nextPage = () => {
   try {
-    // isLoading.value = true
     if (page_number.value == '') {
       page_number.value = 1
     }
