@@ -428,16 +428,7 @@ const previousPage = async () => {
     // isLoading.value = true
     if (page_no > 1) {
       page_number.value = page_no - 1
-      // await daftarAnggota.readItem(
-      //   search_type.value,
-      //   search_data.value,
-      //   sort_by.value,
-      //   sort_mode.value,
-      //   page_no - 1,
-      //   row_per_page.value
-      // )
     }
-    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page sebelumnya' + error)
