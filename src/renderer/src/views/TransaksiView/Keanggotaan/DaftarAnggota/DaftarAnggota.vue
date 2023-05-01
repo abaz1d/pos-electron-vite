@@ -444,14 +444,6 @@ const nextPage = () => {
     let page_no = parseInt(page_number.value)
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
-      // daftarAnggota.readItem(
-      //   search_type.value,
-      //   search_data.value,
-      //   sort_by.value,
-      //   sort_mode.value,
-      //   page_no + 1,
-      //   row_per_page.value
-      // )
     }
     // isLoading.value = false
   } catch (error) {
