@@ -54,7 +54,6 @@ daftarAnggota.fetchLaporan = async (kantor, tanggal, resort, limit) => {
     if (limit !== 0) {
       query += ` LIMIT ${limit}`
     }
-    console.log(query)
     const [rows] = await db.query(query)
     return new Response(rows)
   } catch (error) {

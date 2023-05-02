@@ -4,7 +4,7 @@ import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import LAPORAN from '@renderer/assets/menu/laporan.svg'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { list_resort, list_kantor } from '@renderer/utils/json'
 import { useRouter } from 'vue-router'
 import moment from 'moment'
@@ -66,7 +66,6 @@ const initTabulator = () => {
         width: 75,
         visible: true,
         print: true,
-        textSize: 10,
         download: true
       },
       {
@@ -75,7 +74,6 @@ const initTabulator = () => {
         width: 150,
         visible: true,
         print: true,
-        textSize: 10,
         download: true
       },
       {
@@ -86,7 +84,6 @@ const initTabulator = () => {
         hozAlign: 'center',
         visible: true,
         print: true,
-        textSize: 10,
         download: true,
         formatter(cell) {
           return `<div>
@@ -102,7 +99,6 @@ const initTabulator = () => {
         width: 100,
         vertAlign: 'middle',
         hozAlign: 'center',
-        textSize: 10,
         download: true
       },
       {
@@ -110,7 +106,6 @@ const initTabulator = () => {
         field: 'nama',
         visible: true,
         print: true,
-        textSize: 10,
         download: true
       },
       {
@@ -118,7 +113,6 @@ const initTabulator = () => {
         field: 'alamat',
         visible: true,
         print: true,
-        textSize: 10,
         download: true
       }
     ]
@@ -142,10 +136,9 @@ const printData = async (e) => {
     }, 1000)
     isLoading.value = false
     modal_utama.value = true
-    // console.log(window)
   } catch (error) {
     isLoading.value = false
-    alert('ERROR MOUNTED:' + error)
+    alert('ERROR PRINT:' + error)
   }
 }
 const exportCSV = async (e) => {
@@ -165,10 +158,9 @@ const exportCSV = async (e) => {
     }, 1000)
     isLoading.value = false
     modal_utama.value = true
-    // console.log(window)
   } catch (error) {
     isLoading.value = false
-    alert('ERROR MOUNTED:' + error)
+    alert('ERROR CSV:' + error)
   }
 }
 
@@ -189,6 +181,7 @@ onMounted(async () => {
     reInitOnResizeWindow()
   } catch (error) {
     console.error(error)
+    alert('ERROR MOUNTED:' + error)
     isLoading.value = false
   }
 })
@@ -258,7 +251,10 @@ onMounted(async () => {
                 <option value="300">300</option>
                 <option value="400">400</option>
                 <option value="500">500</option>
-                <option value="0">All</option>
+                <option value="1000">1.000</option>
+                <option value="5000">5.000</option>
+                <option value="10000">10.000</option>
+                <option value="0">Semua Data</option>
               </select>
             </div>
           </div>
