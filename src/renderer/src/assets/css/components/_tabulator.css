@@ -1,11 +1,11 @@
 .tabulator-print-fullscreen-hide:before {
   content: '';
-  @apply fixed bg-white top-0 left-0 w-full h-screen;
+  @apply fixed bg-white top-0 left-0 w-full h-screen text-xs;
 }
 .tabulator {
-  @apply overflow-hidden border-0 bg-transparent;
+  @apply overflow-hidden border-0 bg-transparent text-xs;
   .tabulator-header {
-    @apply font-medium text-current border-t border-b border-slate-200 bg-transparent;
+    @apply font-medium text-current border-t border-b border-slate-300 bg-transparent;
     .tabulator-headers {
       .tabulator-col {
         @apply bg-transparent border-r-0;
@@ -40,7 +40,7 @@
       @apply bg-slate-100;
     }
     .tabulator-cell {
-      @apply border-r-0 px-5 py-3;
+      @apply border-r-0 px-5 py-1;
       &.tabulator-row-handle {
         @apply px-0;
       }
@@ -144,7 +144,7 @@
 .dark {
   .tabulator {
     .tabulator-header {
-      @apply text-slate-300 border-darkmode-400;
+      @apply text-slate-300 border-darkmode-400 text-xs;
       .tabulator-headers .tabulator-col:hover {
         @apply bg-darkmode-300;
       }

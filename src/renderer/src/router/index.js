@@ -32,8 +32,8 @@ const routes = [
     component: PerkiraanAkuntansi
   },
   {
-    path: '/print-daftar-anggota',
-    name: 'print-daftar-anggota',
+    path: '/laporan-daftar-anggota',
+    name: 'laporan-daftar-anggota',
     component: PrintDaftarAnggota
   },
   {

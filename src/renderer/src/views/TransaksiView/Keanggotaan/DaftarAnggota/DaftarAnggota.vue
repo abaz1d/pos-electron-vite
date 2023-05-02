@@ -606,35 +606,35 @@ onMounted(async () => {
         >
           <Trash2Icon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
-        <button
-          class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export CSV"
-          onclick="exportData('csv')"
         >
           <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
           <span
             class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-success font-bold"
             >CSV</span
           >
-        </button>
-        <button
-          class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        </RouterLink>
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export PDF"
-          onclick="exportData('pdf')"
         >
           <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
           <span
             class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-danger font-bold"
             >PDF</span
           >
-        </button>
-        <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        </RouterLink>
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Print Table"
-          onclick="printData()"
         >
           <PrinterIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
-        </button>
+        </RouterLink>
         <button
           class="inline-block hover:text-success align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           @click="selectAll(true), (allSelected = true)"

@@ -601,7 +601,7 @@ defineExpose({ openMenu, closeMenu })
                     class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-0 transition duration-150 ease-in-out origin-top-left min-w-max"
                   >
                     <li class="px-2 hover:bg-slate-200 pb-1 rounded">
-                      <RouterLink to="/print-daftar-anggota">
+                      <RouterLink to="/laporan-daftar-anggota">
                         <a
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
                           href="javascript:void(0);"

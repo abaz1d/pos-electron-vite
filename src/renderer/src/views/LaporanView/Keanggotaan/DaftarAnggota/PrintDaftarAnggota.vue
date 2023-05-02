@@ -1,15 +1,19 @@
 <script setup>
 import LOGO from '@renderer/assets/icons.svg'
 import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
+import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
+import LAPORAN from '@renderer/assets/menu/laporan.svg'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
 import { onMounted, ref, watch } from 'vue'
 import { list_resort, list_kantor } from '@renderer/utils/json'
+import { useRouter } from 'vue-router'
 import moment from 'moment'
 
 const daftarAnggota = useDaftarAnggotaStore()
+const router = useRouter()
 const modal_utama = ref(true)
 const isLoading = ref(false)
-const limit = ref(0)
+const limit = ref(100)
 const kantor = ref('0001')
 const tanggal = ref(moment(Date.now()).format('YYYY-MM-DD'))
 const resort = ref('resort')
@@ -26,13 +30,13 @@ const initTabulator = () => {
       </div>
       <div class="w-9/12 border-black text-center align-middle">
         <span class="uppercase text-md font-bold -mb-1">koperasi simpan pinjam bina niaga</span>
-        <p class="text-[10px] mb-1 font-medium">
+        <p class="text-xs mb-1 font-medium">
           Jl. Diponegoro 134, Pati, Jawa Tengah - Indonesia
         </p>
-        <p class="text-[10px] mb-1 font-medium">
+        <p class="text-xs mb-1 font-medium">
           Telp. (6221) 225 66288, (+6221) 226 08887 Fax: (+6221) 225 66399
         </p>
-        <p class="text-[10px] mb-1 font-medium">
+        <p class="text-xs mb-1 font-medium">
           Website: hubud.dephub.go.id; e-mail: daao_dgca@dephub.go.id
         </p>
       </div>
@@ -42,10 +46,12 @@ const initTabulator = () => {
     </p>
     <div class="flex border-x border-black text-sm">
       <div class="w-6/12 border-b border-black p-1">Resort: all</div>
-      <div class="w-6/12 border-b border-l border-black p-1">Date of Inspection: Sekarang</div>
+      <div class="w-6/12 border-b border-l border-black p-1">Date of Inspection: ${moment(
+        tanggal.value
+      ).format('DD MMM YYYY')}</div>
     </div>`,
-    printFooter: `<h2 class='p-2 m-2 text-center mt-4'>${moment(Date.now()).format(
-      'DD MMM YYYY HH:SS'
+    printFooter: `<h2 class='p-2 m-2 text-center text-xs mt-4'>${moment(Date.now()).format(
+      'DD-MMM-YYYY HH:SS'
     )}<h2>`,
     printAsHtml: true,
     printStyled: true,
@@ -57,22 +63,30 @@ const initTabulator = () => {
       {
         title: 'ID',
         field: 'iddata',
+        width: 75,
         visible: true,
         print: true,
+        textSize: 10,
         download: true
       },
       {
         title: 'NO. ANGG',
         field: 'cif',
+        width: 150,
         visible: true,
         print: true,
+        textSize: 10,
         download: true
       },
       {
         title: 'TANGGAL',
         field: 'tanggal',
+        width: 150,
+        vertAlign: 'middle',
+        hozAlign: 'center',
         visible: true,
         print: true,
+        textSize: 10,
         download: true,
         formatter(cell) {
           return `<div>
@@ -85,6 +99,10 @@ const initTabulator = () => {
         field: 'resort',
         visible: true,
         print: true,
+        width: 100,
+        vertAlign: 'middle',
+        hozAlign: 'center',
+        textSize: 10,
         download: true
       },
       {
@@ -92,6 +110,7 @@ const initTabulator = () => {
         field: 'nama',
         visible: true,
         print: true,
+        textSize: 10,
         download: true
       },
       {
@@ -99,6 +118,7 @@ const initTabulator = () => {
         field: 'alamat',
         visible: true,
         print: true,
+        textSize: 10,
         download: true
       }
     ]
@@ -107,6 +127,7 @@ const initTabulator = () => {
 
 const printData = async (e) => {
   try {
+    modal_utama.value = false
     isLoading.value = true
     const data = await daftarAnggota.readLaporan(
       kantor.value,
@@ -120,6 +141,30 @@ const printData = async (e) => {
       tabulator.value.print()
     }, 1000)
     isLoading.value = false
+    modal_utama.value = true
+    // console.log(window)
+  } catch (error) {
+    isLoading.value = false
+    alert('ERROR MOUNTED:' + error)
+  }
+}
+const exportCSV = async (e) => {
+  try {
+    modal_utama.value = false
+    isLoading.value = true
+    const data = await daftarAnggota.readLaporan(
+      kantor.value,
+      tanggal.value,
+      resort.value,
+      limit.value
+    )
+    initTabulator()
+    reInitOnResizeWindow()
+    setTimeout(() => {
+      tabulator.value.download('csv', 'data.csv')
+    }, 1000)
+    isLoading.value = false
+    modal_utama.value = true
     // console.log(window)
   } catch (error) {
     isLoading.value = false
@@ -149,34 +194,35 @@ onMounted(async () => {
 })
 </script>
 <template>
+  <Breadcrumbs title="Laporan" subTitle="Keanggotaan" :icon="LAPORAN" />
   <div class="h-full w-full mx-auto">
-    <div class="border border-black flex">
+    <div class="border-t border-black flex w-full">
       <div class="w-3/12 border-black flex justify-center items-center py-1">
         <img :src="LOGO" alt="logo" class="m-auto h-16" />
       </div>
       <div class="w-9/12 border-black text-center align-middle">
         <span class="uppercase text-md font-bold -mb-1">koperasi simpan pinjam bina niaga</span>
-        <p class="text-[10px] mb-1 font-medium">
-          Jl. Diponegoro 134, Pati, Jawa Tengah - Indonesia
-        </p>
-        <p class="text-[10px] mb-1 font-medium">
+        <p class="text-xs mb-1 font-medium">Jl. Diponegoro 134, Pati, Jawa Tengah - Indonesia</p>
+        <p class="text-xs mb-1 font-medium">
           Telp. (6221) 225 66288, (+6221) 226 08887 Fax: (+6221) 225 66399
         </p>
-        <p class="text-[10px] mb-1 font-medium">
+        <p class="text-xs mb-1 font-medium">
           Website: hubud.dephub.go.id; e-mail: daao_dgca@dephub.go.id
         </p>
       </div>
     </div>
-    <p class="w-full text-sm font-bold text-center border-b border-x border-black p-1">
+    <p class="w-full text-sm font-bold text-center border-y border-black p-1">
       DAFTAR ANGGOTA KOPERASI
     </p>
-    <div class="flex border-x border-black text-sm">
-      <div class="w-6/12 border-b border-black p-1">Resort: all</div>
-      <div class="w-6/12 border-b border-l border-black p-1">Date of Inspection: Sekarang</div>
+    <div class="flex border-b border-black text-sm">
+      <div class="w-6/12 p-1">Resort: all</div>
+      <div class="w-6/12 border-l border-black p-1">
+        Date of Inspection: {{ moment(tanggal).format('DD MMM YYYY') }}
+      </div>
     </div>
   </div>
   <div class="overflow-x-auto scrollbar-hidden">
-    <div id="tabulator" ref="tableRef" class="table-report table-report--tabulator"></div>
+    <div id="tabulator" ref="tableRef" class=""></div>
   </div>
   <Modal backdrop="static" :show="modal_utama" @hidden="modal_utama = false">
     <ModalHeader>
@@ -184,7 +230,7 @@ onMounted(async () => {
 
       <a
         data-tw-dismiss="modal"
-        @click="resetForm"
+        @click="router.back()"
         href="javascript:;"
         class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
       >
@@ -274,10 +320,12 @@ onMounted(async () => {
       </form>
     </ModalBody>
     <ModalFooter class="text-center">
-      <button type="button" class="btn btn-outline-secondary w-32 mr-5" @click="resetForm">
-        Export
+      <button type="button" class="btn btn-outline-secondary w-32 mr-5 text-sm" @click="exportCSV">
+        <ExternalLinkIcon class="mr-1" />Export CSV
       </button>
-      <button @click="printData" class="btn btn-primary w-32">Print</button>
+      <button @click="printData" class="btn btn-primary w-32 text-sm space-x-3">
+        <PrinterIcon class="mr-1" />Print
+      </button>
     </ModalFooter>
   </Modal>
   <div
