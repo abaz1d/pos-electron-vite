@@ -43,6 +43,25 @@ daftarAnggota.fetchAnggota = async (
     return new Response(error, false)
   }
 }
+daftarAnggota.fetchLaporan = async (kantor, tanggal, resort, limit) => {
+  try {
+    let query
+    query = `SELECT * FROM anggota WHERE kantor = '${kantor}' AND tanggal <= '${tanggal}'`
+    if (resort !== 'resort') {
+      query += ` AND resort = '${resort}'`
+    }
+    query += ` ORDER BY iddata ASC`
+    if (limit !== 0) {
+      query += ` LIMIT ${limit}`
+    }
+    console.log(query)
+    const [rows] = await db.query(query)
+    return new Response(rows)
+  } catch (error) {
+    console.error(error)
+    return new Response(error, false)
+  }
+}
 daftarAnggota.getAnggota = async (iddata) => {
   try {
     const [rows] = await db.query(`SELECT * FROM anggota WHERE iddata = ${iddata};`)

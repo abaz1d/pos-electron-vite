@@ -28,6 +28,19 @@ export const useDaftarAnggotaStore = defineStore({
         throw new Error(error)
       }
     },
+    async readLaporan(kantor, tanggal, resort, limit) {
+      try {
+        console.log(kantor, tanggal, resort)
+        const data = await request.fetchLaporan(kantor, tanggal, resort, limit)
+        if (data.success) {
+          this.rawItems = data.data
+          // return data.data.total_page
+          console.log(this.rawItems)
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async getItem(iddata) {
       try {
         const data = await request.getAnggota(iddata)

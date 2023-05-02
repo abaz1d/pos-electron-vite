@@ -1,3 +1,8 @@
+const list_kantor = [
+  { nama: '0000 - KONSOLIDASI', value: '0000' },
+  { nama: '0001 - KANTOR PUSAT', value: '0001' },
+  { nama: '0002 - KANTOR CABANG', value: '0002' }
+]
 const list_jenis_kelamin = [
   { nama: 'Laki - Laki', value: 'L' },
   { nama: 'Perempuan', value: 'P' }
@@ -35,4 +40,4 @@ const list_resort = [
   { value: '121 ', nama: '121 - UTARI' },
   { value: '122 ', nama: '122 - JATAYU' }
 ]
-export { list_jenis_kelamin, list_agama, list_resort }
+export { list_jenis_kelamin, list_agama, list_resort, list_kantor }

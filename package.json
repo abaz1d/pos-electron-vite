@@ -26,6 +26,7 @@
     "moment": "^2.29.4",
     "mysql2": "^3.2.0",
     "pinia": "^2.0.33",
+    "tabulator-tables": "^5.4.4",
     "vite-plugin-commonjs-externals": "^0.1.1",
     "vue-router": "^4.1.6"
   },
