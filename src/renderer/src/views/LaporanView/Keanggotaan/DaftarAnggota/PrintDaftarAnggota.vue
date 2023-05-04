@@ -2,7 +2,7 @@
 import LOGO from '@renderer/assets/icons.svg'
 import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import LAPORAN from '@renderer/assets/menu/laporan.svg'
+import LAPORAN from '@renderer/assets/images/menu/laporan.svg'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
 import { onMounted, ref } from 'vue'
 import { list_resort, list_kantor } from '@renderer/utils/json'

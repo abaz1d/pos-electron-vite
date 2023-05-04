@@ -6,7 +6,7 @@ import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import PP from '@renderer/assets/images/pp-placeholder.svg'
 import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
 import { currencyFormatter } from '@renderer/utils/helper'
-import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
+import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
 const historyAnggota = useHistoryAnggotaStore()
 const isLoading = ref(false)

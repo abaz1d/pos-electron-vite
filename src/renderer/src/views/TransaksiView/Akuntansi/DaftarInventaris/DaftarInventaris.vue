@@ -1,6 +1,6 @@
 <script setup>
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
+import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 import { onBeforeMount, ref, watch } from 'vue'
 import { usePerkiraanAkuntansiStore } from '@renderer/stores/perkiraanAkuntansi.js'
 

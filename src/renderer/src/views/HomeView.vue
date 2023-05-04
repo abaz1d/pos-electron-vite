@@ -27,7 +27,7 @@ const closeMenu = (e) => {
           >Setting</span
         >
         <div
-          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/menu/setting.svg')] bg-[length:65px_65px] bg-no-repeat bg-center min-h-full hover:scale-125"
+          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/images/menu/setting.svg')] bg-[length:65px_65px] bg-no-repeat bg-center min-h-full hover:scale-125"
         ></div>
       </div>
       <div
@@ -40,7 +40,7 @@ const closeMenu = (e) => {
           >Transaksi</span
         >
         <div
-          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/menu/transaksi.svg')] bg-[length:85px_85px] bg-no-repeat bg-center min-h-full hover:scale-125"
+          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/images/menu/transaksi.svg')] bg-[length:85px_85px] bg-no-repeat bg-center min-h-full hover:scale-125"
         ></div>
       </div>
       <div
@@ -53,7 +53,7 @@ const closeMenu = (e) => {
           >Proses</span
         >
         <div
-          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/menu/proses.svg')] bg-[length:85px_85px] bg-no-repeat bg-center min-h-full hover:scale-125"
+          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/images/menu/proses.svg')] bg-[length:85px_85px] bg-no-repeat bg-center min-h-full hover:scale-125"
         ></div>
       </div>
       <div
@@ -66,7 +66,7 @@ const closeMenu = (e) => {
           >Utility</span
         >
         <div
-          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/menu/utility.svg')] bg-[length:65px_65px] bg-no-repeat bg-center min-h-full hover:scale-125"
+          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/images/menu/utility.svg')] bg-[length:65px_65px] bg-no-repeat bg-center min-h-full hover:scale-125"
         ></div>
       </div>
       <div
@@ -79,7 +79,7 @@ const closeMenu = (e) => {
           >Laporan</span
         >
         <div
-          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/menu/laporan.svg')] bg-[length:100px_100px] bg-no-repeat bg-center min-h-full hover:scale-125"
+          class="transition duration-700 ease-in-out -mt-6 bg-[url('@renderer/assets/images/menu/laporan.svg')] bg-[length:100px_100px] bg-no-repeat bg-center min-h-full hover:scale-125"
         ></div>
       </div>
     </div>

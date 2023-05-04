@@ -4,7 +4,7 @@ import { onBeforeMount, ref, watch } from 'vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import moment from 'moment'
-import TRANSAKSI from '@renderer/assets/menu/transaksi.svg'
+import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 import TableDetail from './TabelDetail.vue'
 
 const jurnalTransaksi = useJurnalTransaksiStore()
