@@ -25,44 +25,21 @@ const total_pages = ref(0)
 const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
-const id_anggota = ref('')
-const foto_profile = ref()
-const previewFoto = ref(null)
-const fileFoto = ref(null)
-const imageFoto = ref(null)
-const foto_ttd = ref()
-const previewTTD = ref(null)
-const fileTTD = ref(null)
-const imageTTD = ref(null)
-const foto_pa = ref()
-const previewPA = ref(null)
-const filePA = ref(null)
-const imagePA = ref(null)
-const TGLINP = ref(moment(Date.now()).format('DD-MM-YYYY'))
-const no_anggota = ref('')
-const no_ktp = ref('')
-const no_kk = ref('')
-const nama_lengkap = ref('')
-const tempat_lahir = ref('')
-const tanggal_lahir = ref('')
-const jenis_kelamin = ref('')
-const agama = ref('')
-const alamat = ref('')
-const rt = ref('')
-const rw = ref('')
-const kelurahan = ref('')
-const kecamatan = ref('')
-const kota = ref('')
-const pendamping = ref('')
-const pekerjaan = ref('')
-const no_telepon = ref('')
-const resort = ref('')
-const tanggal_bht = ref('')
-const simpanan_pokok = ref('')
-const simpanan_swk = ref('')
-const simpanan_wajib = ref('')
-const simpanan_lain = ref('')
-const total_simpanan = ref('')
+const kode_produk = ref('')
+const nama_produk = ref('')
+const kode_perhitungan = ref('')
+const pembulatan_angsuran = ref('')
+const jasa_perbulan = ref('')
+const periode_pembayaran = ref('')
+const administrasi = ref('')
+const provisi = ref('')
+const jurnal_pokok_pinjaman = ref('')
+const jurnal_jasa_pinjaman = ref('')
+const jurnal_denda_pinjaman = ref('')
+const jurnal_admin = ref('')
+const jurnal_provisi = ref('')
+const jurnal_akrual = ref('')
+const jurnal_ppap = ref('')
 
 const addGet = () => {
   isAdd.value = true
@@ -71,42 +48,21 @@ const addGet = () => {
 const editGet = async (e) => {
   const anggota = await produkPinjaman.getItem(e)
   isEdit.value = true
-  id_anggota.value = anggota.sandi
-  TGLINP.value = moment(anggota.TGLINP).format('DD-MM-YYYY')
-  no_anggota.value = anggota.keterangan
-  no_ktp.value = anggota.noktp
-  no_kk.value = anggota.nokK
-  nama_lengkap.value = anggota.nama
-  tempat_lahir.value = anggota.tempatlhr
-  tanggal_lahir.value = moment(anggota.tanggallhr).format('YYYY-MM-DD')
-  jenis_kelamin.value =
-    anggota.jeniskl == 'L'
-      ? 'L'
-      : anggota.jeniskl == 'LAKI-LAKI    '
-      ? 'L'
-      : anggota.jeniskl == 'PEREMPUAN'
-      ? 'P'
-      : 'P'
-  agama.value = anggota.agama
-  alamat.value = anggota.alamat
-  rt.value = anggota.rt.split('/') ? anggota.rt.split('/')[0] : anggota.rt
-  rw.value = anggota.rt.split('/') ? anggota.rt.split('/')[1] : anggota.rt
-  kelurahan.value = anggota.desa
-  kecamatan.value = anggota.kecamatan
-  kota.value = anggota.kota
-  pendamping.value = 'nama pendamping'
-  pekerjaan.value = anggota.pekerjaan
-  no_telepon.value = anggota.phone
-  resort.value = anggota.resort
-  tanggal_bht.value = moment(anggota.tanggalbht).format('YYYY-MM-DD')
-  simpanan_pokok.value = currencyFormatter.format(anggota.simpokok).replace('Rp', '').trim()
-  simpanan_swk.value = currencyFormatter.format(anggota.simsuka).replace('Rp', '').trim()
-  simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
-  simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
-  total_simpanan.value = currencyFormatter.format(anggota.simshu).replace('Rp', '').trim()
-
-  // previewFoto.value = URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' }))
-  // console.log('Image', URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' })))
+  kode_produk.value = anggota.sandi
+  nama_produk.value = anggota.keterangan
+  kode_perhitungan.value = anggota.kdhit
+  pembulatan_angsuran.value = anggota.pembulatan
+  jasa_perbulan.value = anggota.rate
+  periode_pembayaran.value = anggota.periode
+  administrasi.value = anggota.adm
+  provisi.value = anggota.prov
+  jurnal_pokok_pinjaman.value = anggota.jurnal_pokok == '' ? '-' : anggota.jurnal_pokok
+  jurnal_jasa_pinjaman.value = anggota.jurnal_jasa == '' ? '-' : anggota.jurnal_jasa
+  jurnal_denda_pinjaman.value = anggota.jurnal_denda == '' ? '-' : anggota.jurnal_denda
+  jurnal_admin.value = anggota.jurnal_adm == '' ? '-' : anggota.jurnal_adm
+  jurnal_provisi.value = anggota.jurnal_prov == '' ? '-' : anggota.jurnal_prov
+  jurnal_akrual.value = anggota.jurnal_yadit == '' ? '-' : anggota.jurnal_yadit
+  jurnal_ppap.value = anggota.jurnal_ppap == '' ? '-' : anggota.jurnal_ppap
   modal_utama.value = true
 }
 const deleteGet = (e) => {
@@ -179,61 +135,22 @@ const uint8ToBase64 = (arrayBuffer) => {
 const viewData = async (e) => {
   const anggota = await produkPinjaman.getItem(e)
   isView.value = true
-  id_anggota.value = anggota.sandi
-  TGLINP.value = moment(anggota.TGLINP).format('DD-MM-YYYY')
-  no_anggota.value = anggota.keterangan
-  no_ktp.value = anggota.noktp
-  no_kk.value = anggota.nokK
-  nama_lengkap.value = anggota.nama
-  tempat_lahir.value = anggota.tempatlhr
-  tanggal_lahir.value = moment(anggota.tanggallhr).format('YYYY-MM-DD')
-  jenis_kelamin.value =
-    anggota.jeniskl == 'L'
-      ? 'L'
-      : anggota.jeniskl == 'LAKI-LAKI    '
-      ? 'L'
-      : anggota.jeniskl == 'PEREMPUAN'
-      ? 'P'
-      : 'P'
-  agama.value = anggota.agama
-  alamat.value = anggota.alamat
-  rt.value = anggota.rt
-  rw.value = anggota.rt
-  kelurahan.value = anggota.desa
-  kecamatan.value = anggota.kecamatan
-  kota.value = anggota.kota
-  pendamping.value = 'nama pendamping'
-  pekerjaan.value = anggota.pekerjaan
-  no_telepon.value = anggota.phone
-  resort.value = anggota.resort
-  tanggal_bht.value = moment(anggota.tanggalbht).format('YYYY-MM-DD')
-  simpanan_pokok.value = currencyFormatter.format(anggota.simpokok).replace('Rp', '').trim()
-  simpanan_swk.value = currencyFormatter.format(anggota.simsuka).replace('Rp', '').trim()
-  simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
-  simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
-  total_simpanan.value = currencyFormatter.format(anggota.shu).replace('Rp', '').trim()
-  //previewFoto.value = anggota.foto.buffer
-  // var urlCreator = window.URL || window.webkitURL
-  // previewFoto.value = uint8ToBase64(anggota.foto.buffer)
-
-  console.log(
-    anggota.foto
-    // URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
-  )
+  kode_produk.value = anggota.sandi
+  nama_produk.value = anggota.keterangan
+  kode_perhitungan.value = anggota.kdhit
+  pembulatan_angsuran.value = anggota.pembulatan
+  jasa_perbulan.value = anggota.rate
+  periode_pembayaran.value = anggota.periode
+  administrasi.value = anggota.adm
+  provisi.value = anggota.prov
+  jurnal_pokok_pinjaman.value = anggota.jurnal_pokok
+  jurnal_jasa_pinjaman.value = anggota.jurnal_jasa
+  jurnal_denda_pinjaman.value = anggota.jurnal_denda
+  jurnal_admin.value = anggota.jurnal_adm
+  jurnal_provisi.value = anggota.jurnal_prov
+  jurnal_akrual.value = anggota.jurnal_yadit
+  jurnal_ppap.value = anggota.jurnal_ppap
   modal_utama.value = true
-}
-
-const getImgUrl = (gambar_varian) => {
-  if (gambar_varian) {
-    var images = gambar_varian.data.map((b) => String.fromCharCode(b)).join('')
-    gambar_lama_preview.value = new URL(`${publicPath}gambar/${images}`).href
-    if (isEdit.value) {
-      url.value = gambar_lama_preview.value
-    }
-    return gambar_lama_preview.value
-  } else {
-    return `${new URL(window.location.origin)}` + ' 404.png'
-  }
 }
 const convertDataURIToBinary = (dataURI) => {
   var BASE64_MARKER = ';base64,'
@@ -248,67 +165,24 @@ const convertDataURIToBinary = (dataURI) => {
   }
   return array
 }
-
-const previewImage = (event) => {
-  // console.log(event.target.id)
-  var input = event.target
-  if (input.files) {
-    var reader = new FileReader()
-    reader.onload = (e) => {
-      var base64Img = e.target.result
-      if (event.target.id == 'foto_anggota') {
-        previewFoto.value = base64Img
-        imageFoto.value = convertDataURIToBinary(base64Img)
-      } else if (event.target.id == 'foto_ttd') {
-        previewTTD.value = base64Img
-        imageTTD.value = convertDataURIToBinary(base64Img)
-      } else if (event.target.id == 'foto_pa') {
-        previewPA.value = base64Img
-        imagePA.value = convertDataURIToBinary(base64Img)
-      }
-    }
-    if (event.target.id == 'foto_anggota') {
-      fileFoto.value = input.files[0]
-    } else if (event.target.id == 'foto_ttd') {
-      fileTTD.value = input.files[0]
-    } else if (event.target.id == 'foto_pa') {
-      filePA.value = input.files[0]
-    }
-
-    reader.readAsDataURL(input.files[0])
-  }
-}
 const simpan_data = async (e) => {
   try {
     await produkPinjaman.postItem(
-      //console.log(
-      id_anggota.value,
-      fileFoto.value,
-      fileTTD.value,
-      filePA.value,
-
-      // imageFoto.value,
-      // imageTTD.value,
-      // imagePA.value,
-      moment(Date.now(TGLINP.value)).format('YYYY-MM-DD'),
-      no_anggota.value,
-      no_ktp.value,
-      no_kk.value,
-      nama_lengkap.value,
-      tempat_lahir.value,
-      tanggal_lahir.value,
-      jenis_kelamin.value,
-      agama.value,
-      alamat.value,
-      rt.value,
-      rw.value,
-      kelurahan.value,
-      kecamatan.value,
-      kota.value,
-      pendamping.value,
-      pekerjaan.value,
-      no_telepon.value,
-      resort.value
+      kode_produk.value,
+      nama_produk.value,
+      kode_perhitungan.value,
+      pembulatan_angsuran.value,
+      jasa_perbulan.value,
+      periode_pembayaran.value,
+      administrasi.value,
+      provisi.value,
+      jurnal_pokok_pinjaman.value,
+      jurnal_jasa_pinjaman.value,
+      jurnal_denda_pinjaman.value,
+      jurnal_admin.value,
+      jurnal_provisi.value,
+      jurnal_akrual.value,
+      jurnal_ppap.value
     )
     e.target.reset()
     resetForm()
@@ -340,44 +214,20 @@ const resetForm = () => {
   }
   allSelected.value = false
   userIds.value = []
-  id_anggota.value = ''
-  foto_profile.value.value = null
-  fileFoto.value = null
-  imageFoto.value = null
-  previewFoto.value = null
-  foto_pa.value.value = null
-  filePA.value = null
-  imagePA.value = null
-  previewPA.value = null
-  foto_ttd.value.value = null
-  fileTTD.value = null
-  imageTTD.value = null
-  previewTTD.value = null
-  TGLINP.value = moment(Date.now()).format('DD-MM-YYYY')
-  no_anggota.value = ''
-  no_ktp.value = ''
-  no_kk.value = ''
-  nama_lengkap.value = ''
-  tempat_lahir.value = ''
-  tanggal_lahir.value = ''
-  jenis_kelamin.value = ''
-  agama.value = ''
-  alamat.value = ''
-  rt.value = ''
-  rw.value = ''
-  kelurahan.value = ''
-  kecamatan.value = ''
-  kota.value = ''
-  pendamping.value = ''
-  pekerjaan.value = ''
-  no_telepon.value = ''
-  resort.value = ''
-  tanggal_bht.value = ''
-  simpanan_pokok.value = ''
-  simpanan_swk.value = ''
-  simpanan_wajib.value = ''
-  simpanan_lain.value = ''
-  total_simpanan.value = ''
+  kode_produk.value = ''
+  nama_produk.value = null
+  pembulatan_angsuran.value = null
+  jasa_perbulan.value = null
+  kode_perhitungan.value = null
+  jurnal_admin.value = null
+  jurnal_provisi.value = null
+  jurnal_denda_pinjaman.value = null
+  periode_pembayaran.value = null
+  provisi.value = null
+  jurnal_pokok_pinjaman.value = null
+  jurnal_jasa_pinjaman.value = null
+  jurnal_akrual.value = ''
+  jurnal_ppap.value = ''
   modal_utama.value = false
   modal_delete.value = false
   isAdd.value = false
@@ -931,7 +781,7 @@ onMounted(async () => {
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
         ><span v-if="isView">Data </span> Anggota
-        <span v-if="isEdit || isView">{{ id_anggota }}</span>
+        <span v-if="isEdit || isView">{{ kode_produk }}</span>
       </h2>
 
       <a
@@ -955,6 +805,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
+                v-model="kode_produk"
                 required
               />
             </div>
@@ -968,6 +819,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
+                v-model="nama_produk"
                 required
               />
             </div>
@@ -981,6 +833,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
+                v-model="kode_perhitungan"
                 required
               />
             </div>
@@ -994,6 +847,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="number"
+                v-model="pembulatan_angsuran"
                 required
               />
             </div>
@@ -1012,6 +866,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
+                v-model="jasa_perbulan"
                 required
               />
             </div>
@@ -1026,12 +881,13 @@ onMounted(async () => {
                 name="periode_list"
                 id="periode_list"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="periode_pembayaran"
                 required
               >
                 <option value="HARIAN">HARIAN</option>
                 <option value="PASARAN">PASARAN</option>
                 <option value="MINGGUAN">MINGGUAN</option>
-                <option value="BULANAN">BULANAN</option>
+                <option value="BULANAN        ">BULANAN</option>
                 <option value="MUSIMAN">MUSIMAN</option>
               </select>
             </div>
@@ -1045,6 +901,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
+                v-model="administrasi"
                 required
               />
             </div>
@@ -1058,6 +915,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="number"
+                v-model="provisi"
                 required
               />
             </div>
@@ -1074,12 +932,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_pokok_pinjaman"
+                id="jurnal_pokok_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_pokok_pinjaman"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1095,12 +954,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_jasa_pinjaman"
+                id="jurnal_jasa_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_jasa_pinjaman"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1116,12 +976,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_denda_pinjaman"
+                id="jurnal_denda_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_denda_pinjaman"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1137,12 +998,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_admin"
+                id="jurnal_admin"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_admin"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1158,12 +1020,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_provisi"
+                id="jurnal_provisi"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_provisi"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1179,12 +1042,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_akrual"
+                id="jurnal_akrual"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_akrual"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -
@@ -1200,12 +1064,13 @@ onMounted(async () => {
             <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <select
-                name="periode_list"
-                id="periode_list"
+                name="jurnal_ppap"
+                id="jurnal_ppap"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+                v-model="jurnal_ppap"
                 required
               >
-                <option value="noper" selected disabled>-</option>
+                <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
                   {{ perkiraan.noper }}
                   -

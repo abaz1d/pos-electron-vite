@@ -3,7 +3,7 @@ const db = pool.promise()
 
 const produkPinjaman = {}
 
-produkPinjaman.fetchAnggota = async (
+produkPinjaman.fetchProduk = async (
   search_type,
   search_data,
   sort_by,
@@ -51,7 +51,7 @@ produkPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
     if (resort !== 'resort') {
       query += ` AND resort = '${resort}'`
     }
-    query += ` ORDER BY iddata ASC`
+    query += ` ORDER BY sandi ASC`
     if (limit !== 0) {
       query += ` LIMIT ${limit}`
     }
@@ -62,17 +62,17 @@ produkPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
     return new Response(error, false)
   }
 }
-produkPinjaman.getAnggota = async (iddata) => {
+produkPinjaman.getProduk = async (sandi) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE iddata = ${iddata};`)
+    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE sandi = ${sandi};`)
     return new Response({ rows }, true)
   } catch (error) {
     console.error(error)
     return new Response(error, false)
   }
 }
-produkPinjaman.postAnggota = async (
-  iddata,
+produkPinjaman.postProduk = async (
+  sandi,
   tanggal,
   no_setsandi_pinj,
   no_ktp,
@@ -125,7 +125,7 @@ produkPinjaman.postAnggota = async (
     // )
     let rows
     if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
-      if (iddata == '') {
+      if (sandi == '') {
         ;[rows] = await db.query(
           `INSERT INTO setsandi_pinj(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_setsandi_pinj}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
             [imageFoto],
@@ -143,17 +143,17 @@ produkPinjaman.postAnggota = async (
             type: imageTTD.type
           })}', paraf = '${new Blob([imagePA], {
             type: imagePA.type
-          })}', resort = '${resort}' WHERE iddata = '${iddata}'`
+          })}', resort = '${resort}' WHERE sandi = '${sandi}'`
         )
       }
     } else {
-      if (iddata == '') {
+      if (sandi == '') {
         ;[rows] = await db.query(
           `INSERT INTO setsandi_pinj(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, resort) VALUES ('${no_setsandi_pinj}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', '${resort}')`
         )
       } else {
         ;[rows] = await db.query(
-          `UPDATE setsandi_pinj SET cif = '${no_setsandi_pinj}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', resort = '${resort}' WHERE iddata = '${iddata}'`
+          `UPDATE setsandi_pinj SET cif = '${no_setsandi_pinj}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', resort = '${resort}' WHERE sandi = '${sandi}'`
         )
       }
     }
@@ -163,9 +163,9 @@ produkPinjaman.postAnggota = async (
     return new Response(error, false)
   }
 }
-produkPinjaman.deleteAnggota = async (iddata) => {
+produkPinjaman.deleteProduk = async (sandi) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE iddata = ${iddata};`)
+    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = ${sandi};`)
     return new Response({ message: 'success delete setsandi_pinj' }, true)
   } catch (error) {
     console.error(error)

@@ -12,7 +12,7 @@ export const useProdukPinjamanStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
-        const data = await request.fetchAnggota(
+        const data = await request.fetchProduk(
           search_type,
           search_data,
           sort_by,
@@ -39,9 +39,9 @@ export const useProdukPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async getItem(iddata) {
+    async getItem(sandi) {
       try {
-        const data = await request.getAnggota(iddata)
+        const data = await request.getProduk(sandi)
         if (data.success) {
           return data.data.rows[0]
         }
@@ -50,81 +50,60 @@ export const useProdukPinjamanStore = defineStore({
       }
     },
     async postItem(
-      iddata,
-      imageFoto,
-      imageTTD,
-      imagePA,
-
-      tanggal,
-      no_anggota,
-      no_ktp,
-      no_kk,
-      nama_lengkap,
-      tempat_lahir,
-      tanggal_lahir,
-      jenis_kelamin,
-      agama,
-      alamat,
-      rt,
-      rw,
-      kelurahan,
-      kecamatan,
-      kota,
-      pendamping,
-      pekerjaan,
-      no_telepon,
-      resort
+      sandi,
+      keterangan,
+      kdhit,
+      pembulatan,
+      rate,
+      periode,
+      adm,
+      prov,
+      jurnal_pokok,
+      jurnal_jasa,
+      jurnal_denda,
+      jurnal_adm,
+      jurnal_prov,
+      jurnal_yadit,
+      jurnal_ppap,
+      isEdit
     ) {
       try {
         //const iddata = Date.now()
         this.rawItems.push({
-          iddata,
-          tanggal,
-          no_anggota,
-          no_ktp,
-          no_kk,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          jenis_kelamin,
-          agama,
-          alamat,
-          rt,
-          rw,
-          kelurahan,
-          kecamatan,
-          kota,
-          pendamping,
-          pekerjaan,
-          no_telepon,
-          resort
+          sandi,
+          keterangan,
+          kdhit,
+          pembulatan,
+          rate,
+          periode,
+          adm,
+          prov,
+          jurnal_pokok,
+          jurnal_jasa,
+          jurnal_denda,
+          jurnal_adm,
+          jurnal_prov,
+          jurnal_yadit,
+          jurnal_ppap
         })
         //console.log(
-        await request.postAnggota(
-          iddata,
-          tanggal,
-          no_anggota,
-          no_ktp,
-          no_kk,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          jenis_kelamin,
-          agama,
-          alamat,
-          rt,
-          rw,
-          kelurahan,
-          kecamatan,
-          kota,
-          pendamping,
-          pekerjaan,
-          no_telepon,
-          resort,
-
-          imageFoto,
-          imageTTD,
-          imagePA
+        await request.postProduk(
+          sandi,
+          keterangan,
+          kdhit,
+          pembulatan,
+          rate,
+          periode,
+          adm,
+          prov,
+          jurnal_pokok,
+          jurnal_jasa,
+          jurnal_denda,
+          jurnal_adm,
+          jurnal_prov,
+          jurnal_yadit,
+          jurnal_ppap,
+          isEdit
         )
       } catch (error) {
         throw new Error(error)
@@ -133,7 +112,7 @@ export const useProdukPinjamanStore = defineStore({
     async removeItem(iddata) {
       try {
         this.rawItems = this.rawItems.filter((item) => item.iddata !== iddata)
-        const data = await request.deleteAnggota(iddata)
+        const data = await request.deleteProduk(iddata)
       } catch (error) {
         throw new Error(error)
       }
