@@ -81,57 +81,6 @@ const deleteGet = (e) => {
   }
 }
 
-const uint8ToBase64 = (arrayBuffer) => {
-  var base64 = ''
-  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-
-  var bytes = new Uint8Array(arrayBuffer)
-  var byteLength = bytes.byteLength
-  var byteRemainder = byteLength % 3
-  var mainLength = byteLength - byteRemainder
-
-  var a, b, c, d
-  var chunk
-
-  // Main loop deals with bytes in chunks of 3
-  for (var i = 0; i < mainLength; i = i + 3) {
-    // Combine the three bytes into a single integer
-    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
-
-    // Use bitmasks to extract 6-bit segments from the triplet
-    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
-    b = (chunk & 258048) >> 12 // 258048   = (2^6 - 1) << 12
-    c = (chunk & 4032) >> 6 // 4032     = (2^6 - 1) << 6
-    d = chunk & 63 // 63       = 2^6 - 1
-
-    // Convert the raw binary segments to the appropriate ASCII encoding
-    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
-  }
-
-  // Deal with the remaining bytes and padding
-  if (byteRemainder == 1) {
-    chunk = bytes[mainLength]
-
-    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
-
-    // Set the 4 least significant bits to zero
-    b = (chunk & 3) << 4 // 3   = 2^2 - 1
-
-    base64 += encodings[a] + encodings[b] + '=='
-  } else if (byteRemainder == 2) {
-    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
-
-    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
-    b = (chunk & 1008) >> 4 // 1008  = (2^6 - 1) << 4
-
-    // Set the 2 least significant bits to zero
-    c = (chunk & 15) << 2 // 15    = 2^4 - 1
-
-    base64 += encodings[a] + encodings[b] + encodings[c] + '='
-  }
-
-  return base64
-}
 const viewData = async (e) => {
   const anggota = await produkPinjaman.getItem(e)
   isView.value = true
@@ -152,19 +101,6 @@ const viewData = async (e) => {
   jurnal_ppap.value = anggota.jurnal_ppap
   modal_utama.value = true
 }
-const convertDataURIToBinary = (dataURI) => {
-  var BASE64_MARKER = ';base64,'
-  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length
-  var base64 = dataURI.substring(base64Index)
-  var raw = window.atob(base64)
-  var rawLength = raw.length
-  var array = new Uint8Array(new ArrayBuffer(rawLength))
-
-  for (let i = 0; i < rawLength; i++) {
-    array[i] = raw.charCodeAt(i)
-  }
-  return array
-}
 const simpan_data = async (e) => {
   try {
     await produkPinjaman.postItem(
@@ -182,7 +118,8 @@ const simpan_data = async (e) => {
       jurnal_admin.value,
       jurnal_provisi.value,
       jurnal_akrual.value,
-      jurnal_ppap.value
+      jurnal_ppap.value,
+      isEdit.value
     )
     e.target.reset()
     resetForm()
@@ -780,7 +717,7 @@ onMounted(async () => {
     <ModalHeader>
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
-        ><span v-if="isView">Data </span> Anggota
+        ><span v-if="isView">Data </span> Produk
         <span v-if="isEdit || isView">{{ kode_produk }}</span>
       </h2>
 
@@ -794,7 +731,7 @@ onMounted(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <form method="post">
+      <form method="post" id="produkPinjamanForm" @submit.prevent="simpan_data">
         <div class="bg-slate-100 p-3 rounded-t">
           <div class="text-gray-700 flex items-center mx-auto w-9/12">
             <div class="mb-1 w-2/5 text-xs">
@@ -806,6 +743,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="kode_produk"
+                maxlength="4"
                 required
               />
             </div>
@@ -820,6 +758,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="nama_produk"
+                maxlength="40"
                 required
               />
             </div>
@@ -834,6 +773,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="kode_perhitungan"
+                maxlength="1"
                 required
               />
             </div>
@@ -848,6 +788,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="number"
                 v-model="pembulatan_angsuran"
+                maxlength="4"
                 required
               />
             </div>
@@ -865,7 +806,7 @@ onMounted(async () => {
             <div class="w-3/5 flex-grow">
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                type="text"
+                type="number"
                 v-model="jasa_perbulan"
                 required
               />
@@ -900,7 +841,7 @@ onMounted(async () => {
             <div class="w-3/5 flex-grow">
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                type="text"
+                type="number"
                 v-model="administrasi"
                 required
               />
@@ -936,7 +877,6 @@ onMounted(async () => {
                 id="jurnal_pokok_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_pokok_pinjaman"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -958,7 +898,6 @@ onMounted(async () => {
                 id="jurnal_jasa_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_jasa_pinjaman"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -980,7 +919,6 @@ onMounted(async () => {
                 id="jurnal_denda_pinjaman"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_denda_pinjaman"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -1002,7 +940,6 @@ onMounted(async () => {
                 id="jurnal_admin"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_admin"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -1024,7 +961,6 @@ onMounted(async () => {
                 id="jurnal_provisi"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_provisi"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -1046,7 +982,6 @@ onMounted(async () => {
                 id="jurnal_akrual"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_akrual"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
@@ -1068,7 +1003,6 @@ onMounted(async () => {
                 id="jurnal_ppap"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
                 v-model="jurnal_ppap"
-                required
               >
                 <option value="-" selected disabled>-</option>
                 <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">

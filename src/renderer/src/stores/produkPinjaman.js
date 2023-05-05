@@ -68,7 +68,7 @@ export const useProdukPinjamanStore = defineStore({
       isEdit
     ) {
       try {
-        //const iddata = Date.now()
+        //const sandi = Date.now()
         this.rawItems.push({
           sandi,
           keterangan,
@@ -109,10 +109,10 @@ export const useProdukPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async removeItem(iddata) {
+    async removeItem(sandi) {
       try {
-        this.rawItems = this.rawItems.filter((item) => item.iddata !== iddata)
-        const data = await request.deleteProduk(iddata)
+        this.rawItems = this.rawItems.filter((item) => item.sandi !== sandi)
+        const data = await request.deleteProduk(sandi)
       } catch (error) {
         throw new Error(error)
       }
