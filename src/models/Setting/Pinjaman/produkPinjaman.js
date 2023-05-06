@@ -108,7 +108,7 @@ produkPinjaman.postProduk = async (
 }
 produkPinjaman.deleteProduk = async (sandi) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = ${sandi};`)
+    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}';`)
     return new Response({ message: 'success delete setsandi_pinj' }, true)
   } catch (error) {
     console.error(error)

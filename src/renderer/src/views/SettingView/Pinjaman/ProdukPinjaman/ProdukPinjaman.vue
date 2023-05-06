@@ -3,9 +3,6 @@ import { useProdukPinjamanStore } from '@renderer/stores/produkPinjaman.js'
 import { onMounted, ref, watch } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import PP from '@renderer/assets/images/pp-placeholder.svg'
-import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
-import { currencyFormatter } from '@renderer/utils/helper'
 import SETTING from '@renderer/assets/images/menu/setting.svg'
 
 const produkPinjaman = useProdukPinjamanStore()
