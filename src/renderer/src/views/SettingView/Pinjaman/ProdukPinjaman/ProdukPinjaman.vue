@@ -238,21 +238,6 @@ const nextPage = () => {
 }
 const lastPage = async () => {
   page_number.value = total_pages.value
-  // try {
-  //   isLoading.value = true
-  //   await produkPinjaman.readItem(
-  //     search_type.value,
-  //     search_data.value,
-  //     sort_by.value,
-  //     sort_mode.value,
-  //     total_pages.value,
-  //     row_per_page.value
-  //   )
-  //   isLoading.value = false
-  // } catch (error) {
-  //   isLoading.value = false
-  //   alert('Gagal page terkhir' + error)
-  // }
 }
 
 watch(page_number, async (e) => {

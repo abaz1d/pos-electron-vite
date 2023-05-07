@@ -33,7 +33,6 @@ export const useProdukPinjamanStore = defineStore({
         const data = await request.fetchLaporan(kantor, tanggal, resort, limit)
         if (data.success) {
           this.rawItems = data.data
-          // return data.data.total_page
         }
       } catch (error) {
         throw new Error(error)
@@ -68,7 +67,6 @@ export const useProdukPinjamanStore = defineStore({
       isEdit
     ) {
       try {
-        //const sandi = Date.now()
         this.rawItems.push({
           sandi,
           keterangan,
@@ -86,7 +84,6 @@ export const useProdukPinjamanStore = defineStore({
           jurnal_yadit,
           jurnal_ppap
         })
-        //console.log(
         await request.postProduk(
           sandi,
           keterangan,

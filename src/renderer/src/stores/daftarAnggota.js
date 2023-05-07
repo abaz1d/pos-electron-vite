@@ -33,7 +33,6 @@ export const useDaftarAnggotaStore = defineStore({
         const data = await request.fetchLaporan(kantor, tanggal, resort, limit)
         if (data.success) {
           this.rawItems = data.data
-          // return data.data.total_page
         }
       } catch (error) {
         throw new Error(error)
@@ -76,7 +75,6 @@ export const useDaftarAnggotaStore = defineStore({
       resort
     ) {
       try {
-        //const iddata = Date.now()
         this.rawItems.push({
           iddata,
           tanggal,
@@ -99,7 +97,6 @@ export const useDaftarAnggotaStore = defineStore({
           no_telepon,
           resort
         })
-        //console.log(
         await request.postAnggota(
           iddata,
           tanggal,

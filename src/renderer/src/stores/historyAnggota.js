@@ -87,7 +87,6 @@ export const useHistoryAnggotaStore = defineStore({
           no_telepon,
           resort
         })
-        //console.log(
         await request.postAnggota(
           tanggal,
           no_anggota,
