@@ -406,26 +406,10 @@ const sorting = async (e) => {
 }
 const firstPage = async () => {
   page_number.value = 1
-  // try {
-  //   isLoading.value = true
-  //   await daftarAnggota.readItem(
-  //     search_type.value,
-  //     search_data.value,
-  //     sort_by.value,
-  //     sort_mode.value,
-  //     1,
-  //     row_per_page.value
-  //   )
-  //   isLoading.value = false
-  // } catch (error) {
-  //   isLoading.value = false
-  //   alert('Gagal page pertama' + error)
-  // }
 }
 const previousPage = async () => {
   try {
     let page_no = parseInt(page_number.value)
-    // isLoading.value = true
     if (page_no > 1) {
       page_number.value = page_no - 1
     }
@@ -437,7 +421,6 @@ const previousPage = async () => {
 
 const nextPage = () => {
   try {
-    // isLoading.value = true
     if (page_number.value == '') {
       page_number.value = 1
     }
@@ -445,7 +428,6 @@ const nextPage = () => {
     if (page_no < total_pages.value) {
       page_number.value = page_no + 1
     }
-    // isLoading.value = false
   } catch (error) {
     isLoading.value = false
     alert('Gagal page selanjutnya' + error)
@@ -453,21 +435,6 @@ const nextPage = () => {
 }
 const lastPage = async () => {
   page_number.value = total_pages.value
-  // try {
-  //   isLoading.value = true
-  //   await daftarAnggota.readItem(
-  //     search_type.value,
-  //     search_data.value,
-  //     sort_by.value,
-  //     sort_mode.value,
-  //     total_pages.value,
-  //     row_per_page.value
-  //   )
-  //   isLoading.value = false
-  // } catch (error) {
-  //   isLoading.value = false
-  //   alert('Gagal page terkhir' + error)
-  // }
 }
 
 watch(page_number, async (e) => {
@@ -576,7 +543,6 @@ onMounted(async () => {
     )
     total_pages.value = data
     isLoading.value = false
-    // console.log(window)
   } catch (error) {
     isLoading.value = false
     alert('ERROR MOUNTED:' + error)

@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import oAuth from '../models/oAuth'
 import produkPinjaman from '../models/Setting/Pinjaman/produkPinjaman'
 import daftarAnggota from '../models/Transaksi/Keanggotaan/daftarAnggota'
 import historyAnggota from '../models/Transaksi/Keanggotaan/historyAnggota'
@@ -8,6 +9,7 @@ import perkiraanAkuntansi from '../models/Transaksi/Akuntansi/perkiraanAkuntansi
 
 // Custom APIs for renderer
 const api = {
+  oAuth,
   produkPinjaman,
   daftarAnggota,
   historyAnggota,

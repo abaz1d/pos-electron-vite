@@ -27,8 +27,6 @@ const addGet = () => {
   modal_utama.value = true
 }
 const deleteGet = (e) => {
-  //alert('Untuk menghapus data harus melalui fitur Edit terlebih dahulu')
-  //  userIds.value = []
   const jurnal = e
   if (jurnal.noper) {
     userIds.value = []
@@ -67,7 +65,6 @@ const firstPage = async () => {
 const previousPage = async () => {
   try {
     let page_no = parseInt(page_number.value)
-    // isLoading.value = true
     if (page_no > 1) {
       page_number.value = page_no - 1
     }
@@ -78,7 +75,6 @@ const previousPage = async () => {
 }
 const nextPage = () => {
   try {
-    // isLoading.value = true
     if (page_number.value == '') {
       page_number.value = 1
     }
