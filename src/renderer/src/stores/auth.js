@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 const request = window.api.oAuth
-import router from '@/router'
+import router from '@renderer/router'
 
 export const useAuthStore = defineStore({
   id: 'authorization',
@@ -14,11 +14,7 @@ export const useAuthStore = defineStore({
   actions: {
     async login(input_user, password) {
       try {
-        const { data } = await request.post('auth', {
-          input_user,
-          password
-        })
-
+        const data = await request.auth(input_user, password)
         if (data.success) {
           this.user = data.data
           // return this.user
@@ -28,22 +24,26 @@ export const useAuthStore = defineStore({
 
           // redirect to previous url or default to home page
           router.push(this.returnUrl || '/')
+          // window.location.reload()
         }
         return data
       } catch (error) {
+        console.error(error)
         throw new Error(error)
       }
     },
 
     async logout() {
       try {
-        const { data } = await request.get('logOut')
+        const data = await request.logOut()
         if (data.success) {
-          router.push('/login')
-          localStorage.removeItem('user')
+          router.push('/auth')
           this.user = null
+          localStorage.removeItem('user')
         }
+        window.location.reload()
       } catch (error) {
+        console.error(error)
         throw new Error(error)
       }
     }

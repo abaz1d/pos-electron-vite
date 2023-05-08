@@ -1,7 +1,10 @@
 <script setup>
+import { useAuthStore } from '@renderer/stores/auth'
 import { RouterLink } from 'vue-router'
 import LOGO from '@renderer/assets/icons.svg'
 import { ref } from 'vue'
+const Auth = useAuthStore()
+const logoutConfirmationModal = ref(false)
 const props = defineProps({
   title: String
 })
@@ -28,15 +31,19 @@ const closeMenu = (e) => {
   setTimeout(() => {
     var menu = listMenu[e]?.value
 
-    let title = menu.getElementsByTagName('a')[0]
-    let svg = menu.getElementsByTagName('svg')[0]
-    let child = menu.getElementsByTagName('ul')[0]
+    let title = menu.getElementsByTagName('a')[0] ? menu.getElementsByTagName('a')[0] : ''
+    let svg = menu.getElementsByTagName('svg')[0] ? menu.getElementsByTagName('svg')[0] : ''
+    let child = menu.getElementsByTagName('ul')[0] ? menu.getElementsByTagName('ul')[0] : ''
     title.classList.remove('text-primary')
     title.classList.remove('bg-slate-200')
     svg.classList.remove('-rotate-180')
     child.classList.add('scale-0')
     child.classList.remove('scale-100')
   }, 500)
+}
+const onLogout = () => {
+  Auth.logout()
+  logoutConfirmationModal.value = false
 }
 defineExpose({ openMenu, closeMenu })
 </script>
@@ -90,12 +97,15 @@ defineExpose({ openMenu, closeMenu })
                 <HelpCircleIcon class="w-4 h-4 mr-2 inline-block" /> Bantuan
               </DropdownItem>
               <DropdownDivider class="border-slate-200" />
+              <!-- <RouterLink to="/auth"> -->
               <DropdownItem
+                @click="logoutConfirmationModal = true"
                 class="hover:bg-slate-300 text-sm bg-danger justify-center text-white hover:text-danger"
               >
                 <LogOutIcon class="w-4 h-4 mr-2" />
                 Logout
               </DropdownItem>
+              <!-- </RouterLink> -->
             </DropdownContent>
           </DropdownMenu>
         </Dropdown>
@@ -1882,6 +1892,24 @@ defineExpose({ openMenu, closeMenu })
       </div>
     </div>
   </nav>
+  <Modal :show="logoutConfirmationModal" @hidden="logoutConfirmationModal = false">
+    <ModalBody class="p-0">
+      <div class="p-5 text-center">
+        <LogOutIcon class="w-16 h-16 text-danger mx-auto mt-3" />
+        <div class="text-xl mt-5">Apakah Anda yakin ingin Keluar ?</div>
+      </div>
+      <div class="px-5 pb-8 text-center">
+        <button
+          type="button"
+          @click="logoutConfirmationModal = false"
+          class="btn btn-outline-secondary w-24 mr-1"
+        >
+          Cancel
+        </button>
+        <button @click="onLogout" type="button" class="btn btn-danger w-24">Keluar</button>
+      </div>
+    </ModalBody>
+  </Modal>
 </template>
 
 <style scoped>
