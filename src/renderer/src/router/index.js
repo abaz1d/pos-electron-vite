@@ -1,5 +1,6 @@
 import { useAuthStore } from '@renderer/stores/auth'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import Swal from 'sweetalert2'
 import HomeView from '@renderer/views/HomeView.vue'
 import Auth from '@renderer/views/Auth.vue'
 import ProdukPinjaman from '@renderer/views/SettingView/Pinjaman/ProdukPinjaman/ProdukPinjaman.vue'
@@ -92,8 +93,13 @@ router.beforeEach((to, from, next) => {
       return next({ path: '/auth' })
     }
     if (authorize.length && !authorize.includes(currentUser.role)) {
-      alert('Role Akun Anda, Tidak Bisa Mengakses Halaman ini !')
-      return next({ path: '/' })
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Role Akun Anda, Tidak Bisa Mengakses Halaman ini !'
+      }).then((data) => {
+        return next({ path: '/' })
+      })
     }
   }
   next()

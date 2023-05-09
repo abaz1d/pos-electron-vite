@@ -1,6 +1,6 @@
 <script setup>
 import { useHistoryAnggotaStore } from '@renderer/stores/historyAnggota.js'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import PP from '@renderer/assets/images/pp-placeholder.svg'
@@ -8,6 +8,7 @@ import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/jso
 import { currencyFormatter } from '@renderer/utils/helper'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
+const swal = inject('$swal')
 const historyAnggota = useHistoryAnggotaStore()
 const isLoading = ref(false)
 const isAdd = ref(false)
@@ -311,7 +312,11 @@ const simpan_data = async (e) => {
     e.target.reset()
     resetForm()
   } catch (error) {
-    alert('ERROR SIMPAN DATA: ' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR SIMPAN DATA ' + error
+    })
   }
 }
 const deleteAnggota = async () => {
@@ -400,7 +405,11 @@ const sorting = async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal sorting' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal Sorting ' + error
+    })
   }
 }
 const firstPage = async () => {
@@ -415,7 +424,11 @@ const previousPage = async () => {
     }
   } catch (error) {
     isLoading.value = false
-    alert('Gagal page sebelumnya' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal page sebelumnya ' + error
+    })
   }
 }
 
@@ -431,7 +444,11 @@ const nextPage = () => {
     }
   } catch (error) {
     isLoading.value = false
-    alert('Gagal page selanjutnya' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal page selanjutnya ' + error
+    })
   }
 }
 const lastPage = async () => {
@@ -452,7 +469,11 @@ watch(page_number, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti page ' + error
+    })
   }
 })
 watch(row_per_page, async (e) => {
@@ -478,7 +499,11 @@ watch(row_per_page, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti row/page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti row/page ' + error
+    })
   }
 })
 watch(search_data, async (e) => {
@@ -496,7 +521,11 @@ watch(search_data, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti page ' + error
+    })
   }
 })
 watch(search_type, async (e) => {
@@ -514,7 +543,11 @@ watch(search_type, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti page ' + error
+    })
   }
 })
 
@@ -546,7 +579,11 @@ onMounted(async () => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('ERROR MOUNTED:' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR MOUNTED ' + error
+    })
   }
 })
 </script>

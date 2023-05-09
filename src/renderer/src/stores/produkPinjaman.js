@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import router from '@renderer/router'
+import Swal from 'sweetalert2'
 const request = window.api.produkPinjaman
 
 export const useProdukPinjamanStore = defineStore({
@@ -23,6 +25,17 @@ export const useProdukPinjamanStore = defineStore({
         if (data.success) {
           this.rawItems = data.data.rows
           return { total_pages: data.data.total_page, perkiraan: data.data.perkiraan }
+        } else if (!data.success && data.data.message == 'token invalid') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Token Invalid',
+            text: 'Token Anda Invalid, silahkan login ulang'
+          }).then((data) => {
+            localStorage.removeItem('user')
+            router.push('/auth')
+            window.location.reload()
+          })
+          return { total_pages: [], perkiraan: [] }
         }
       } catch (error) {
         throw new Error(error)

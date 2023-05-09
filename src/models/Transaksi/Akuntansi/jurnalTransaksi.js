@@ -1,4 +1,4 @@
-import { db, Response } from '../../../helpers/util'
+import { db, Response, isTokenValid } from '../../../helpers/util'
 
 const jurnalTransaksi = {}
 
@@ -10,37 +10,42 @@ jurnalTransaksi.fetchJurnal = async (
   page_number,
   total_row_displayed
 ) => {
-  var sortMode = sort_mode ? 'ASC' : 'DESC'
-  let row_number
-  if (page_number < 2) {
-    row_number = 0
-  } else {
-    row_number = (page_number - 1) * total_row_displayed
-  }
-
-  try {
-    let query = `SELECT COUNT(*) AS total FROM jurnal`
-    if (search_data !== '') {
-      query += ` WHERE ${search_type} LIKE '%${search_data}%'`
-    }
-    const [data] = await db.query(query)
-    let total_page
-    if (data[0].total % total_row_displayed == 0) {
-      total_page = parseInt(data[0].total / total_row_displayed)
+  const token = await isTokenValid()
+  if (token.success) {
+    var sortMode = sort_mode ? 'ASC' : 'DESC'
+    let row_number
+    if (page_number < 2) {
+      row_number = 0
     } else {
-      total_page = parseInt(data[0].total / total_row_displayed) + 1
+      row_number = (page_number - 1) * total_row_displayed
     }
-    query = `SELECT * FROM jurnal`
-    if (search_data !== '') {
-      query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+
+    try {
+      let query = `SELECT COUNT(*) AS total FROM jurnal`
+      if (search_data !== '') {
+        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+      }
+      const [data] = await db.query(query)
+      let total_page
+      if (data[0].total % total_row_displayed == 0) {
+        total_page = parseInt(data[0].total / total_row_displayed)
+      } else {
+        total_page = parseInt(data[0].total / total_row_displayed) + 1
+      }
+      query = `SELECT * FROM jurnal`
+      if (search_data !== '') {
+        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+      }
+      query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
+      const [rows] = await db.query(query)
+      const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`)
+      return new Response({ rows, total_page, perkiraan })
+    } catch (error) {
+      console.error(error)
+      return new Response(error, false)
     }
-    query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
-    const [rows] = await db.query(query)
-    const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`)
-    return new Response({ rows, total_page, perkiraan })
-  } catch (error) {
-    console.error(error)
-    return new Response(error, false)
+  } else {
+    return token
   }
 }
 jurnalTransaksi.getperkiraanJurnal = async (noper) => {

@@ -38,7 +38,10 @@ function createWindow() {
       message: 'Apakah Anda Yakin Ingin Menutup Aplikasi ?'
     })
 
-    if (response == 1) e.preventDefault()
+    if (response == 1) {
+      localStorage.removeItem('user')
+      e.preventDefault()
+    }
   })
 
   // HMR for renderer base on electron-vite cli.

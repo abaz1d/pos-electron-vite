@@ -33,7 +33,6 @@ export const isTokenValid = async () => {
       const user = data[0]
       if (user.token == pureToken) {
         //next()
-        console.log('token', user.token == pureToken)
         return new Response({ message: 'token valid' }, true)
       } else {
         return new Response({ message: 'token invalid' }, false)

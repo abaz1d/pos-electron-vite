@@ -4,11 +4,12 @@ import { useDaftarAnggotaStore } from '@renderer/stores/daftarAnggota.js'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import LAPORAN from '@renderer/assets/images/menu/laporan.svg'
 import { TabulatorFull as Tabulator } from 'tabulator-tables'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, inject } from 'vue'
 import { list_resort, list_kantor } from '@renderer/utils/json'
 import { useRouter } from 'vue-router'
 import moment from 'moment'
 
+const swal = inject('$swal')
 const daftarAnggota = useDaftarAnggotaStore()
 const router = useRouter()
 const modal_utama = ref(true)
@@ -138,7 +139,11 @@ const printData = async (e) => {
     modal_utama.value = true
   } catch (error) {
     isLoading.value = false
-    alert('ERROR PRINT:' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR PRINT: ' + error
+    })
   }
 }
 const exportCSV = async (e) => {
@@ -160,7 +165,11 @@ const exportCSV = async (e) => {
     modal_utama.value = true
   } catch (error) {
     isLoading.value = false
-    alert('ERROR CSV:' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR CSV: ' + error
+    })
   }
 }
 
@@ -181,7 +190,11 @@ onMounted(async () => {
     reInitOnResizeWindow()
   } catch (error) {
     console.error(error)
-    alert('ERROR MOUNTED:' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR MOUNTED: ' + error
+    })
     isLoading.value = false
   }
 })

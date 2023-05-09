@@ -12,7 +12,6 @@ daftarAnggota.fetchAnggota = async (
 ) => {
   //console.log(isTokenValid() ? 'yes' : 'no')
   const token = await isTokenValid()
-  console.log(token)
   if (token.success) {
     var sortMode = sort_mode ? 'ASC' : 'DESC'
     let row_number
@@ -46,25 +45,30 @@ daftarAnggota.fetchAnggota = async (
       return new Response(error, false)
     }
   } else {
-    return new Response(token, false)
+    return token
   }
 }
 daftarAnggota.fetchLaporan = async (kantor, tanggal, resort, limit) => {
-  try {
-    let query
-    query = `SELECT * FROM anggota WHERE kantor = '${kantor}' AND tanggal <= '${tanggal}'`
-    if (resort !== 'resort') {
-      query += ` AND resort = '${resort}'`
+  const token = await isTokenValid()
+  if (token.success) {
+    try {
+      let query
+      query = `SELECT * FROM anggota WHERE kantor = '${kantor}' AND tanggal <= '${tanggal}'`
+      if (resort !== 'resort') {
+        query += ` AND resort = '${resort}'`
+      }
+      query += ` ORDER BY iddata ASC`
+      if (limit !== 0) {
+        query += ` LIMIT ${limit}`
+      }
+      const [rows] = await db.query(query)
+      return new Response(rows)
+    } catch (error) {
+      console.error(error)
+      return new Response(error, false)
     }
-    query += ` ORDER BY iddata ASC`
-    if (limit !== 0) {
-      query += ` LIMIT ${limit}`
-    }
-    const [rows] = await db.query(query)
-    return new Response(rows)
-  } catch (error) {
-    console.error(error)
-    return new Response(error, false)
+  } else {
+    return token
   }
 }
 daftarAnggota.getAnggota = async (iddata) => {

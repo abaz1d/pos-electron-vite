@@ -2,8 +2,9 @@
 import moment from 'moment'
 import { createElement, Eye, EyeOff } from 'lucide'
 import { useAuthStore } from '@renderer/stores/auth'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, inject } from 'vue'
 import dom from '@left4code/tw-starter/dist/js/dom'
+const swal = inject('$swal')
 const Auth = useAuthStore()
 const isLoading = ref(false)
 const date = ref(Date.now())
@@ -32,7 +33,7 @@ watch(isLoading, async (newValue) => {
       setTimeout(() => onLogin(), 100)
     }
   } catch (error) {
-    alert('Failed Login' + error)
+    swal('Failed Login ' + error)
   }
 })
 
@@ -48,21 +49,38 @@ const onLogin = () => {
           if (data.data.message == 'unregistered username/e-mail') {
             input_user.value = ''
             input_password.value = ''
-            alert('unregistered username/e-mail')
+            swal({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.data.message
+            })
           } else {
             input_password.value = ''
-            alert('wrong password')
+            swal({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.data.message
+            })
           }
         }
         isLoading.value = false
       })
       .catch((error) => {
         console.error(error)
-        alert('Gagal Login ' + JSON.stringify(error))
+        swal({
+          icon: 'error',
+          title: 'Error !!!',
+          text: 'Gagal Login ' + JSON.stringify(error)
+        })
         isLoading.value = false
       })
   } else {
     dataPopup.value = 'Email/Username dan Password tidak boleh kosong !'
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: dataPopup.value
+    })
     gagalLogin.value = true
     isLoading.value = false
   }

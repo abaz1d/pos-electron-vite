@@ -1,9 +1,10 @@
 <script setup>
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
-import { onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref, watch, inject } from 'vue'
 import { usePerkiraanAkuntansiStore } from '@renderer/stores/perkiraanAkuntansi.js'
 
+const swal = inject('$swal')
 const perkiraanAkuntansi = usePerkiraanAkuntansiStore()
 const isLoading = ref(false)
 const sort_by = ref('noper')
@@ -56,7 +57,11 @@ const sorting = async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal sorting' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal Sorting ' + error
+    })
   }
 }
 const firstPage = async () => {
@@ -70,7 +75,11 @@ const previousPage = async () => {
     }
   } catch (error) {
     isLoading.value = false
-    alert('Gagal page sebelumnya' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal page sebelumnya ' + error
+    })
   }
 }
 const nextPage = () => {
@@ -84,7 +93,11 @@ const nextPage = () => {
     }
   } catch (error) {
     isLoading.value = false
-    alert('Gagal page selanjutnya' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal page selanjutnya ' + error
+    })
   }
 }
 const lastPage = async () => {
@@ -105,8 +118,12 @@ watch(page_number, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti page' + error)
-    console.log(error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti page ' + error
+    })
+    console.error(error)
   }
 })
 watch(row_per_page, async (e) => {
@@ -133,7 +150,11 @@ watch(row_per_page, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal ganti row/page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal ganti row/page ' + error
+    })
   }
 })
 watch(search_data, async (e) => {
@@ -152,7 +173,11 @@ watch(search_data, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal search page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal search page ' + error
+    })
   }
 })
 watch(search_type, async (e) => {
@@ -171,7 +196,11 @@ watch(search_type, async (e) => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('Gagal search page' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal search page ' + error
+    })
   }
 })
 
@@ -203,7 +232,11 @@ onBeforeMount(async () => {
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
-    alert('ERROR MOUNTED:' + error)
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR MOUNTED ' + error
+    })
   }
 })
 </script>
