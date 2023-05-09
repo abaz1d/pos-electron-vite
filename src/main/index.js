@@ -39,8 +39,9 @@ function createWindow() {
     })
 
     if (response == 1) {
-      localStorage.removeItem('user')
       e.preventDefault()
+    } else {
+      mainWindow.webContents.executeJavaScript('localStorage.removeItem("user")')
     }
   })
 
