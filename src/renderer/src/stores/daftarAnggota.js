@@ -23,6 +23,8 @@ export const useDaftarAnggotaStore = defineStore({
         if (data.success) {
           this.rawItems = data.data.rows
           return data.data.total_page
+        } else {
+          console.log('data', data)
         }
       } catch (error) {
         throw new Error(error)

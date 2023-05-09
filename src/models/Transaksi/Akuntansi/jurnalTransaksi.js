@@ -1,5 +1,4 @@
-import { pool, Response } from '../../../helpers/util'
-const db = pool.promise()
+import { db, Response } from '../../../helpers/util'
 
 const jurnalTransaksi = {}
 

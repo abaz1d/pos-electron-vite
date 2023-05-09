@@ -1,7 +1,6 @@
-import { pool, Response } from '../helpers/util'
+import { db, Response, isTokenValid, secretKey } from '../helpers/util'
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const db = pool.promise()
 
 const oAuth = {}
 
@@ -28,7 +27,7 @@ oAuth.auth = async (input_user, password) => {
             userid: data[0].id_user,
             email: data[0].email_user
           },
-          'posvite' || process.env.SECRETKEY
+          secretKey
         )
         const [update] = await db.query(`UPDATE users SET token = ? WHERE id_user = ?;`, [
           token,
@@ -59,7 +58,7 @@ oAuth.auth = async (input_user, password) => {
             userid: data[0].id_user,
             email: data[0].email_user
           },
-          'posvite' || process.env.SECRETKEY
+          secretKey
         )
         const [update] = await db.query(`UPDATE users SET token = ? WHERE id_user = ?;`, [
           token,
@@ -91,7 +90,7 @@ oAuth.logOut = async () => {
     if (token && token.split(' ')[1]) {
       const pureToken = token.split(' ')[1]
       try {
-        const result = jwt.verify(pureToken, 'posvite' || process.env.SECRETKEY)
+        const result = jwt.verify(pureToken, secretKey)
         const [data] = await db.query(
           `SELECT * FROM users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
         )

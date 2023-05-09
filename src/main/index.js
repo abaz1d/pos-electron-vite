@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -30,12 +30,23 @@ function createWindow() {
     return { action: 'deny' }
   })
 
+  mainWindow.on('close', function (e) {
+    let response = dialog.showMessageBoxSync(this, {
+      type: 'question',
+      buttons: ['Yes', 'No'],
+      title: 'Konfirmasi',
+      message: 'Apakah Anda Yakin Ingin Menutup Aplikasi ?'
+    })
+
+    if (response == 1) e.preventDefault()
+  })
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   pool.getConnection((err) => {
     if (err) {
       //render page error atau tidak terhubung kedatabase
-      console.log('err database', err)
+      console.error('err database', err)
     } else {
       console.log('Connect DB successfully')
     }

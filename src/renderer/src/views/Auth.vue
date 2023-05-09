@@ -6,10 +6,11 @@ import { onMounted, ref, watch } from 'vue'
 import dom from '@left4code/tw-starter/dist/js/dom'
 const Auth = useAuthStore()
 const isLoading = ref(false)
+const date = ref(Date.now())
 const gagalLogin = ref(false)
 const dataPopup = ref('')
-const input_user = ref('admin@gmail.com')
-const input_password = ref('123')
+const input_user = ref('')
+const input_password = ref('')
 
 const showPassword = () => {
   const password = document.querySelector('.js-password'),
@@ -57,7 +58,7 @@ const onLogin = () => {
       })
       .catch((error) => {
         console.error(error)
-        //alert('Gagal Login ' + JSON.stringify(error))
+        alert('Gagal Login ' + JSON.stringify(error))
         isLoading.value = false
       })
   } else {
@@ -68,17 +69,24 @@ const onLogin = () => {
 }
 onMounted(() => {
   dom('body').removeClass('main').removeClass('error-page').addClass('login')
+  setInterval(() => {
+    date.value = Date.now()
+  }, 1000)
 })
 </script>
 <template>
   <div
     class="h-screen w-full flex justify-center items-center bg-[#DDFBDF] bg-no-repeat bg-cover bg-center bg-fixed"
   >
-    <div class="shadow-xl flex items-center rounded-3xl z-10 overflow-hidden w-1/3 h-3/4 bg-white">
+    <div class="shadow-2xl flex items-center rounded-3xl z-10 overflow-hidden w-1/3 h-3/4 bg-white">
       <div class="flex min-h-full mx-auto justify-center px-4">
         <div class="py-12">
           <div>
-            <img class="mx-auto h-28 w-auto" src="@renderer/assets/icons.svg" alt="Your Company" />
+            <img
+              class="mx-auto h-28 w-auto hover:scale-125 transition duration-700 ease-in-out"
+              src="@renderer/assets/icons.svg"
+              alt="Your Company"
+            />
             <h1
               class="mt-4 w-96 mb-6 text-center text-xl font-bold tracking-tight text-gray-900 uppercase"
             >
@@ -100,7 +108,7 @@ onMounted(() => {
                   autocomplete="email"
                   required
                   v-model="input_user"
-                  class="relative block w-full rounded-t-md p-2 h-12 border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                  class="relative block w-full rounded-t-md p-2 h-12 border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 sm:text-sm sm:leading-6"
                   placeholder="Email/ Username"
                 />
               </div>
@@ -122,7 +130,7 @@ onMounted(() => {
                 <input
                   @keyup.enter="isLoading = true"
                   v-model="input_password"
-                  class="w-full p-2 h-12 rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 px-3 pr-16 js-password"
+                  class="w-full p-2 h-12 rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 sm:text-sm sm:leading-6 px-3 pr-16 js-password"
                   id="password"
                   type="password"
                   autocomplete="off"
@@ -133,7 +141,7 @@ onMounted(() => {
             <div>
               <button
                 v-if="isLoading"
-                type="submit"
+                disabled
                 class="group relative flex w-full justify-center rounded-md h-9 bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 <span class="absolute mx-auto text-center inset-y-0 flex items-center pl-3">
@@ -155,7 +163,7 @@ onMounted(() => {
             </div>
           </form>
           <h5 class="w-96 text-center text-sm text-slate-400 mt-16">
-            {{ moment(Date.now()).format('DD MMMM YYYY, h:mm') }}
+            {{ moment(date).format('DD MMMM YYYY, HH:mm:ss') }}
           </h5>
         </div>
       </div>
