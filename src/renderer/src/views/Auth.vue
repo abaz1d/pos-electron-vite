@@ -38,15 +38,15 @@ watch(isLoading, async (newValue) => {
 })
 
 const onLogin = () => {
-  const email_user = input_user.value
+  const nama = input_user.value
   const password = input_password.value
-  if (email_user.length > 0 && password.length > 0) {
-    Auth.login(email_user, password)
+  if (nama.length > 0 && password.length > 0) {
+    Auth.login(nama, password)
       .then((data) => {
         if (data.success == false) {
           dataPopup.value = data.data.message
           gagalLogin.value = true
-          if (data.data.message == 'unregistered username/e-mail') {
+          if (data.data.message == 'unregistered userid/e-mail') {
             input_user.value = ''
             input_password.value = ''
             swal({

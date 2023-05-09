@@ -28,8 +28,11 @@ export const isTokenValid = async () => {
     try {
       const result = jwt.verify(pureToken, secretKey)
       const [data] = await db.query(
-        `SELECT * FROM users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
+        `SELECT * FROM user WHERE id = ${result.userid} ORDER BY id ASC`
       )
+      // const [data] = await db.query(
+      //   `SELECT * FROM users WHERE id = ${result.userid} ORDER BY id ASC`
+      // )
       const user = data[0]
       if (user.token == pureToken) {
         //next()
