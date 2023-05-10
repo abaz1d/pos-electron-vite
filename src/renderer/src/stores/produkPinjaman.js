@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import router from '@renderer/router'
+import { useAuthStore } from './auth'
 import Swal from 'sweetalert2'
 const request = window.api.produkPinjaman
 
@@ -14,13 +15,15 @@ export const useProdukPinjamanStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
+        const Auth = useAuthStore()
         const data = await request.fetchProduk(
           search_type,
           search_data,
           sort_by,
           sort_mode,
           page_number,
-          total_row_displayed
+          total_row_displayed,
+          Auth.items.kantor
         )
         if (data.success) {
           this.rawItems = data.data.rows
@@ -79,6 +82,7 @@ export const useProdukPinjamanStore = defineStore({
       jurnal_ppap,
       isEdit
     ) {
+      const Auth = useAuthStore()
       try {
         this.rawItems.push({
           sandi,
@@ -113,7 +117,8 @@ export const useProdukPinjamanStore = defineStore({
           jurnal_prov,
           jurnal_yadit,
           jurnal_ppap,
-          isEdit
+          isEdit,
+          Auth.items.kantor
         )
       } catch (error) {
         throw new Error(error)
@@ -121,8 +126,9 @@ export const useProdukPinjamanStore = defineStore({
     },
     async removeItem(sandi) {
       try {
+        const Auth = useAuthStore()
         this.rawItems = this.rawItems.filter((item) => item.sandi !== sandi)
-        const data = await request.deleteProduk(sandi)
+        const data = await request.deleteProduk(sandi, Auth.items.kantor)
       } catch (error) {
         throw new Error(error)
       }

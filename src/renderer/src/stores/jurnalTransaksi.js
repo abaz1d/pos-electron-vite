@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import router from '@renderer/router'
+import { useAuthStore } from './auth'
 import Swal from 'sweetalert2'
 const request = window.api.jurnalTransaksi
 
@@ -16,13 +17,15 @@ export const useJurnalTransaksiStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
+        const Auth = useAuthStore()
         const data = await request.fetchJurnal(
           search_type,
           search_data,
           sort_by,
           sort_mode,
           page_number,
-          total_row_displayed
+          total_row_displayed,
+          Auth.items.kantor
         )
         if (data.success) {
           this.rawItems = data.data.rows
@@ -65,11 +68,27 @@ export const useJurnalTransaksiStore = defineStore({
     },
     async postItem(idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, isEdit) {
       try {
+        const Auth = useAuthStore()
         let id = Date.now()
         let data
         if (!isEdit && idtrans == '') {
-          this.detailJurnal.push({ idtrans: Date.now(), TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH })
-          data = await request.createJurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH)
+          this.detailJurnal.push({
+            idtrans: Date.now(),
+            TANGGAL,
+            BUKTI,
+            NOPER,
+            KETERANGAN,
+            JUMLAH,
+            KANTOR: Auth.items.kantor
+          })
+          data = await request.createJurnal(
+            TANGGAL,
+            BUKTI,
+            NOPER,
+            KETERANGAN,
+            JUMLAH,
+            Auth.items.kantor
+          )
           if (data.success) {
             this.detailJurnal = this.detailJurnal.map((item) => {
               if (item.idtrans === id) {

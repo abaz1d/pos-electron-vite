@@ -8,7 +8,8 @@ daftarAnggota.fetchAnggota = async (
   sort_by,
   sort_mode,
   page_number,
-  total_row_displayed
+  total_row_displayed,
+  kantor
 ) => {
   //console.log(isTokenValid() ? 'yes' : 'no')
   const token = await isTokenValid()
@@ -22,9 +23,9 @@ daftarAnggota.fetchAnggota = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota`
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       const [data] = await db.query(query)
       let total_page
@@ -33,9 +34,9 @@ daftarAnggota.fetchAnggota = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM anggota`
+      query = `SELECT * FROM anggota WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
       const [rows] = await db.query(query)
@@ -103,7 +104,8 @@ daftarAnggota.postAnggota = async (
   resort,
   imageFoto,
   imageTTD,
-  imagePA
+  imagePA,
+  kantor
 ) => {
   try {
     // console.log(
@@ -130,18 +132,19 @@ daftarAnggota.postAnggota = async (
     //   resort,
     //   imageFoto,
     //   imageTTD,
-    //   imagePA
+    //   imagePA,
+    //    kantor
     // )
     let rows
     if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
       if (iddata == '') {
         ;[rows] = await db.query(
-          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort, kantor) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
             [imageFoto],
             { type: imageFoto.type }
           )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
             type: imagePA.type
-          })}', '${resort}')`
+          })}', '${resort}', '${kantor}')`
         )
       } else {
         ;[rows] = await db.query(
@@ -168,7 +171,7 @@ daftarAnggota.postAnggota = async (
     }
     return new Response(rows)
   } catch (error) {
-    console.log('error models', error)
+    console.error('error models', error)
     return new Response(error, false)
   }
 }

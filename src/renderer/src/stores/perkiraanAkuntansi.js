@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from './auth'
 import Swal from 'sweetalert2'
 const request = window.api.perkiraanAkuntansi
 
@@ -15,13 +16,15 @@ export const usePerkiraanAkuntansiStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
+        const Auth = useAuthStore()
         const data = await request.fetchPerkiraan(
           search_type,
           search_data,
           sort_by,
           sort_mode,
           page_number,
-          total_row_displayed
+          total_row_displayed,
+          Auth.items.kantor
         )
         if (data.success) {
           this.rawItems = data.data.rows
@@ -53,6 +56,7 @@ export const usePerkiraanAkuntansiStore = defineStore({
     },
     async postItem(noper, nama, level, bukubantu, kelompok, kelompok_data, detail, isEdit) {
       try {
+        const Auth = useAuthStore()
         let data
         if (!isEdit) {
           this.rawItems.push(noper, nama, level, bukubantu, kelompok, kelompok_data, detail)
@@ -63,7 +67,8 @@ export const usePerkiraanAkuntansiStore = defineStore({
             bukubantu,
             kelompok,
             kelompok_data,
-            detail
+            detail,
+            Auth.items.kantor
           )
         } else {
           this.rawItems = this.rawItems.map((item) => {

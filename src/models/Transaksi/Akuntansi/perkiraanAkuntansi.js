@@ -8,7 +8,8 @@ perkiraanAkuntansi.fetchPerkiraan = async (
   sort_by,
   sort_mode,
   page_number,
-  total_row_displayed
+  total_row_displayed,
+  kantor
 ) => {
   const token = await isTokenValid()
   if (token.success) {
@@ -21,9 +22,9 @@ perkiraanAkuntansi.fetchPerkiraan = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM perkiraan`
+      let query = `SELECT COUNT(*) AS total FROM perkiraan WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       const [data] = await db.query(query)
       let total_page
@@ -32,9 +33,9 @@ perkiraanAkuntansi.fetchPerkiraan = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM perkiraan`
+      query = `SELECT * FROM perkiraan WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
       const [rows] = await db.query(query)
@@ -72,11 +73,12 @@ perkiraanAkuntansi.createPerkiraan = async (
   bukubantu,
   kelompok,
   kelompok_data,
-  detail
+  detail,
+  kantor
 ) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail, font) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}', '')`
+      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail, font, kantor) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}', '', '${kantor}')`
     )
     return new Response(rows)
   } catch (error) {

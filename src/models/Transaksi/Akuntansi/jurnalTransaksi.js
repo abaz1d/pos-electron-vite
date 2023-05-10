@@ -8,7 +8,8 @@ jurnalTransaksi.fetchJurnal = async (
   sort_by,
   sort_mode,
   page_number,
-  total_row_displayed
+  total_row_displayed,
+  kantor
 ) => {
   const token = await isTokenValid()
   if (token.success) {
@@ -21,9 +22,9 @@ jurnalTransaksi.fetchJurnal = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM jurnal`
+      let query = `SELECT COUNT(*) AS total FROM jurnal WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       const [data] = await db.query(query)
       let total_page
@@ -32,9 +33,9 @@ jurnalTransaksi.fetchJurnal = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM jurnal`
+      query = `SELECT * FROM jurnal WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
       const [rows] = await db.query(query)
@@ -66,10 +67,10 @@ jurnalTransaksi.getJurnal = async (bukti) => {
     return new Response(error, false)
   }
 }
-jurnalTransaksi.createJurnal = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
+jurnalTransaksi.createJurnal = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, KANTOR) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO jurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}')`
+      `INSERT INTO jurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, KANTOR) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}', '${KANTOR}')`
     )
     return new Response(rows)
   } catch (error) {

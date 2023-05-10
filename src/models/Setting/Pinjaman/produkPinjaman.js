@@ -7,7 +7,8 @@ produkPinjaman.fetchProduk = async (
   sort_by,
   sort_mode,
   page_number,
-  total_row_displayed
+  total_row_displayed,
+  kantor
 ) => {
   const token = await isTokenValid()
   if (token.success) {
@@ -20,9 +21,9 @@ produkPinjaman.fetchProduk = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj`
+      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       const [data] = await db.query(query)
       let total_page
@@ -31,13 +32,15 @@ produkPinjaman.fetchProduk = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM setsandi_pinj`
+      query = `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`
       if (search_data !== '') {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
       const [rows] = await db.query(query)
-      const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`)
+      const [perkiraan] = await db.query(
+        `SELECT noper, nama FROM perkiraan WHERE kantor = '${kantor}' ORDER BY noper ASC;`
+      )
       return new Response({ rows, total_page, perkiraan })
     } catch (error) {
       console.error(error)
@@ -90,13 +93,14 @@ produkPinjaman.postProduk = async (
   jurnal_prov,
   jurnal_yadit,
   jurnal_ppap,
-  isEdit
+  isEdit,
+  kantor
 ) => {
   try {
     let rows
     if (!isEdit) {
       ;[rows] = await db.query(
-        `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '0001')`
+        `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '${kantor}')`
       )
     } else {
       ;[rows] = await db.query(
@@ -109,9 +113,9 @@ produkPinjaman.postProduk = async (
     return new Response(error, false)
   }
 }
-produkPinjaman.deleteProduk = async (sandi) => {
+produkPinjaman.deleteProduk = async (sandi, kantor) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}';`)
+    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}' AND kantor = '${kantor}';`)
     return new Response({ message: 'success delete setsandi_pinj' }, true)
   } catch (error) {
     console.error(error)

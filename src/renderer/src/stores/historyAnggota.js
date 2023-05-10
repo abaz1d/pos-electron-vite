@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from './auth'
 import router from '@renderer/router'
 import Swal from 'sweetalert2'
 const request = window.api.historyAnggota
@@ -14,13 +15,15 @@ export const useHistoryAnggotaStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
+        const Auth = useAuthStore()
         const data = await request.fetchAnggota(
           search_type,
           search_data,
           sort_by,
           sort_mode,
           page_number,
-          total_row_displayed
+          total_row_displayed,
+          Auth.items.kantor
         )
         if (data.success) {
           this.rawItems = data.data.rows

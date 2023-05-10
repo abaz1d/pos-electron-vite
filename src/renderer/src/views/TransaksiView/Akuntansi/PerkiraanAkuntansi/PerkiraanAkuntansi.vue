@@ -659,6 +659,7 @@ onBeforeMount(async () => {
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
+            class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
             v-for="(perkiraan, index) in perkiraanAkuntansi.items"
             :key="index"
             :perkiraan="perkiraan"

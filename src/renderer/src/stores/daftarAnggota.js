@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import router from '@renderer/router'
+import { useAuthStore } from './auth'
 import Swal from 'sweetalert2'
 const request = window.api.daftarAnggota
 
@@ -14,13 +15,15 @@ export const useDaftarAnggotaStore = defineStore({
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
       try {
+        const Auth = useAuthStore()
         const data = await request.fetchAnggota(
           search_type,
           search_data,
           sort_by,
           sort_mode,
           page_number,
-          total_row_displayed
+          total_row_displayed,
+          Auth.items.kantor
         )
         if (data.success) {
           this.rawItems = data.data.rows
@@ -117,7 +120,8 @@ export const useDaftarAnggotaStore = defineStore({
           pendamping,
           pekerjaan,
           no_telepon,
-          resort
+          resort,
+          kantor: Auth.items.kantor
         })
         await request.postAnggota(
           iddata,
@@ -143,7 +147,8 @@ export const useDaftarAnggotaStore = defineStore({
 
           imageFoto,
           imageTTD,
-          imagePA
+          imagePA,
+          Auth.items.kantor
         )
       } catch (error) {
         throw new Error(error)
