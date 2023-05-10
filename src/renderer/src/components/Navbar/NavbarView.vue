@@ -2,12 +2,14 @@
 import { useAuthStore } from '@renderer/stores/auth'
 import { RouterLink } from 'vue-router'
 import LOGO from '@renderer/assets/icons.svg'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 const Auth = useAuthStore()
 const logoutConfirmationModal = ref(false)
+const data = ref([])
 const props = defineProps({
   title: String
 })
+//console.log(window.electron.process.env)
 const listMenu = {
   setting: ref(),
   transaksi: ref(),
@@ -46,6 +48,9 @@ const onLogout = () => {
   logoutConfirmationModal.value = false
 }
 defineExpose({ openMenu, closeMenu })
+onMounted(() => {
+  data.value = Auth.items
+})
 </script>
 
 <template>
@@ -80,8 +85,10 @@ defineExpose({ openMenu, closeMenu })
               class="duration-700 absolute z-10 origin-top-right transform rounded-md border-2 bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border-primary dark:bg-dark dark:shadow-slate-500 translate-y-0"
             >
               <DropdownHeader tag="div" class="!font-normal">
-                <div class="text-sm font-medium">Nama User</div>
-                <div class="text-xs text-black/70 mt-0.5 dark:text-slate-500">Nama Lembaga</div>
+                <div class="text-sm font-medium">{{ data.username }} - {{ data.nama }}</div>
+                <div class="text-xs text-black/70 mt-0.5 dark:text-slate-500">
+                  {{ data.kantor }}
+                </div>
               </DropdownHeader>
               <DropdownDivider class="border-slate-200" />
               <DropdownItem class="hover:bg-slate-200 text-sm">
