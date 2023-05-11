@@ -85,9 +85,12 @@ onMounted(() => {
               class="duration-700 absolute z-10 origin-top-right transform rounded-md border-2 bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border-primary dark:bg-dark dark:shadow-slate-500 translate-y-0"
             >
               <DropdownHeader tag="div" class="!font-normal">
-                <div class="text-sm font-medium">{{ data.username }} - {{ data.nama }}</div>
+                <div class="text-sm font-medium">
+                  {{ data == null ? '' : data.username }} -
+                  {{ data == null ? '' : data.nama }}
+                </div>
                 <div class="text-xs text-black/70 mt-0.5 dark:text-slate-500">
-                  {{ data.kantor }}
+                  {{ data == null ? '' : data.kantor }}
                 </div>
               </DropdownHeader>
               <DropdownDivider class="border-slate-200" />
