@@ -25,7 +25,7 @@ const isTokenValid = async () => {
     try {
       const result = jwt$1.verify(pureToken, secretKey);
       const [data] = await db.query(
-        `SELECT * FROM users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
+        `SELECT * FROM user WHERE id = ${result.userid} ORDER BY id ASC`
       );
       const user2 = data[0];
       if (user2.token == pureToken) {
@@ -48,13 +48,13 @@ const oAuth = {};
 oAuth.auth = async (input_user, password) => {
   try {
     var data;
-    const [rows] = await db.query(`SELECT * FROM users WHERE email_user = ?`, [input_user]);
+    const [rows] = await db.query(`SELECT * FROM user WHERE nama = ?`, [input_user]);
     data = rows;
     if (rows.length == 0) {
-      console.log("check username");
-      const [rows2] = await db.query("SELECT * FROM users WHERE username = ?", [input_user]);
+      console.log("check userid");
+      const [rows2] = await db.query("SELECT * FROM user WHERE userid = ?", [input_user]);
       if (rows2.length == 0) {
-        return new Response({ message: "unregistered e-mail/username" }, false);
+        return new Response({ message: "unregistered e-mail/userid" }, false);
       }
       data = rows2;
       const result = await bcrypt.compare(password, data[0].password);
@@ -63,51 +63,47 @@ oAuth.auth = async (input_user, password) => {
       } else {
         var token = jwt.sign(
           {
-            userid: data[0].id_user,
-            email: data[0].email_user
+            userid: data[0].id,
+            nama: data[0].nama
           },
           secretKey
         );
-        const [update] = await db.query(`UPDATE users SET token = ? WHERE id_user = ?;`, [
+        const [update] = await db.query(`UPDATE user SET token = ? WHERE id = ?;`, [
           token,
-          data[0].id_user
+          data[0].id
         ]);
-        const [rows22] = await db.query(`SELECT * FROM users WHERE id_user = ?;`, [data[0].id_user]);
+        const [rows22] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id]);
         return new Response({
-          userid: rows22[0].id_user,
-          email: rows22[0].email_user,
-          username: rows22[0].username,
-          role: rows22[0].role,
-          id_region: rows22[0].id_region,
-          nama_region: rows22[0].nama_region,
+          userid: rows22[0].id,
+          nama: rows22[0].nama,
+          username: rows22[0].userid,
+          kantor: rows22[0].kantor,
           token: rows22[0].token
         });
       }
     } else {
-      console.log("check email");
+      console.log("check nama");
       const result = await bcrypt.compare(password, data[0].password);
       if (!result) {
         return new Response({ message: "password doesn't match" }, false);
       } else {
         var token = jwt.sign(
           {
-            userid: data[0].id_user,
-            email: data[0].email_user
+            userid: data[0].id,
+            nama: data[0].nama
           },
           secretKey
         );
-        const [update] = await db.query(`UPDATE users SET token = ? WHERE id_user = ?;`, [
+        const [update] = await db.query(`UPDATE user SET token = ? WHERE id = ?;`, [
           token,
-          data[0].id_user
+          data[0].id
         ]);
-        const rows2 = data;
+        const [rows2] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id]);
         return new Response({
-          userid: rows2[0].id_user,
-          email: rows2[0].email_user,
-          username: rows2[0].username,
-          role: rows2[0].role,
-          id_region: rows2[0].id_region,
-          nama_region: rows2[0].nama_region,
+          userid: rows2[0].id,
+          nama: rows2[0].nama,
+          username: rows2[0].userid,
+          kantor: rows2[0].kantor,
           token: rows2[0].token
         });
       }
@@ -126,13 +122,13 @@ oAuth.logOut = async () => {
       try {
         const result = jwt.verify(pureToken, secretKey);
         const [data] = await db.query(
-          `SELECT * FROM users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
+          `SELECT * FROM user WHERE id = ${result.userid} ORDER BY id ASC`
         );
         const user2 = data[0];
         var tokenNow = null;
-        const [rows] = await db.query(`UPDATE users SET token = ? WHERE id_user = ?;`, [
+        const [rows] = await db.query(`UPDATE user SET token = ? WHERE id = ?;`, [
           tokenNow,
-          user2.id_user
+          user2.id
         ]);
         return new Response({ message: "sign out success" }, true);
       } catch (e) {
@@ -147,7 +143,7 @@ oAuth.logOut = async () => {
   }
 };
 const produkPinjaman = {};
-produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) => {
+produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
   if (token.success) {
     var sortMode = sort_mode ? "ASC" : "DESC";
@@ -158,9 +154,9 @@ produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj`;
+      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       const [data] = await db.query(query);
       let total_page;
@@ -169,13 +165,15 @@ produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM setsandi_pinj`;
+      query = `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
-      const [perkiraan] = await db.query(`SELECT noper, nama FROM perkiraan ORDER BY noper ASC;`);
+      const [perkiraan] = await db.query(
+        `SELECT noper, nama FROM perkiraan WHERE kantor = '${kantor}' ORDER BY noper ASC;`
+      );
       return new Response({ rows, total_page, perkiraan });
     } catch (error) {
       console.error(error);
@@ -212,13 +210,13 @@ produkPinjaman.getProduk = async (sandi) => {
     return new Response(error, false);
   }
 };
-produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, isEdit) => {
+produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, isEdit, kantor) => {
   try {
     let rows;
     if (!isEdit) {
       ;
       [rows] = await db.query(
-        `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '0001')`
+        `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '${kantor}')`
       );
     } else {
       ;
@@ -232,9 +230,9 @@ produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, p
     return new Response(error, false);
   }
 };
-produkPinjaman.deleteProduk = async (sandi) => {
+produkPinjaman.deleteProduk = async (sandi, kantor) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}';`);
+    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}' AND kantor = '${kantor}';`);
     return new Response({ message: "success delete setsandi_pinj" }, true);
   } catch (error) {
     console.error(error);
@@ -242,7 +240,7 @@ produkPinjaman.deleteProduk = async (sandi) => {
   }
 };
 const daftarAnggota = {};
-daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) => {
+daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
   if (token.success) {
     var sortMode = sort_mode ? "ASC" : "DESC";
@@ -253,9 +251,9 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota`;
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       const [data] = await db.query(query);
       let total_page;
@@ -264,9 +262,9 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota`;
+      query = `SELECT * FROM anggota WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
@@ -311,19 +309,19 @@ daftarAnggota.getAnggota = async (iddata) => {
     return new Response(error, false);
   }
 };
-daftarAnggota.postAnggota = async (iddata, tanggal, no_anggota, no_ktp, no_kk, nama_lengkap, tempat_lahir, tanggal_lahir, jenis_kelamin, agama, alamat, rt, rw, kelurahan, kecamatan, kota, pendamping, pekerjaan, no_telepon, resort, imageFoto, imageTTD, imagePA) => {
+daftarAnggota.postAnggota = async (iddata, tanggal, no_anggota, no_ktp, no_kk, nama_lengkap, tempat_lahir, tanggal_lahir, jenis_kelamin, agama, alamat, rt, rw, kelurahan, kecamatan, kota, pendamping, pekerjaan, no_telepon, resort, imageFoto, imageTTD, imagePA, kantor) => {
   try {
     let rows;
     if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
       if (iddata == "") {
         ;
         [rows] = await db.query(
-          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort, kantor) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
             [imageFoto],
             { type: imageFoto.type }
           )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
             type: imagePA.type
-          })}', '${resort}')`
+          })}', '${resort}', '${kantor}')`
         );
       } else {
         ;
@@ -353,7 +351,7 @@ daftarAnggota.postAnggota = async (iddata, tanggal, no_anggota, no_ktp, no_kk, n
     }
     return new Response(rows);
   } catch (error) {
-    console.log("error models", error);
+    console.error("error models", error);
     return new Response(error, false);
   }
 };
@@ -367,7 +365,7 @@ daftarAnggota.deleteAnggota = async (iddata) => {
   }
 };
 const historyAnggota = {};
-historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) => {
+historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
   if (token.success) {
     var sortMode = sort_mode ? "ASC" : "DESC";
@@ -378,7 +376,7 @@ historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mod
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht != '0000-00-00'`;
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -389,7 +387,7 @@ historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mod
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota WHERE tglbht != '0000-00-00'`;
+      query = `SELECT * FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -459,7 +457,7 @@ historyAnggota.deleteAnggota = async (iddata) => {
   }
 };
 const jurnalTransaksi = {};
-jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) => {
+jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
   if (token.success) {
     var sortMode = sort_mode ? "ASC" : "DESC";
@@ -470,9 +468,9 @@ jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mod
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM jurnal`;
+      let query = `SELECT COUNT(*) AS total FROM jurnal WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       const [data] = await db.query(query);
       let total_page;
@@ -481,9 +479,9 @@ jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mod
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM jurnal`;
+      query = `SELECT * FROM jurnal WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
@@ -515,10 +513,10 @@ jurnalTransaksi.getJurnal = async (bukti) => {
     return new Response(error, false);
   }
 };
-jurnalTransaksi.createJurnal = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) => {
+jurnalTransaksi.createJurnal = async (TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, KANTOR) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO jurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}')`
+      `INSERT INTO jurnal(TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH, KANTOR) VALUES ('${TANGGAL}', '${BUKTI}', '${NOPER}', '${KETERANGAN}', '${JUMLAH}', '${KANTOR}')`
     );
     return new Response(rows);
   } catch (error) {
@@ -547,7 +545,7 @@ jurnalTransaksi.deleteJurnal = async (idtrans) => {
   }
 };
 const perkiraanAkuntansi = {};
-perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) => {
+perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
   if (token.success) {
     var sortMode = sort_mode ? "ASC" : "DESC";
@@ -558,9 +556,9 @@ perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, so
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM perkiraan`;
+      let query = `SELECT COUNT(*) AS total FROM perkiraan WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       const [data] = await db.query(query);
       let total_page;
@@ -569,9 +567,9 @@ perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, so
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM perkiraan`;
+      query = `SELECT * FROM perkiraan WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
-        query += ` WHERE ${search_type} LIKE '%${search_data}%'`;
+        query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
@@ -602,10 +600,10 @@ perkiraanAkuntansi.getPerkiraan = async (bukti) => {
     return new Response(error, false);
   }
 };
-perkiraanAkuntansi.createPerkiraan = async (noper, nama, level, bukubantu, kelompok, kelompok_data, detail) => {
+perkiraanAkuntansi.createPerkiraan = async (noper, nama, level, bukubantu, kelompok, kelompok_data, detail, kantor) => {
   try {
     const [rows] = await db.query(
-      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail, font) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}', '')`
+      `INSERT INTO perkiraan(noper, nama, level, bukubantu, kel, keldata, detail, font, kantor) VALUES ('${noper}', '${nama}', '${level}', '${bukubantu}', '${kelompok}', '${kelompok_data}', '${detail}', '', '${kantor}')`
     );
     return new Response(rows);
   } catch (error) {

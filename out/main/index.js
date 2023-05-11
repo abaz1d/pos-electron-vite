@@ -27,7 +27,7 @@ const isTokenValid = async () => {
     try {
       const result = jwt.verify(pureToken, secretKey);
       const [data] = await db.query(
-        `SELECT * FROM users WHERE id_user = ${result.userid} ORDER BY id_user ASC`
+        `SELECT * FROM user WHERE id = ${result.userid} ORDER BY id ASC`
       );
       const user2 = data[0];
       if (user2.token == pureToken) {
@@ -74,8 +74,9 @@ function createWindow() {
       message: "Apakah Anda Yakin Ingin Menutup Aplikasi ?"
     });
     if (response == 1) {
-      localStorage.removeItem("user");
       e.preventDefault();
+    } else {
+      mainWindow.webContents.executeJavaScript('localStorage.removeItem("user")');
     }
   });
   pool.getConnection((err) => {
