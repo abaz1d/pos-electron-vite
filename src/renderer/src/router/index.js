@@ -3,13 +3,18 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Swal from 'sweetalert2'
 import HomeView from '@renderer/views/HomeView.vue'
 import Auth from '@renderer/views/Auth.vue'
+//Settings
 import ProdukPinjaman from '@renderer/views/SettingView/Pinjaman/ProdukPinjaman/ProdukPinjaman.vue'
 import CaraHitungPinjaman from '@renderer/views/SettingView/Pinjaman/CaraHitungPinjaman/CaraHitungPinjaman.vue'
+//Transaksi
 import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
 import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota/HistoryAnggota.vue'
 import JurnalTransaksi from '@renderer/views/TransaksiView/Akuntansi/JurnalTransaksi/JurnalTransaksi.vue'
 import PerkiraanAkuntansi from '@renderer/views/TransaksiView/Akuntansi/PerkiraanAkuntansi/PerkiraanAkuntansi.vue'
+//Laporan
 import PrintDaftarAnggota from '@renderer/views/LaporanView/Keanggotaan/DaftarAnggota/PrintDaftarAnggota.vue'
+//Proses
+import ProsesHarian from '@renderer/views/ProsesView/Harian/ProsesHarian.vue'
 const routes = [
   {
     path: '/',
@@ -17,6 +22,7 @@ const routes = [
     component: HomeView,
     meta: { authorize: [] }
   },
+  //Settings
   {
     path: '/produk-pinjaman',
     name: 'produk-pinjaman',
@@ -29,6 +35,7 @@ const routes = [
     component: CaraHitungPinjaman,
     meta: { authorize: [] }
   },
+  //Transaksi
   {
     path: '/daftar-anggota-koperasi',
     name: 'daftar-anggota-koperasi',
@@ -53,10 +60,18 @@ const routes = [
     component: PerkiraanAkuntansi,
     meta: { authorize: [] }
   },
+  //Laporan
   {
     path: '/laporan-daftar-anggota',
     name: 'laporan-daftar-anggota',
     component: PrintDaftarAnggota,
+    meta: { authorize: [] }
+  },
+  //Proses
+  {
+    path: '/proses-harian',
+    name: 'proses-harian',
+    component: ProsesHarian,
     meta: { authorize: [] }
   },
   {
