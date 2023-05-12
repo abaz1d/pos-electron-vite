@@ -1807,7 +1807,9 @@ onMounted(async () => {
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="historyAnggotaForm" class="btn btn-primary w-32">Simpan</button>
+      <button v-if="!isView" type="submit" form="historyAnggotaForm" class="btn btn-primary w-32">
+        Simpan
+      </button>
     </ModalFooter>
   </Modal>
 

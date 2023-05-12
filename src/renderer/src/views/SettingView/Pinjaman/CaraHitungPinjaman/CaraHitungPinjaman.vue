@@ -1,141 +1,100 @@
 <script setup>
-import { useJurnalTransaksiStore } from '@renderer/stores/jurnalTransaksi.js'
-import { onBeforeMount, ref, watch, inject } from 'vue'
-import { currencyFormatter } from '@renderer/utils/helper'
-import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
+import { useCaraHitungPinjamanStore } from '@renderer/stores/caraHitungPinjaman.js'
+import { onMounted, ref, watch, inject } from 'vue'
 import moment from 'moment'
-import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
-import TableDetail from './TabelDetail.vue'
+import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
+import SETTING from '@renderer/assets/images/menu/setting.svg'
 
 const swal = inject('$swal')
-const jurnalTransaksi = useJurnalTransaksiStore()
+const caraHitungPinjaman = useCaraHitungPinjamanStore()
 const isLoading = ref(false)
 const isAdd = ref(false)
 const isEdit = ref(false)
-const isEditItem = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
 const modal_delete = ref(false)
-const sort_by = ref('idtrans')
+const sort_by = ref('id')
 const sort_mode = ref(true)
 const search_data = ref('')
-const search_type = ref('idtrans')
+const search_type = ref('id')
 const page_number = ref(1)
 const total_pages = ref(0)
 const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
-const KETERANGAN = ref('')
-const Perkiraan_list = ref('')
-
-const idtrans = ref('')
-const idItem = ref('')
-const status_balance = ref('')
-const balance = ref(0)
-const tanggal = ref(moment(Date.now()).format('YYYY-MM-DD'))
-const bukti = ref('')
-const noper = ref('noper')
-const Keterangan = ref('')
-const debet = ref(0)
-const kredit = ref(0)
+const id = ref('')
+const kode = ref('P002')
+const sandi = ref('')
+const keterangan = ref('')
 
 const addGet = () => {
   isAdd.value = true
   modal_utama.value = true
 }
+const editGet = async (e) => {
+  const produk = await caraHitungPinjaman.getItem(e)
+  isEdit.value = true
+  id.value = produk.id
+  kode.value = produk.kode
+  sandi.value = produk.sandi
+  keterangan.value = produk.keterangan
+  modal_utama.value = true
+}
 const deleteGet = (e) => {
-  const jurnal = e
-  if (jurnal.idtrans) {
+  const produk = e
+
+  if (produk.id) {
     userIds.value = []
-    userIds.value.push(jurnal.idtrans)
+    userIds.value.push(produk.id)
+    console.log('delete get 1', userIds.value)
     modal_delete.value = true
   } else {
     if (userIds.value.length > 0) {
+      console.log('delete get 1+', userIds.value)
       modal_delete.value = true
     }
   }
 }
-const editGet = async (e) => {
-  if (e !== '') {
-    idtrans.value = e
-    const jurnal = await jurnalTransaksi.getItem(e)
-    for (let i = 0; i < jurnal.length; i++) {
-      balance.value = balance.value + jurnal[i].JUMLAH
-    }
-    status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
-    bukti.value = jurnal[0].BUKTI
-    isEdit.value = true
-    modal_utama.value = true
-  }
-}
-const deleteJurnal = async () => {
-  if (userIds.value.length > 1) {
-    for (let idTrans = 0; idTrans < userIds.value.length; idTrans++) {
-      await jurnalTransaksi.removeItem(userIds.value[idTrans])
-    }
-  } else {
-    await jurnalTransaksi.removeItem(userIds.value[0])
-  }
-  resetForm()
+
+const viewData = async (e) => {
+  const produk = await caraHitungPinjaman.getItem(e)
+  isView.value = true
+  id.value = produk.id
+  kode.value = produk.kode
+  sandi.value = produk.sandi
+  keterangan.value = produk.keterangan
+  modal_utama.value = true
 }
 const simpan_data = async (e) => {
+  try {
+    await caraHitungPinjaman.postItem(kode.value, sandi.value, keterangan.value, isEdit.value)
+    e.target.reset()
+    resetForm()
+  } catch (error) {
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR SIMPAN DATA:  ' + error
+    })
+  }
+}
+const deleteAnggota = async () => {
+  if (userIds.value.length > 1) {
+    for (let idAnggota = 0; idAnggota < userIds.value.length; idAnggota++) {
+      console.log('delete post 1+', userIds.value[idAnggota])
+      await caraHitungPinjaman.removeItem(userIds.value[idAnggota])
+    }
+  } else {
+    console.log('delete post 1', userIds.value)
+    await caraHitungPinjaman.removeItem(userIds.value[0])
+  }
   resetForm()
-}
-const add_data = async (e) => {
-  try {
-    const data = await jurnalTransaksi.postItem(
-      idItem.value,
-      tanggal.value,
-      bukti.value,
-      noper.value,
-      Keterangan.value,
-      debet.value - kredit.value,
-      isEditItem.value
-    )
-
-    if (data) {
-      miniReset()
-    }
-  } catch (error) {
-    swal({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'ERROR ADD ITEM ' + error
-    })
-  }
-}
-const update_data = async (e) => {
-  const jurnal = e
-  isEditItem.value = true
-  idItem.value = jurnal.idtrans
-  tanggal.value = moment(jurnal.TANGGAL).format('YYYY-MM-DD')
-  bukti.value = jurnal.BUKTI
-  noper.value = jurnal.NOPER
-  Keterangan.value = jurnal.KETERANGAN
-  debet.value = jurnal.JUMLAH > 0 ? jurnal.JUMLAH : 0
-  kredit.value = jurnal.JUMLAH < 0 ? Math.abs(jurnal.JUMLAH) : 0
-}
-const viewData = async (e) => {
-  try {
-    if (e != '') {
-      const data = await jurnalTransaksi.readPerkiraan(e)
-      KETERANGAN.value = data == undefined ? '' : data
-    } else {
-      KETERANGAN.value = ''
-    }
-  } catch (error) {
-    swal({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'ERROR VIEW DATA:  ' + error
-    })
-  }
 }
 const resetForm = () => {
   if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
     search_data.value = ''
-    search_type.value = 'nama'
-    sort_by.value = 'idtrans'
+    search_type.value = 'id'
+    sort_by.value = 'id'
     sort_mode.value = true
     page_number.value = 1
     total_pages.value = 0
@@ -143,53 +102,23 @@ const resetForm = () => {
   }
   allSelected.value = false
   userIds.value = []
-  KETERANGAN.value = ''
-
+  kode.value = 'P002'
+  sandi.value = ''
+  keterangan.value = ''
   modal_utama.value = false
   modal_delete.value = false
   isAdd.value = false
   isEdit.value = false
-  isEditItem.value = false
   isView.value = false
-  idtrans.value = ''
-  idItem.value = ''
-  status_balance.value = ''
-  balance.value = 0
-  tanggal.value = moment(Date.now()).format('YYYY-MM-DD')
-  bukti.value = ''
-  noper.value = 'noper'
-  Keterangan.value = ''
-  debet.value = 0
-  kredit.value = 0
-  jurnalTransaksi.detailJurnal = []
 }
-const miniReset = () => {
-  tanggal.value = moment(Date.now()).format('YYYY-MM-DD')
-  if (jurnalTransaksi.jurnals.length > 0) {
-    bukti.value = jurnalTransaksi.jurnals[0].BUKTI
-  } else {
-    bukti.value = ''
-  }
-  noper.value = 'noper'
-  Keterangan.value = ''
-  debet.value = 0
-  kredit.value = 0
-  idItem.value = ''
-  isEditItem.value = false
-  balance.value = 0
-  const jurnal = jurnalTransaksi.jurnals
-  for (let i = 0; i < jurnal.length; i++) {
-    balance.value = balance.value + jurnal[i].JUMLAH
-  }
-  status_balance.value = balance.value == 0 ? 'Balance' : 'Tidak Balance'
-}
+
 const sorting = async (e) => {
   isLoading.value = true
   sort_by.value = e
   sort_mode.value = !sort_mode.value
 
   try {
-    await jurnalTransaksi.readItem(
+    await caraHitungPinjaman.readItem(
       search_type.value,
       search_data.value,
       e,
@@ -197,14 +126,13 @@ const sorting = async (e) => {
       page_number.value,
       row_per_page.value
     )
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
     swal({
       icon: 'error',
       title: 'Oops...',
-      text: 'Gagal Sorting ' + error
+      text: 'GAGAL SORTING: ' + error
     })
   }
 }
@@ -226,6 +154,7 @@ const previousPage = async () => {
     })
   }
 }
+
 const nextPage = () => {
   try {
     if (page_number.value == '') {
@@ -247,10 +176,11 @@ const nextPage = () => {
 const lastPage = async () => {
   page_number.value = total_pages.value
 }
+
 watch(page_number, async (e) => {
   try {
     isLoading.value = true
-    await jurnalTransaksi.readItem(
+    await caraHitungPinjaman.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -258,7 +188,6 @@ watch(page_number, async (e) => {
       e,
       row_per_page.value
     )
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -267,7 +196,6 @@ watch(page_number, async (e) => {
       title: 'Oops...',
       text: 'Gagal ganti page ' + error
     })
-    console.error(error)
   }
 })
 watch(row_per_page, async (e) => {
@@ -276,7 +204,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value || page_number.value == '') {
       page_number.value = 1
     }
-    const data = await jurnalTransaksi.readItem(
+    const data = await caraHitungPinjaman.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -290,7 +218,6 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value) {
       page_number.value = 1
     }
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -304,7 +231,7 @@ watch(row_per_page, async (e) => {
 watch(search_data, async (e) => {
   try {
     isLoading.value = true
-    const data = await jurnalTransaksi.readItem(
+    const data = await caraHitungPinjaman.readItem(
       search_type.value,
       e,
       sort_by.value,
@@ -313,21 +240,20 @@ watch(search_data, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
     swal({
       icon: 'error',
       title: 'Oops...',
-      text: 'Gagal search page ' + error
+      text: 'Gagal ganti page ' + error
     })
   }
 })
 watch(search_type, async (e) => {
   try {
     isLoading.value = true
-    const data = await jurnalTransaksi.readItem(
+    const data = await caraHitungPinjaman.readItem(
       e,
       search_data.value,
       sort_by.value,
@@ -336,23 +262,13 @@ watch(search_type, async (e) => {
       row_per_page.value
     )
     total_pages.value = data
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
     swal({
       icon: 'error',
       title: 'Oops...',
-      text: 'Gagal search page ' + error
-    })
-  }
-})
-watch(noper, async (e) => {
-  if (Keterangan.value == '') {
-    Perkiraan_list.value.map((item) => {
-      if (item.noper == e) {
-        Keterangan.value = item.nama
-      }
+      text: 'Gagal ganti page ' + error
     })
   }
 })
@@ -361,41 +277,19 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let jurnal = 0; jurnal < jurnalTransaksi.items.length; jurnal++) {
-      userIds.value.push(jurnalTransaksi.items[jurnal].idtrans)
+    for (let produk = 0; produk < caraHitungPinjaman.items.length; produk++) {
+      userIds.value.push(caraHitungPinjaman.items[produk].id)
     }
   }
 }
 const selectOne = () => {
   allSelected.value = false
 }
-const configureClass = () => {
-  if (jurnalTransaksi.items[0]) {
-    let prevValue = jurnalTransaksi.items[0].BUKTI
-    let currentClass = 'bg-white'
-    for (let i = 0; i < jurnalTransaksi.items.length; i++) {
-      let value = jurnalTransaksi.items[i].BUKTI
-      if (prevValue !== value) {
-        currentClass == 'bg-white' ? (currentClass = 'bg-slate-200') : (currentClass = 'bg-white')
-      }
-      document.querySelector('#table_jurnal_transaksi tbody').children[i].className = ''
-      document
-        .querySelector('#table_jurnal_transaksi tbody')
-        .children[i].classList.add(
-          currentClass,
-          'hover:bg-lime-300',
-          'hover:text-slate-700',
-          'drop-shadow-2xl',
-          'group'
-        )
-      prevValue = value
-    }
-  }
-}
-onBeforeMount(async () => {
+
+onMounted(async () => {
   try {
     isLoading.value = true
-    const data = await jurnalTransaksi.readItem(
+    const data = await caraHitungPinjaman.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -403,9 +297,8 @@ onBeforeMount(async () => {
       page_number.value,
       row_per_page.value
     )
-    Perkiraan_list.value = data.perkiraan
+    //Perkiraan_list.value = data.perkiraan
     total_pages.value = data.total_pages
-    configureClass()
     isLoading.value = false
   } catch (error) {
     isLoading.value = false
@@ -418,7 +311,7 @@ onBeforeMount(async () => {
 })
 </script>
 <template>
-  <Breadcrumbs title="Transaksi" subTitle="Akuntansi" :icon="TRANSAKSI" />
+  <Breadcrumbs title="Setting" subTitle="Pinjaman" :icon="SETTING" />
   <div class="relative top-0 bg-white w-full border-y-2 border-[#d0d3d4]">
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
       <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
@@ -440,35 +333,35 @@ onBeforeMount(async () => {
         >
           <Trash2Icon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
-        <button
-          class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export CSV"
-          onclick="exportData('csv')"
         >
           <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
           <span
             class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-success font-bold"
             >CSV</span
           >
-        </button>
-        <button
-          class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        </RouterLink>
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export PDF"
-          onclick="exportData('pdf')"
         >
           <ShareIcon class="w-3 h-3 mx-auto stroke-2 stroke-current" />
           <span
             class="w-4 h-2 px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-[8px] text-danger font-bold"
             >PDF</span
           >
-        </button>
-        <button
-          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
+        </RouterLink>
+        <RouterLink
+          to="/laporan-daftar-anggota"
+          class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Print Table"
-          onclick="printData()"
         >
           <PrinterIcon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
-        </button>
+        </RouterLink>
         <button
           class="inline-block hover:text-success align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           @click="selectAll(true), (allSelected = true)"
@@ -585,22 +478,21 @@ onBeforeMount(async () => {
               v-model="search_type"
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
-              <option value="idtrans">ID</option>
-              <option value="TANGGAL">Tanggal</option>
-              <option value="BUKTI">Bukti</option>
-              <option value="NOPER">Noper</option>
-              <option value="KETERANGAN">Keterangan</option>
-              <option value="JUMLAH">Jumlah</option>
+              <option value="id">ID</option>
+              <option value="sandi">Sandi</option>
+              <option value="keterangan">Keterangan</option>
             </select>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="flex flex-col h-[75vh] min-[1537px]:h-[80vh] shadow-md rounded-lg">
+  <div class="flex flex-col h-[80vh] min-[1537px]:h-[85vh] shadow-md rounded-lg">
     <div class="flex-grow overflow-auto">
-      <table class="relative w-full text-xs text-left text-gray-500" id="table_jurnal_transaksi">
-        <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
+      <table class="relative w-full text-xs text-left text-gray-500 table-interval">
+        <thead
+          class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10 table-fixed"
+        >
           <tr>
             <th scope="col" class="p-2 border pl-3">
               <div class="flex items-center">
@@ -616,107 +508,68 @@ onBeforeMount(async () => {
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('idtrans')"
+              class="text-left uppercase border cursor-pointer hover:bg-blue-300 w-16 pl-1"
+              @click="sorting('id')"
             >
               ID
               <SortAscIcon
-                v-if="sort_by === 'idtrans' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                v-if="sort_by === 'id' && sort_mode"
+                class="inline ml-1 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'idtrans' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                v-if="sort_by === 'id' && !sort_mode"
+                class="inline ml-1 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('TANGGAL')"
+              class="text-center uppercase border cursor-pointer hover:bg-blue-300 w-20 pl-1"
+              @click="sorting('sandi')"
             >
-              Tanggal
+              SANDI
               <SortAscIcon
-                v-if="sort_by === 'TANGGAL' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
+                v-if="sort_by === 'sandi' && sort_mode"
+                class="inline ml-1 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'TANGGAL' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
+                v-if="sort_by === 'sandi' && !sort_mode"
+                class="inline ml-1 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('BUKTI')"
-            >
-              Bukti
-              <SortAscIcon
-                v-if="sort_by === 'BUKTI' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'BUKTI' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('NOPER')"
-            >
-              Noper
-              <SortAscIcon
-                v-if="sort_by === 'NOPER' && sort_mode"
-                class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'NOPER' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('KETERANGAN')"
+              @click="sorting('keterangan')"
             >
               Keterangan
               <SortAscIcon
-                v-if="sort_by === 'KETERANGAN' && sort_mode"
+                v-if="sort_by === 'keterangan' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'KETERANGAN' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
-              />
-            </th>
-            <th
-              scope="col"
-              class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('JUMLAH')"
-            >
-              Jumlah
-              <SortAscIcon
-                v-if="sort_by === 'JUMLAH' && sort_mode"
+                v-if="sort_by === 'keterangan' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
-              />
-              <SortDescIcon
-                v-if="sort_by === 'JUMLAH' && !sort_mode"
-                class="inline ml-2 -mr-2 w-5 h-4"
               />
             </th>
             <th scope="col" class="text-center uppercase border">Actions</th>
           </tr>
         </thead>
         <tbody class="overflow-y-scroll" v-show="!isLoading">
-          <tr v-for="(jurnal, index) in jurnalTransaksi.items" :key="index" :jurnal="jurnal">
-            <td class="w-4 border-r border-b font-medium border-[#cbd5e9] p-0 pl-3">
+          <tr
+            class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
+            v-for="produk in caraHitungPinjaman.items"
+            :key="produk.id"
+            :produk="produk"
+            :value="produk.id"
+          >
+            <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
                 <span
                   class="hidden cursor-pointer -ml-[9px] mr-[1px] rotate-90 group-hover:block text-black"
                   >:::</span
                 >
                 <input
-                  :value="jurnal.idtrans"
+                  :value="produk.id"
                   type="checkbox"
                   v-model="userIds"
                   @click="selectOne"
@@ -725,53 +578,35 @@ onBeforeMount(async () => {
               </div>
             </td>
             <th
-              @click="viewData(jurnal.NOPER)"
+              @dblclick="viewData(produk.id)"
               scope="row"
-              class="border-r border-b font-medium border-[#cbd5e9] whitespace-nowrap pl-2 w-20"
+              class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
-              {{ jurnal.idtrans }}
+              {{ produk.id }}
             </th>
             <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-center border-r border-b font-medium border-[#cbd5e9] px-2 w-28"
+              @dblclick="viewData(produk.id)"
+              class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ moment(jurnal.TANGGAL).format('DD-MM-YYYY') }}
+              {{ produk.sandi }}
             </td>
             <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
+              @dblclick="viewData(produk.id)"
+              class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ jurnal.BUKTI }}
+              {{ produk.keterangan }}
             </td>
-            <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-20"
-            >
-              {{ jurnal.NOPER }}
-            </td>
-            <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-left border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-            >
-              {{ jurnal.KETERANGAN }}
-            </td>
-            <td
-              @click="viewData(jurnal.NOPER)"
-              class="min-w-max text-right border-r border-b font-medium border-[#cbd5e9] px-2 w-max"
-            >
-              {{ currencyFormatter.format(jurnal.JUMLAH) }}
-            </td>
-            <td class="min-w-max border-r border-b font-medium border-[#cbd5e9] p-1 w-44">
+            <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(jurnal.BUKTI)"
+                  @click="editGet(produk.id)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
                   <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
                 </a>
                 <a
-                  @click="deleteGet(jurnal)"
+                  @click="deleteGet(produk)"
                   class="flex items-center hover:text-red-800 text-danger"
                   href="javascript:;"
                 >
@@ -796,34 +631,12 @@ onBeforeMount(async () => {
       </table>
     </div>
   </div>
-  <div
-    class="fixed right-0 bottom-0 z-[9999] bg-blue-600 px-10 flex h-10 w-full items-center justify-center"
-  >
-    <div class="w-1/12">
-      <label
-        class="block text-[15px] font-semibold text-left text-white uppercase"
-        for="KETERANGAN"
-      >
-        Keterangan
-      </label>
-    </div>
-    <div class="w-11/12">
-      <input
-        v-model="KETERANGAN"
-        name="KETERANGAN"
-        type="text"
-        placeholder=""
-        disabled
-        class="w-full pl-3 text-left bg-white text-black rounded-md"
-      />
-    </div>
-  </div>
-  <Modal backdrop="static" size="modal-xl" :show="modal_utama" @hidden="modal_utama = false">
+  <Modal backdrop="static" size="modal-lg" :show="modal_utama" @hidden="modal_utama = false">
     <ModalHeader>
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
-        ><span v-if="isView">Data </span> Jurnal
-        <span v-if="isEdit || isView">{{ idtrans }}</span>
+        ><span v-if="isView">Data </span> Produk
+        <span v-if="isEdit || isView">{{ id }}</span>
       </h2>
 
       <a
@@ -836,221 +649,78 @@ onBeforeMount(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <div class="flex flex-col h-40 shadow-md rounded-t-lg -mt-4 border-x border-slate-300">
-        <div class="flex-grow overflow-auto">
-          <table class="relative w-full text-xs text-left text-gray-500" id="table_input_jurnal">
-            <thead class="text-xs font-bold text-gray-800 uppercase bg-blue-200 sticky top-0 z-10">
-              <tr>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
-                >
-                  Bukti
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
-                >
-                  Noper
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
-                >
-                  Keterangan
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
-                >
-                  Debet
-                </th>
-                <th
-                  scope="col"
-                  class="text-center uppercase border cursor-pointer hover:bg-blue-300 h-7"
-                >
-                  Kredit
-                </th>
-                <th scope="col" class="text-center uppercase border">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="overflow-y-scroll" v-show="!isLoading">
-              <TableDetail
-                v-for="(jurnal, index) in jurnalTransaksi.jurnals"
-                :key="index"
-                :jurnal="jurnal"
-                @updateData="update_data"
-              />
-            </tbody>
-          </table>
+      <form method="post" id="caraHitungPinjamanForm" @submit.prevent="simpan_data">
+        <div class="w-full uppercase px-2 text-center bg-slate-200 font-medium text-sm">
+          Default Isian
         </div>
-      </div>
-      <form @submit.prevent="add_data" method="post">
-        <div class="grid grid-cols-3 p-3 bg-green-200">
-          <div class="text-gray-700 flex items-center col">
-            <div class="mb-1 w-1/5 text-xs">
-              <label>Status Balance</label>
+        <div class="bg-slate-100 p-3 rounded-t">
+          <div class="text-gray-700 flex items-center mx-auto w-9/12">
+            <div class="mb-1 w-2/5 text-xs">
+              <label>Kode</label>
             </div>
-            <div class="w-4/5 flex-grow">
+            <span class="mr-3 pb-2">:</span>
+            <div class="w-3/5 flex-grow">
               <input
-                class="w-full h-10 px-3 text-xs text-center placeholder-gray-400 border rounded focus:shadow-outline"
+                class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
-                placeholder="Status Balance"
-                v-model="status_balance"
-                readonly
-              />
-            </div>
-          </div>
-          <div class="text-gray-700 flex items-center col-start-3">
-            <div class="mb-1 w-1/5 text-xs">
-              <label>Balance</label>
-            </div>
-            <div class="w-4/5 flex-grow">
-              <input
-                class="w-full h-10 px-3 text-xs placeholder-gray-400 border rounded focus:shadow-outline"
-                type="number"
-                placeholder="0"
-                v-model="balance"
-                readonly
-              />
-            </div>
-          </div>
-        </div>
-        <div class="bg-slate-200 p-3 rounded-b">
-          <div class="text-gray-700 flex items-center mx-auto w-1/3">
-            <div class="mb-1 w-2/5 text-xs">
-              <label>Tanggal</label>
-            </div>
-            <span class="mr-3">:</span>
-            <div class="w-3/5 flex-grow">
-              <input
-                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="date"
-                v-model="tanggal"
-                readonly
+                v-model="kode"
                 required
               />
             </div>
           </div>
-          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="text-gray-700 flex items-center mx-auto w-9/12">
             <div class="mb-1 w-2/5 text-xs">
-              <label>Bukti</label>
+              <label>Sandi</label>
             </div>
-            <span class="mr-3">:</span>
+            <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <input
-                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
+                class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
-                v-model="bukti"
-                :readonly="jurnalTransaksi.jurnals.length > 0"
+                v-model="sandi"
                 required
               />
             </div>
           </div>
-          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
+          <div class="text-gray-700 flex items-center mx-auto w-9/12">
             <div class="mb-1 w-2/5 text-xs">
-              <label>No. Perkiraan</label>
+              <label>Keterangan</label>
             </div>
-            <span class="mr-3">:</span>
-            <div class="w-3/5 flex-grow">
-              <select
-                v-model="noper"
-                name="perkiraan_list"
-                id="perkiraan_list"
-                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                required
-              >
-                <option value="noper" selected disabled>Pilih Nomor Perkiraan</option>
-                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
-                  {{ perkiraan.noper }}
-                  -
-                  {{ perkiraan.nama }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-            <div class="mb-1 w-2/5 text-xs">
-              <label>Keterangan Transaksi</label>
-            </div>
-            <span class="mr-3">:</span>
+            <span class="mr-3 pb-2">:</span>
             <div class="w-3/5 flex-grow">
               <textarea
-                class="w-full h-12 -mb-[3px] p-3 text-xs border rounded focus:shadow-outline"
+                class="w-full h-16 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
-                v-model="Keterangan"
+                v-model="keterangan"
                 required
               ></textarea>
             </div>
-          </div>
-          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-            <div class="mb-1 w-2/5 text-xs">
-              <label>Debet</label>
-            </div>
-            <span class="mr-3">:</span>
-            <div class="w-3/5 flex-grow">
-              <input
-                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="number"
-                v-model="debet"
-              />
-            </div>
-          </div>
-          <div class="text-gray-700 flex items-center mx-auto w-1/3 mt-0">
-            <div class="mb-1 w-2/5 text-xs">
-              <label>Kredit</label>
-            </div>
-            <span class="mr-3">:</span>
-            <div class="w-3/5 flex-grow">
-              <input
-                class="w-full h-10 mb-1 px-3 text-xs border rounded focus:shadow-outline"
-                type="number"
-                v-model="kredit"
-              />
-            </div>
-          </div>
-          <div class="flex w-1/3 mx-auto space-x-4">
-            <a
-              href="javascript:;"
-              @click="miniReset"
-              class="btn items-center flex mx-auto btn-danger text-xs w-3/12 mt-3"
-            >
-              <XIcon class="w-4 h-4 mr-1" /> Reset
-            </a>
-            <button
-              :disabled="debet - kredit == 0"
-              type="submit"
-              class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
-            >
-              <PlusIcon class="w-4 h-4 mr-1" /> Tambah
-            </button>
           </div>
         </div>
       </form>
     </ModalBody>
     <ModalFooter class="text-right">
-      <button type="button" class="btn btn-outline-secondary w-32 text-xs mr-1" @click="resetForm">
+      <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
       <button
         v-if="!isView"
-        :disabled="
-          (status_balance == 'Tidak Balance' && balance != 0) || jurnalTransaksi.jurnals.length == 0
-        "
-        class="btn btn-primary text-xs w-32"
-        @click="simpan_data"
+        type="submit"
+        form="caraHitungPinjamanForm"
+        class="btn btn-primary w-32"
       >
         Simpan
       </button>
     </ModalFooter>
   </Modal>
+
   <Modal backdrop="static" :show="modal_delete" @hidden="modal_delete = false">
     <ModalBody class="p-0">
       <div class="p-5 text-center">
         <XCircleIcon class="w-16 h-16 text-danger mx-auto mt-3" />
         <div class="text-3xl mt-5">Apakah Anda Yakin ?</div>
         <div class="text-slate-500 mt-2">
-          Ingin menghapus <span v-if="userIds.length > 1">Beberapa</span> data dengan ID <br />
+          Ingin menghapus <span v-if="userIds.length > 1">Beberapa</span> data dengan SANDI <br />
           <b> {{ userIds.length > 1 ? userIds : userIds[0] }} </b> ? <br />Data yang telah dihapus
           tidak bisa kembali.
         </div>
@@ -1069,7 +739,7 @@ onBeforeMount(async () => {
           @click="
             (e) => {
               e.preventDefault()
-              deleteJurnal()
+              deleteAnggota()
             }
           "
         >
@@ -1079,4 +749,3 @@ onBeforeMount(async () => {
     </ModalBody>
   </Modal>
 </template>
-<style scoped></style>

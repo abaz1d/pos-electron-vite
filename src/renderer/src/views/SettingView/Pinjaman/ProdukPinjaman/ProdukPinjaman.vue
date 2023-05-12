@@ -633,10 +633,10 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="anggota in produkPinjaman.items"
-            :key="anggota.sandi"
-            :anggota="anggota"
-            :value="anggota.sandi"
+            v-for="produk in produkPinjaman.items"
+            :key="produk.sandi"
+            :produk="produk"
+            :value="produk.sandi"
           >
             <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
@@ -645,7 +645,7 @@ onMounted(async () => {
                   >:::</span
                 >
                 <input
-                  :value="anggota.sandi"
+                  :value="produk.sandi"
                   type="checkbox"
                   v-model="userIds"
                   @click="selectOne"
@@ -654,41 +654,41 @@ onMounted(async () => {
               </div>
             </td>
             <th
-              @dblclick="viewData(anggota.sandi)"
+              @dblclick="viewData(produk.sandi)"
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
-              {{ anggota.sandi }}
+              {{ produk.sandi }}
             </th>
             <td
-              @dblclick="viewData(anggota.sandi)"
+              @dblclick="viewData(produk.sandi)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ anggota.keterangan }}
+              {{ produk.keterangan }}
             </td>
             <td
-              @dblclick="viewData(anggota.sandi)"
+              @dblclick="viewData(produk.sandi)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ moment(anggota.TGLINP).format('DD-MM-YYYY') }}
+              {{ moment(produk.TGLINP).format('DD-MM-YYYY') }}
             </td>
             <td
-              @dblclick="viewData(anggota.sandi)"
+              @dblclick="viewData(produk.sandi)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ anggota.kantor }}
+              {{ produk.kantor }}
             </td>
             <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(anggota.sandi)"
+                  @click="editGet(produk.sandi)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
                   <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
                 </a>
                 <a
-                  @click="deleteGet(anggota)"
+                  @click="deleteGet(produk)"
                   class="flex items-center hover:text-red-800 text-danger"
                   href="javascript:;"
                 >
@@ -1020,7 +1020,9 @@ onMounted(async () => {
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
-      <button type="submit" form="produkPinjamanForm" class="btn btn-primary w-32">Simpan</button>
+      <button v-if="!isView" type="submit" form="produkPinjamanForm" class="btn btn-primary w-32">
+        Simpan
+      </button>
     </ModalFooter>
   </Modal>
 

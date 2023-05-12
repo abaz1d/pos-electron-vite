@@ -1107,6 +1107,7 @@ onBeforeMount(async () => {
               <XIcon class="w-4 h-4 mr-1" /> Batal
             </a>
             <button
+              v-if="!isView"
               type="submit"
               class="btn items-center flex mx-auto btn-primary text-xs w-9/12 mt-3"
             >
