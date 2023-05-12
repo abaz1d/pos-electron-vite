@@ -1,7 +1,6 @@
 <script setup>
 import { useCaraHitungPinjamanStore } from '@renderer/stores/caraHitungPinjaman.js'
 import { onMounted, ref, watch, inject } from 'vue'
-import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import SETTING from '@renderer/assets/images/menu/setting.svg'
 
@@ -67,7 +66,13 @@ const viewData = async (e) => {
 }
 const simpan_data = async (e) => {
   try {
-    await caraHitungPinjaman.postItem(kode.value, sandi.value, keterangan.value, isEdit.value)
+    await caraHitungPinjaman.postItem(
+      id.value,
+      kode.value,
+      sandi.value,
+      keterangan.value,
+      isEdit.value
+    )
     e.target.reset()
     resetForm()
   } catch (error) {
@@ -651,7 +656,7 @@ onMounted(async () => {
     <ModalBody>
       <form method="post" id="caraHitungPinjamanForm" @submit.prevent="simpan_data">
         <div class="w-full uppercase px-2 text-center bg-slate-200 font-medium text-sm">
-          Default Isian
+          Cara Perhitungan
         </div>
         <div class="bg-slate-100 p-3 rounded-t">
           <div class="text-gray-700 flex items-center mx-auto w-9/12">

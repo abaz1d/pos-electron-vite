@@ -82,15 +82,21 @@ export const useCaraHitungPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async postItem(kode, sandi, keterangan, isEdit) {
+    async postItem(id, kode, sandi, keterangan, isEdit) {
       const Auth = useAuthStore()
       try {
-        this.rawItems.push({
-          id: this.rawItems.length + 1,
-          kode,
-          sandi,
-          keterangan
-        })
+        if (!isEdit) {
+          this.rawItems.push({
+            id: this.rawItems.length + 1,
+            kode,
+            sandi,
+            keterangan
+          })
+        } else {
+          this.rawItems = this.rawItems.map((item) => {
+            if (item.id === id) return { id, kode, sandi, keterangan }
+          })
+        }
         //await request.postProduk(kode, sandi, keterangan, isEdit, Auth.items.kantor)
       } catch (error) {
         throw new Error(error)
