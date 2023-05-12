@@ -82,7 +82,7 @@ const routes = [
   {
     path: '/tentang-aplikasi',
     name: 'tentang-aplikasi',
-    component: () => import('../views/About/AboutAplikasi.vue'),
+    component: () => import('../views/AboutView/AboutAplikasi.vue'),
     meta: { authorize: [] }
   },
   {
