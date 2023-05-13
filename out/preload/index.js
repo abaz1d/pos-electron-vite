@@ -239,6 +239,7 @@ produkPinjaman.deleteProduk = async (sandi, kantor) => {
     return new Response(error, false);
   }
 };
+const caraHitungPinjaman = {};
 const daftarAnggota = {};
 daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed, kantor) => {
   const token = await isTokenValid();
@@ -634,6 +635,7 @@ perkiraanAkuntansi.deletePerkiraan = async (noper) => {
 const api = {
   oAuth,
   produkPinjaman,
+  caraHitungPinjaman,
   daftarAnggota,
   historyAnggota,
   jurnalTransaksi,
