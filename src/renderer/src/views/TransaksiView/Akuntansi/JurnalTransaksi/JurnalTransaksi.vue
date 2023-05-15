@@ -1058,7 +1058,7 @@ onBeforeMount(async () => {
       <div class="px-5 pb-8 text-center">
         <button
           type="button"
-          @click="resetForm"
+          @click="modal_delete = false"
           class="btn btn-outline-secondary w-24 mr-1 text-xs"
         >
           Batal

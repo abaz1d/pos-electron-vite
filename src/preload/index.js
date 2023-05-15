@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import oAuth from '../models/oAuth'
 import produkPinjaman from '../models/Setting/Pinjaman/produkPinjaman'
 import caraHitungPinjaman from '../models/Setting/Pinjaman/caraHitungPinjaman'
+import daftarPinjaman from '../models/Transaksi/Pinjaman&Pembiayaan/daftarPinjaman'
 import daftarAnggota from '../models/Transaksi/Keanggotaan/daftarAnggota'
 import historyAnggota from '../models/Transaksi/Keanggotaan/historyAnggota'
 import jurnalTransaksi from '../models/Transaksi/Akuntansi/jurnalTransaksi'
@@ -13,6 +14,7 @@ const api = {
   oAuth,
   produkPinjaman,
   caraHitungPinjaman,
+  daftarPinjaman,
   daftarAnggota,
   historyAnggota,
   jurnalTransaksi,
