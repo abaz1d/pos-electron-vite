@@ -82,32 +82,6 @@ historyAnggota.postAnggota = async (
   imagePA
 ) => {
   try {
-    console.log(
-      'POST AGT',
-
-      tanggal,
-      no_anggota,
-      no_ktp,
-      no_kk,
-      nama_lengkap,
-      tempat_lahir,
-      tanggal_lahir,
-      jenis_kelamin,
-      agama,
-      alamat,
-      rt,
-      rw,
-      kelurahan,
-      kecamatan,
-      kota,
-      pendamping,
-      pekerjaan,
-      no_telepon,
-      resort,
-      imageFoto,
-      imageTTD,
-      imagePA.path
-    )
     const [rows] = await db.query(
       `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', LOAD_FILE('${imageFoto.path}'), LOAD_FILE('${imageTTD.path}'), LOAD_FILE('${imagePA.path}'), '${resort}')`
     )

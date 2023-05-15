@@ -288,7 +288,7 @@ daftarAnggota.fetchLaporan = async (kantor, tanggal, resort, limit) => {
         query += ` AND resort = '${resort}'`;
       }
       query += ` ORDER BY iddata ASC`;
-      if (limit !== 0) {
+      if (limit !== "0") {
         query += ` LIMIT ${limit}`;
       }
       const [rows] = await db.query(query);
