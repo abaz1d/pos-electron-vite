@@ -435,7 +435,7 @@ onMounted(() => {
                   <a
                     class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
                     href="javascript:void(0);"
-                    >Pinjaman dan Pembiayaan
+                    >Pinjaman/ Pembiayaan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                   /></a>
@@ -466,6 +466,73 @@ onMounted(() => {
                           class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
                           href="javascript:void(0);"
                           >Data Debius Pinjaman</a
+                        >
+                      </RouterLink>
+                    </li>
+                  </ul>
+                </li>
+                <li class="px-2 hover:bg-slate-200 pb-1 relative rounded">
+                  <a
+                    class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                    href="javascript:void(0);"
+                    >Simpanan/ Funding
+                    <ChevronDownIcon
+                      class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
+                  /></a>
+                  <ul
+                    class="shadow-lg space-y-1 ring-1 p-2 ring-black ring-opacity-50 focus:outline-none bg-white border rounded absolute transform top-0 right-0 transition duration-150 ease-in-out origin-top-left min-w-max"
+                  >
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/daftar-smb">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Daftar S M B</a
+                        >
+                      </RouterLink>
+                    </li>
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/history-smb">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Data History S M B</a
+                        >
+                      </RouterLink>
+                    </li>
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/daftar-simpata">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Daftar Simpata</a
+                        >
+                      </RouterLink>
+                    </li>
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/history-simpata">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Data History Simpata</a
+                        >
+                      </RouterLink>
+                    </li>
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/daftar-sma">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Daftar S M A</a
+                        >
+                      </RouterLink>
+                    </li>
+                    <li class="px-2 hover:bg-slate-200 pb-1 rounded">
+                      <RouterLink to="/history-sma">
+                        <a
+                          class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
+                          href="javascript:void(0);"
+                          >Data History S M A</a
                         >
                       </RouterLink>
                     </li>

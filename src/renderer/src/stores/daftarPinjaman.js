@@ -73,6 +73,14 @@ export const useDaftarPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
+    async getNasabah(cif) {
+      try {
+        const data = await request.getNasabah(cif)
+        return data
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async postItem(
       iddata,
       imageFoto,

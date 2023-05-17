@@ -23,7 +23,7 @@ daftarAnggota.fetchAnggota = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE kantor = '${kantor}'`
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -34,7 +34,7 @@ daftarAnggota.fetchAnggota = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM anggota WHERE kantor = '${kantor}'`
+      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

@@ -40,6 +40,7 @@ const kota = ref('')
 const pokok_pinj = ref('')
 const suku_bunga = ref('')
 const cara_hitung = ref('')
+const tgl_mulai = ref('')
 const lama_durasi = ref('')
 const admin = ref('')
 const provisi = ref('')
@@ -47,7 +48,6 @@ const tgl_jatuh_tempo = ref('')
 const tgl_alih_bunga = ref('')
 const tgl_valuta = ref('')
 const tgl_lunas = ref('')
-const norek_lama = ref('')
 const angsuran_pokok = ref('')
 const angsuran_jasa = ref('')
 const angsuran_bulanan = ref('')
@@ -61,7 +61,15 @@ const addGet = () => {
 }
 const editGet = async (e) => {
   const pinjaman = await daftarPinjaman.getItem(e)
-  console.log(pinjaman)
+  // console.log(
+  //   pinjaman,
+  //   moment(pinjaman.tgljtempo).add(1, 'M').format('YYYY-DD-MM'),
+  //   moment(pinjaman.tgljtempo).format('YYYY-DD-MM')
+  // )
+  tanggal.value =
+    moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tanggal).format('DD-MM-YYYY')
   no_anggota.value = pinjaman.cif
   no_pk.value = pinjaman.nopk
   norek.value = pinjaman.norek
@@ -73,22 +81,34 @@ const editGet = async (e) => {
   desa.value = pinjaman.desa
   kecamatan.value = pinjaman.kecamatan
   kota.value = pinjaman.kota
-  pokok_pinj.value = pinjaman.pokok
+  pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
   suku_bunga.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
   lama_durasi.value = pinjaman.lama
-  admin.value = pinjaman.adm
-  provisi.value = pinjaman.provisi
-  tgl_jatuh_tempo.value = pinjaman.tgljtempo
+  tgl_mulai.value =
+    moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tglmulai).format('DD-MM-YYYY')
+  admin.value = currencyFormatter.format(pinjaman.adm)
+  provisi.value = currencyFormatter.format(pinjaman.provisi)
+  tgl_jatuh_tempo.value =
+    moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tgljtempo).format('YYYY-DD-MM')
   //tgl_alih_bunga.value = pinjaman.
-  tgl_valuta.value = pinjaman.tglvaluta
-  tgl_lunas.value = pinjaman.tgllunas
-  norek_lama.value = pinjaman.norek_lama
-  angsuran_pokok.value = pinjaman.pot_pokok
-  angsuran_jasa.value = pinjaman.pot_bunga
-  angsuran_bulanan.value = pinjaman.pot_pokok + pinjaman.pot_bunga
-  sisa_pokok.value = pinjaman.sisapokok
-  sisa_jasa.value = pinjaman.pot_bunga
+  tgl_valuta.value =
+    moment(pinjaman.tglvaluta).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tglvaluta).format('DD-MM-YYYY')
+  tgl_lunas.value =
+    moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
+  angsuran_pokok.value = currencyFormatter.format(pinjaman.pot_pokok)
+  angsuran_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
+  angsuran_bulanan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
+  sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
+  sisa_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
   // saldo_pinjaman.value = pinjaman.
   isEdit.value = true
 
@@ -115,6 +135,26 @@ const viewData = async (e) => {
   isView.value = true
 
   modal_utama.value = true
+}
+const getNasabah = async () => {
+  if (no_anggota.value != '') {
+    const data = await daftarPinjaman.getNasabah(no_anggota.value)
+    if (data.success) {
+      const nasabah = data.data.rows[0]
+      nama_lengkap.value = nasabah.nama
+      pendamping.value = nasabah.statuskawin
+      alamat.value = nasabah.alamat
+      desa.value = nasabah.desa
+      kecamatan.value = nasabah.kecamatan
+      kota.value = nasabah.kota
+    } else {
+      swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: data.data.message
+      })
+    }
+  }
 }
 const simpan_data = async (e) => {
   try {
@@ -158,20 +198,21 @@ const resetForm = () => {
   userIds.value = []
   norek.value = ''
   nama_lengkap.value = ''
-  no_anggota.value = null
-  jenis_kredit.value = null
-  pokok_pinj.value = null
-  no_pk.value = null
-  lama_durasi.value = null
-  tgl_valuta.value = null
-  tgl_alih_bunga.value = null
-  suku_bunga.value = null
-  cara_hitung.value = null
-  provisi.value = null
-  admin.value = null
+  no_anggota.value = ''
+  jenis_kredit.value = ''
+  pokok_pinj.value = ''
+  no_pk.value = ''
+  lama_durasi.value = ''
+  tgl_valuta.value = ''
+  tgl_alih_bunga.value = ''
+  suku_bunga.value = ''
+  cara_hitung.value = ''
+  provisi.value = ''
+  admin.value = ''
   tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
+  tgl_mulai.value = ''
+  tgl_jatuh_tempo.value = ''
   tgl_lunas.value = ''
-  norek_lama.value = ''
   angsuran_pokok.value = ''
   angsuran_jasa.value = ''
   angsuran_bulanan.value = ''
@@ -557,12 +598,12 @@ onMounted(async () => {
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
               <option value="a.nama">Nama</option>
-              <option value="norek">norek</option>
-              <option value="cif">No Anggota</option>
-              <option value="pokok">Pokok</option>
-              <option value="alamat">Alamat</option>
-              <option value="kecamatan">kecamatan</option>
-              <option value="kota">Kota</option>
+              <option value="p.norek">norek</option>
+              <option value="p.cif">No Anggota</option>
+              <option value="p.pokok">Pokok</option>
+              <option value="a.alamat">Alamat</option>
+              <option value="a.kecamatan">kecamatan</option>
+              <option value="a.kota">Kota</option>
             </select>
           </div>
         </div>
@@ -591,150 +632,150 @@ onMounted(async () => {
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('tanggal')"
+              @click="sorting('p.tanggal')"
             >
               Tanggal
               <SortAscIcon
-                v-if="sort_by === 'tanggal' && sort_mode"
+                v-if="sort_by === 'p.tanggal' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'tanggal' && !sort_mode"
+                v-if="sort_by === 'p.tanggal' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('norek')"
+              @click="sorting('p.norek')"
             >
               Norek
               <SortAscIcon
-                v-if="sort_by === 'norek' && sort_mode"
+                v-if="sort_by === 'p.norek' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'norek' && !sort_mode"
+                v-if="sort_by === 'p.norek' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('cif')"
+              @click="sorting('p.cif')"
             >
               No Anggota
               <SortAscIcon
-                v-if="sort_by === 'cif' && sort_mode"
+                v-if="sort_by === 'p.cif' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'cif' && !sort_mode"
+                v-if="sort_by === 'p.cif' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('nama')"
+              @click="sorting('a.nama')"
             >
               Nama
               <SortAscIcon
-                v-if="sort_by === 'nama' && sort_mode"
+                v-if="sort_by === 'a.nama' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'nama' && !sort_mode"
+                v-if="sort_by === 'a.nama' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('alamat')"
+              @click="sorting('a.alamat')"
             >
               Alamat
               <SortAscIcon
-                v-if="sort_by === 'alamat' && sort_mode"
+                v-if="sort_by === 'a.alamat' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'alamat' && !sort_mode"
+                v-if="sort_by === 'a.alamat' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('kecamatan')"
+              @click="sorting('a.kecamatan')"
             >
               Kecamatan
               <SortAscIcon
-                v-if="sort_by === 'kecamatan' && sort_mode"
+                v-if="sort_by === 'a.kecamatan' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'kecamatan' && !sort_mode"
+                v-if="sort_by === 'a.kecamatan' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('kota')"
+              @click="sorting('a.kota')"
             >
               Kota
               <SortAscIcon
-                v-if="sort_by === 'kota' && sort_mode"
+                v-if="sort_by === 'a.kota' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'kota' && !sort_mode"
+                v-if="sort_by === 'a.kota' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('pokok')"
+              @click="sorting('p.pokok')"
             >
               Pinjaman Pokok
               <SortAscIcon
-                v-if="sort_by === 'pokok' && sort_mode"
+                v-if="sort_by === 'p.pokok' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'pokok' && !sort_mode"
+                v-if="sort_by === 'p.pokok' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('marketing')"
+              @click="sorting('p.marketing')"
             >
               Resort
               <SortAscIcon
-                v-if="sort_by === 'marketing' && sort_mode"
+                v-if="sort_by === 'p.marketing' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'marketing' && !sort_mode"
+                v-if="sort_by === 'p.marketing' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
             <th
               scope="col"
               class="text-center uppercase border cursor-pointer hover:bg-blue-300"
-              @click="sorting('opt')"
+              @click="sorting('p.opt')"
             >
               User ID
               <SortAscIcon
-                v-if="sort_by === 'opt' && sort_mode"
+                v-if="sort_by === 'p.opt' && sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
               <SortDescIcon
-                v-if="sort_by === 'opt' && !sort_mode"
+                v-if="sort_by === 'p.opt' && !sort_mode"
                 class="inline ml-2 -pr-3 mr-1 w-5 h-4"
               />
             </th>
@@ -880,7 +921,7 @@ onMounted(async () => {
     <ModalBody>
       <div
         v-if="isView || isEdit"
-        class="flex space-x-4 -mx-5 py-2 justify-center -mt-5 mb-3 bg-gray-100"
+        class="flex space-x-3 -mx-5 py-2 justify-center -mt-5 mb-3 bg-gray-100"
       >
         <button
           class="px-2 h-10 border rounded-md box flex items-center text-amber-800 bg-white hover:bg-slate-200"
@@ -919,6 +960,24 @@ onMounted(async () => {
           >
         </button>
         <button
+          class="px-2 h-10 border rounded-md box flex items-center text-success bg-white hover:bg-slate-200"
+          title="Lunas"
+        >
+          <HeartHandshakeIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Lunas</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-violet-500 bg-white hover:bg-slate-200"
+          title="Perhitungan"
+        >
+          <CalculatorIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Perhitungan</span
+          >
+        </button>
+        <button
           class="px-2 h-10 border rounded-md box flex items-center text-black bg-white hover:bg-slate-200"
           title="Catatan"
         >
@@ -937,7 +996,16 @@ onMounted(async () => {
           >
         </button>
         <button
-          class="px-2 h-10 border rounded-md box flex items-center text-green-600 bg-white hover:bg-slate-200"
+          class="px-2 h-10 border rounded-md box flex items-center text-rose-400 bg-white hover:bg-slate-200"
+          title="Laporan"
+        >
+          <PrinterIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
+          <span class="px-0.5 mx-auto my-[2px] stroke-2 stroke-current text-xs text-black font-bold"
+            >Laporan</span
+          >
+        </button>
+        <button
+          class="px-2 h-10 border rounded-md box flex items-center text-secondary bg-white hover:bg-slate-200"
           title="Lain - Lain"
         >
           <CircleEllipsisIcon class="w-5 h-5 mr-1 mx-auto stroke-2 stroke-current" />
@@ -963,18 +1031,24 @@ onMounted(async () => {
                 />
               </div>
             </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
+            <div class="text-gray-700 flex items-center mx-auto ml-2 w-full">
+              <div class="mb-1 pl-3 w-[40%] text-xs">
                 <label>No Anggota</label>
               </div>
               <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
+              <div class="w-[45%] flex-grow">
                 <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded-l focus:shadow-outline"
                   type="text"
                   v-model="no_anggota"
+                  @blur="getNasabah"
                   required
                 />
+              </div>
+              <div
+                class="w-[15%] text-xs cursor-pointer py-[1.4px] flex justify-center mb-1 rounded-r bg-white hover:bg-slate-200"
+              >
+                <FolderSearchIcon />
               </div>
             </div>
           </div>
@@ -1015,12 +1089,19 @@ onMounted(async () => {
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/5 flex-grow">
-                <input
+                <select
+                  name="jenis_kredit"
+                  id="jenis_kredit"
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
+                  placeholder=" "
                   v-model="jenis_kredit"
                   required
-                />
+                >
+                  <option class="text-xs" value="" disabled>Pilih Jenis Kredit</option>
+                  <!-- <option v-for="agama in list_agama" :value="agama.value">
+                      {{ agama.nama }}
+                    </option> -->
+                </select>
               </div>
             </div>
             <div class="text-gray-700 flex items-center mx-auto w-9/12">
@@ -1029,12 +1110,19 @@ onMounted(async () => {
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/5 flex-grow">
-                <input
+                <select
+                  name="resort"
+                  id="resort"
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
+                  placeholder=" "
                   v-model="resort"
                   required
-                />
+                >
+                  <option class="text-xs" value="" disabled>Pilih Resort</option>
+                  <!-- <option v-for="agama in list_agama" :value="agama.value">
+                      {{ agama.nama }}
+                    </option> -->
+                </select>
               </div>
             </div>
           </div>
@@ -1052,7 +1140,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="nama_lengkap"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1066,7 +1154,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="pendamping"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1080,7 +1168,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="alamat"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1096,7 +1184,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="desa"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1110,7 +1198,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="kecamatan"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1124,7 +1212,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="kota"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1147,8 +1235,8 @@ onMounted(async () => {
                 />
               </div>
             </div>
-            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
-              <div class="mb-1 w-2/5 text-xs">
+            <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+              <div class="mb-1 w-[35%] text-xs">
                 <label>Suku Bunga</label>
               </div>
               <span class="mr-3 pb-2">:</span>
@@ -1161,38 +1249,56 @@ onMounted(async () => {
                 />
               </div>
               <div class="mb-1 w-3/6 text-xs">
-                <label>Admin</label>
+                <label class="float-right">Admin</label>
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/6 flex-grow">
                 <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  type="text"
+                  required
+                />
+                <input
+                  class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="admin"
                   required
                 />
               </div>
             </div>
-            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
-              <div class="mb-1 w-2/5 text-xs">
+            <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+              <div class="mb-1 w-[35%] text-xs">
                 <label>Cara Hitung</label>
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/5 flex-grow">
-                <input
+                <select
+                  name="cara_hitung"
+                  id="cara_hitung"
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
+                  placeholder=" "
                   v-model="cara_hitung"
                   required
-                />
+                >
+                  <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
+                  <option value="A">A - FLAT</option>
+                  <!-- <option v-for="agama in list_agama" :value="agama.value">
+                      {{ agama.nama }}
+                    </option> -->
+                </select>
               </div>
               <div class="mb-1 w-3/6 text-xs">
-                <label>Provisi</label>
+                <label class="float-right">Provisi</label>
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/6 flex-grow">
                 <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  type="text"
+                  required
+                />
+                <input
+                  class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="provisi"
                   required
@@ -1211,10 +1317,18 @@ onMounted(async () => {
                   v-model="lama_durasi"
                   required
                 />
+              </div>
+            </div>
+            <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
+              <div class="mb-1 w-2/5 text-xs">
+                <label>Tanggal Mulai</label>
+              </div>
+              <span class="mr-3 pb-2">:</span>
+              <div class="w-3/5 flex-grow">
                 <input
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
-                  v-model="lama_durasi"
+                  v-model="tgl_mulai"
                   required
                 />
               </div>
@@ -1227,11 +1341,26 @@ onMounted(async () => {
               <div class="w-3/6 flex-grow">
                 <input
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
+                  type="date"
                   v-model="tgl_jatuh_tempo"
                   required
                 />
               </div>
+
+              <div class="mb-1 w-3/6 text-xs">
+                <label class="float-right">Tgl Alih Bunga</label>
+              </div>
+              <span class="mr-3 pb-2">:</span>
+              <div class="w-3/6 flex-grow">
+                <input
+                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                  type="text"
+                  v-model="tgl_alih_bunga"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
               <div class="mb-1 w-3/6 text-xs">
                 <label>Tgl Valuta</label>
               </div>
@@ -1241,25 +1370,11 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="tgl_valuta"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
-              <div class="mb-1 w-3/6 text-xs">
-                <label>Tgl Alih Bunga</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tgl_alih_bunga"
-                  required
+                  readonly
                 />
               </div>
               <div class="mb-1 w-3/6 text-xs">
-                <label>Tgl Lunas</label>
+                <label class="float-right">Tgl Lunas</label>
               </div>
               <span class="mr-3 pb-2">:</span>
               <div class="w-3/6 flex-grow">
@@ -1267,25 +1382,12 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="tgl_lunas"
-                  required
+                  readonly
                 />
               </div>
             </div>
           </div>
-          <div class="bg-slate-100 p-3 rounded-t w-5/12">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Norek Lama</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="norek_lama"
-                />
-              </div>
-            </div>
+          <div class="bg-slate-100 p-3 rounded-t w-5/12 h-full">
             <div class="text-gray-700 flex items-center mx-auto w-9/12">
               <div class="mb-1 w-2/5 text-xs">
                 <label>Angsuran Pokok</label>
@@ -1296,7 +1398,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="angsuran_pokok"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1310,7 +1412,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="angsuran_jasa"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1324,7 +1426,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="angsuran_bulanan"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1338,7 +1440,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="sisa_pokok"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1352,7 +1454,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="sisa_jasa"
-                  required
+                  readonly
                 />
               </div>
             </div>
@@ -1366,7 +1468,7 @@ onMounted(async () => {
                   class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                   type="text"
                   v-model="saldo_pinjaman"
-                  required
+                  readonly
                 />
               </div>
             </div>

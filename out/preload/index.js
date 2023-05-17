@@ -252,11 +252,10 @@ daftarPinjaman.fetchPinjaman = async (search_type, search_data, sort_by, sort_mo
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.kantor = '${kantor}'`;
+      let query = `SELECT COUNT(*) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
-      console.log(query);
       const [data] = await db.query(query);
       let total_page;
       if (data[0].total % total_row_displayed == 0) {
@@ -264,12 +263,13 @@ daftarPinjaman.fetchPinjaman = async (search_type, search_data, sort_by, sort_mo
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT a.nama, a.alamat, a.kecamatan, a.kota, p.tanggal, p.norek, p.cif, p.pokok, p.marketing, p.opt FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.kantor = '${kantor}'`;
+      query = `SELECT a.nama, a.alamat, a.kecamatan, a.kota, p.tanggal, p.norek, p.cif, p.pokok, p.marketing, p.opt FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
+      console.log(query);
       return new Response({ rows, total_page });
     } catch (error) {
       console.error(error);
@@ -277,6 +277,23 @@ daftarPinjaman.fetchPinjaman = async (search_type, search_data, sort_by, sort_mo
     }
   } else {
     return token;
+  }
+};
+daftarPinjaman.getNasabah = async (cif) => {
+  const [rows] = await db.query(
+    `SELECT a.nama, a.statuskawin, a.desa, a.alamat, a.kecamatan, a.kota FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.cif = ${cif};`
+  );
+  if (rows.length > 0) {
+    return new Response({ message: "Nasabah ini masih memiliki Pinjaman Aktif" }, false);
+  } else {
+    const [rows2] = await db.query(
+      `SELECT nama, statuskawin, desa, alamat, kecamatan, kota FROM anggota WHERE cif = ${cif};`
+    );
+    if (rows2.length > 0) {
+      return new Response({ rows: rows2 }, true);
+    } else {
+      return new Response({ message: "Tidak ditemukan Nasabah dengan ID tersebut" }, false);
+    }
   }
 };
 daftarPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
@@ -380,7 +397,7 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE kantor = '${kantor}'`;
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -391,7 +408,7 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota WHERE kantor = '${kantor}'`;
+      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }

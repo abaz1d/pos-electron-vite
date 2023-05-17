@@ -4,7 +4,7 @@
 @import './components/_modal.css';
 @import './components/_table-report.css';
 @import 'tabulator-tables/dist/css/tabulator.css';
-@import 'sweetalert2/dist/sweetalert2.min.css';
+@import './components/_sweetalert2.min.css';
 @import './components/_tabulator.css';
 @import './_tailwind.css';
 @import './_colors.css';
