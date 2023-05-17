@@ -81,6 +81,15 @@ export const useDaftarPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
+    async setupItem() {
+      try {
+        const Auth = useAuthStore()
+        const data = await request.setupPinjaman(Auth.items.kantor)
+        return data
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
     async postItem(
       iddata,
       imageFoto,

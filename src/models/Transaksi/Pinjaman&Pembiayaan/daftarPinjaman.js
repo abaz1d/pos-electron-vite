@@ -67,6 +67,23 @@ daftarPinjaman.getNasabah = async (cif) => {
     }
   }
 }
+daftarPinjaman.setupPinjaman = async (kantor) => {
+  try {
+    // const [anggota] = await db.query(
+    //   `SELECT a.nama, a.cif, a.kota FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas != '0000-00-00' AND p.kantor = ${kantor} ORDER BY a.nama;`
+    // )
+    const [produk_pinjaman] = await db.query(
+      `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`
+    )
+    const [marketing] = await db.query(
+      `SELECT sandi, keterangan FROM setsandi WHERE kantor = '${kantor}' AND kode = 'C002'`
+    )
+    return new Response({ produk_pinjaman, marketing })
+  } catch (error) {
+    console.error(error)
+    return new Response(error, false)
+  }
+}
 daftarPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
   const token = await isTokenValid()
   if (token.success) {

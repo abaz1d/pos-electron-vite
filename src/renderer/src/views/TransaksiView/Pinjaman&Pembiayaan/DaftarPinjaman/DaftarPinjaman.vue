@@ -1,6 +1,6 @@
 <script setup>
 import { useDaftarPinjamanStore } from '@renderer/stores/daftarPinjaman.js'
-import { onMounted, ref, watch, inject } from 'vue'
+import { onMounted, onBeforeMount, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
@@ -25,6 +25,8 @@ const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 
+const marketing_list = ref([])
+const produk_pinjaman = ref([])
 const tanggal = ref(moment(Date.now()).format('DD-MM-YYYY'))
 const no_anggota = ref('')
 const no_pk = ref('')
@@ -44,6 +46,8 @@ const tgl_mulai = ref('')
 const lama_durasi = ref('')
 const admin = ref('')
 const provisi = ref('')
+const admin_percent = ref('')
+const provisi_percent = ref('')
 const tgl_jatuh_tempo = ref('')
 const tgl_alih_bunga = ref('')
 const tgl_valuta = ref('')
@@ -61,11 +65,7 @@ const addGet = () => {
 }
 const editGet = async (e) => {
   const pinjaman = await daftarPinjaman.getItem(e)
-  // console.log(
-  //   pinjaman,
-  //   moment(pinjaman.tgljtempo).add(1, 'M').format('YYYY-DD-MM'),
-  //   moment(pinjaman.tgljtempo).format('YYYY-DD-MM')
-  // )
+  console.log(pinjaman.tgljtempo)
   tanggal.value =
     moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -74,27 +74,27 @@ const editGet = async (e) => {
   no_pk.value = pinjaman.nopk
   norek.value = pinjaman.norek
   jenis_kredit.value = pinjaman.jenis
-  resort.value = pinjaman.marketing
+  resort.value = pinjaman.marketing + ' '
   nama_lengkap.value = pinjaman.nama
   pendamping.value = pinjaman.statuskawin
   alamat.value = pinjaman.alamat
   desa.value = pinjaman.desa
   kecamatan.value = pinjaman.kecamatan
   kota.value = pinjaman.kota
-  pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
+  pokok_pinj.value = pinjaman.pokok
   suku_bunga.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
   lama_durasi.value = pinjaman.lama
   tgl_mulai.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tglmulai).format('DD-MM-YYYY')
-  admin.value = currencyFormatter.format(pinjaman.adm)
-  provisi.value = currencyFormatter.format(pinjaman.provisi)
+      : moment(pinjaman.tglmulai).format('YYYY-DD-MM')
+  admin.value = parseFloat(pinjaman.adm)
+  provisi.value = pinjaman.provisi
   tgl_jatuh_tempo.value =
     moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tgljtempo).format('YYYY-DD-MM')
+      : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
   //tgl_alih_bunga.value = pinjaman.
   tgl_valuta.value =
     moment(pinjaman.tglvaluta).format('DD-MM-YYYY') == '30-11-1899'
@@ -104,11 +104,11 @@ const editGet = async (e) => {
     moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  angsuran_pokok.value = currencyFormatter.format(pinjaman.pot_pokok)
-  angsuran_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
-  angsuran_bulanan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
-  sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
-  sisa_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
+  angsuran_pokok.value = pinjaman.pot_pokok
+  angsuran_jasa.value = pinjaman.pot_bunga
+  angsuran_bulanan.value = pinjaman.pot_pokok + pinjaman.pot_bunga
+  sisa_pokok.value = pinjaman.sisapokok
+  sisa_jasa.value = pinjaman.pot_bunga
   // saldo_pinjaman.value = pinjaman.
   isEdit.value = true
 
@@ -133,7 +133,49 @@ const deleteGet = (e) => {
 const viewData = async (e) => {
   const pinjaman = await daftarPinjaman.getItem(e)
   isView.value = true
-
+  tanggal.value =
+    moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tanggal).format('DD-MM-YYYY')
+  no_anggota.value = pinjaman.cif
+  no_pk.value = pinjaman.nopk
+  norek.value = pinjaman.norek
+  jenis_kredit.value = pinjaman.jenis
+  resort.value = pinjaman.marketing + ' '
+  nama_lengkap.value = pinjaman.nama
+  pendamping.value = pinjaman.statuskawin
+  alamat.value = pinjaman.alamat
+  desa.value = pinjaman.desa
+  kecamatan.value = pinjaman.kecamatan
+  kota.value = pinjaman.kota
+  pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
+  suku_bunga.value = pinjaman.rate
+  cara_hitung.value = pinjaman.kdhit
+  lama_durasi.value = pinjaman.lama
+  tgl_mulai.value =
+    moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tglmulai).format('YYYY-DD-MM')
+  admin.value = currencyFormatter.format(parseFloat(pinjaman.adm))
+  provisi.value = currencyFormatter.format(pinjaman.provisi)
+  tgl_jatuh_tempo.value =
+    moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
+  //tgl_alih_bunga.value = pinjaman.
+  tgl_valuta.value =
+    moment(pinjaman.tglvaluta).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tglvaluta).format('DD-MM-YYYY')
+  tgl_lunas.value =
+    moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
+      ? ''
+      : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
+  angsuran_pokok.value = currencyFormatter.format(pinjaman.pot_pokok)
+  angsuran_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
+  angsuran_bulanan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
+  sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
+  sisa_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
   modal_utama.value = true
 }
 const getNasabah = async () => {
@@ -153,6 +195,25 @@ const getNasabah = async () => {
         title: 'Oops...',
         text: data.data.message
       })
+    }
+  }
+}
+const itungPinjaman = async () => {
+  if (jenis_kredit.value != '') {
+    admin.value = parseFloat(
+      (parseFloat(admin_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    ).toFixed(2)
+    provisi.value = parseFloat(
+      (parseFloat(provisi_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    ).toFixed(2)
+    angsuran_pokok.value = parseFloat(pokok_pinj.value / lama_durasi.value)
+    angsuran_jasa.value =
+      (parseFloat(suku_bunga.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
+    if (tgl_mulai.value != '' && lama_durasi.value != '') {
+      tgl_jatuh_tempo.value = moment(tgl_mulai.value)
+        .add(lama_durasi.value, 'M')
+        .format('DD-MM-YYYY')
     }
   }
 }
@@ -209,6 +270,8 @@ const resetForm = () => {
   cara_hitung.value = ''
   provisi.value = ''
   admin.value = ''
+  provisi_percent.value = ''
+  admin_percent.value = ''
   tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
   tgl_mulai.value = ''
   tgl_jatuh_tempo.value = ''
@@ -392,6 +455,56 @@ watch(search_type, async (e) => {
     })
   }
 })
+watch(tgl_mulai, async (tanggal) => {
+  try {
+    //console.log(moment(tanggal).add(1, 'M').format('YYYY-DD-MM'))
+    if (jenis_kredit.value != '' && lama_durasi.value != '') {
+      tgl_jatuh_tempo.value = moment(tanggal).add(lama_durasi.value, 'M').format('DD-MM-YYYY')
+    }
+  } catch (error) {
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal pilih tanggal mulai ' + error
+    })
+  }
+})
+watch(jenis_kredit, async (sandi) => {
+  try {
+    console.log(sandi)
+    produk_pinjaman.value.map((produk) => {
+      if (produk.sandi === sandi) {
+        suku_bunga.value = parseFloat(produk.rate).toFixed(2)
+        lama_durasi.value = produk.LAMA
+        admin_percent.value = parseFloat(produk.adm).toFixed(2)
+        provisi_percent.value = parseFloat(produk.prov).toFixed(2)
+        if (pokok_pinj.value != '' && !isView.value) {
+          admin.value = parseFloat(
+            (parseFloat(produk.adm).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+          ).toFixed(2)
+          provisi.value = parseFloat(
+            (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+          ).toFixed(2)
+          angsuran_pokok.value = parseFloat(pokok_pinj.value / produk.LAMA)
+          angsuran_jasa.value =
+            (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+          angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
+          if (tgl_mulai.value != '' && lama_durasi.value != '') {
+            tgl_jatuh_tempo.value = moment(tgl_mulai.value)
+              .add(lama_durasi.value, 'M')
+              .format('DD-MM-YYYY')
+          }
+        }
+      }
+    })
+  } catch (error) {
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Gagal pilih jenis kredit ' + error
+    })
+  }
+})
 
 const selectAll = (e) => {
   userIds.value = []
@@ -406,6 +519,22 @@ const selectOne = () => {
   allSelected.value = false
 }
 
+onBeforeMount(async () => {
+  try {
+    const data = await daftarPinjaman.setupItem()
+    if (data.success) {
+      marketing_list.value = data.data.marketing
+      produk_pinjaman.value = data.data.produk_pinjaman
+    }
+  } catch (error) {
+    isLoading.value = false
+    swal({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'ERROR BEFORE MOUNTED ' + error
+    })
+  }
+})
 onMounted(async () => {
   try {
     isLoading.value = true
@@ -1014,467 +1143,495 @@ onMounted(async () => {
           >
         </button>
       </div>
-      <div class="-mx-4">
-        <div class="flex items-center justify-center w-full">
-          <div class="bg-slate-100 p-3 rounded-t w-1/3">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Tanggal</label>
+      <form id="daftarPinjamanForm" @submit.prevent="simpan_data">
+        <div class="-mx-4">
+          <div class="flex items-center justify-center w-full">
+            <div class="bg-slate-100 p-3 rounded-t w-1/3">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Tanggal</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="tanggal"
+                    required
+                    readonly
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tanggal"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto ml-2 w-full">
-              <div class="mb-1 pl-3 w-[40%] text-xs">
-                <label>No Anggota</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-[45%] flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded-l focus:shadow-outline"
-                  type="text"
-                  v-model="no_anggota"
-                  @blur="getNasabah"
-                  required
-                />
-              </div>
-              <div
-                class="w-[15%] text-xs cursor-pointer py-[1.4px] flex justify-center mb-1 rounded-r bg-white hover:bg-slate-200"
-              >
-                <FolderSearchIcon />
-              </div>
-            </div>
-          </div>
-          <div class="bg-slate-100 p-3 rounded-t w-1/3">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Nomor PK</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="no_pk"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>No Rekening</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="norek"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div class="bg-slate-100 p-3 rounded-t w-1/3">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Jenis Kredit</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <select
-                  name="jenis_kredit"
-                  id="jenis_kredit"
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  placeholder=" "
-                  v-model="jenis_kredit"
-                  required
+              <div class="text-gray-700 flex items-center mx-auto ml-2 w-full">
+                <div class="mb-1 pl-3 w-[40%] text-xs">
+                  <label>No Anggota</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-[45%] flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded-l focus:shadow-outline"
+                    type="text"
+                    v-model="no_anggota"
+                    @keyup.enter="getNasabah"
+                    required
+                    :readonly="isView"
+                  />
+                </div>
+                <div
+                  @click="getNasabah"
+                  class="w-[15%] text-xs cursor-pointer py-[1.4px] flex justify-center mb-1 rounded-r bg-white hover:bg-slate-200"
                 >
-                  <option class="text-xs" value="" disabled>Pilih Jenis Kredit</option>
-                  <!-- <option v-for="agama in list_agama" :value="agama.value">
+                  <FolderSearchIcon />
+                </div>
+              </div>
+            </div>
+            <div class="bg-slate-100 p-3 rounded-t w-1/3">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Nomor PK</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="no_pk"
+                    required
+                    :readonly="isView"
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>No Rekening</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="norek"
+                    required
+                    :readonly="isView"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="bg-slate-100 p-3 rounded-t w-1/3">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Jenis Kredit</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <select
+                    name="jenis_kredit"
+                    id="jenis_kredit"
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    placeholder=" "
+                    v-model="jenis_kredit"
+                    required
+                    :disabled="isView"
+                  >
+                    <option class="text-xs" value="" disabled>Pilih Jenis Kredit</option>
+                    <option v-for="produk in produk_pinjaman" :value="produk.sandi">
+                      {{ produk.sandi }} - {{ produk.keterangan }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Resort</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <select
+                    name="resort"
+                    id="resort"
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    placeholder=" "
+                    v-model="resort"
+                    required
+                    :disabled="isView"
+                  >
+                    <option class="text-xs" value="" disabled>Pilih Resort</option>
+                    <option v-for="marketing in marketing_list" :value="marketing.sandi">
+                      {{ marketing.sandi }} - {{ marketing.keterangan }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="flex items-center justify-center w-full">
+            <div class="bg-slate-100 p-3 rounded-t w-1/2">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Nama</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="nama_lengkap"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Pendamping</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="pendamping"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Alamat</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="alamat"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="bg-slate-100 p-3 rounded-t w-1/2">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Desa</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="desa"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Kecamatan</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="kecamatan"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Kota</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="kota"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="flex items-center justify-center w-full">
+            <div class="bg-slate-100 p-3 rounded-t w-7/12">
+              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Pokok Pinj.</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="pokok_pinj"
+                    @blur="itungPinjaman"
+                    required
+                    :readonly="isView"
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                <div class="mb-1 w-[35%] text-xs">
+                  <label>Suku Bunga</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="suku_bunga"
+                    readonly
+                    required
+                  />
+                </div>
+                <div class="mb-1 w-3/6 text-xs">
+                  <label class="float-right">Admin</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="admin_percent"
+                    readonly
+                    required
+                  />
+                  <input
+                    class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="admin"
+                    readonly
+                    required
+                  />
+                </div>
+              </div>
+              <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                <div class="mb-1 w-[35%] text-xs">
+                  <label>Cara Hitung</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <select
+                    name="cara_hitung"
+                    id="cara_hitung"
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    placeholder=" "
+                    v-model="cara_hitung"
+                    required
+                    :disabled="isView"
+                  >
+                    <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
+                    <option value="A">A - FLAT</option>
+                    <!-- <option v-for="agama in list_agama" :value="agama.value">
                       {{ agama.nama }}
                     </option> -->
-                </select>
+                  </select>
+                </div>
+                <div class="mb-1 w-3/6 text-xs">
+                  <label class="float-right">Provisi</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="provisi_percent"
+                    readonly
+                    required
+                  />
+                  <input
+                    class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="provisi"
+                    readonly
+                    required
+                  />
+                </div>
               </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Resort</label>
+              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Lama</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="lama_durasi"
+                    readonly
+                    required
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <select
-                  name="resort"
-                  id="resort"
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  placeholder=" "
-                  v-model="resort"
-                  required
-                >
-                  <option class="text-xs" value="" disabled>Pilih Resort</option>
-                  <!-- <option v-for="agama in list_agama" :value="agama.value">
-                      {{ agama.nama }}
-                    </option> -->
-                </select>
+              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Tanggal Mulai</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="date"
+                    v-model="tgl_mulai"
+                    required
+                    :readonly="isView"
+                  />
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div class="flex items-center justify-center w-full">
-          <div class="bg-slate-100 p-3 rounded-t w-1/2">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Nama</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="nama_lengkap"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Pendamping</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="pendamping"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Alamat</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="alamat"
-                  readonly
-                />
-              </div>
-            </div>
-          </div>
-          <div class="bg-slate-100 p-3 rounded-t w-1/2">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Desa</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="desa"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Kecamatan</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="kecamatan"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Kota</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="kota"
-                  readonly
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div class="flex items-center justify-center w-full">
-          <div class="bg-slate-100 p-3 rounded-t w-7/12">
-            <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Pokok Pinj.</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="pokok_pinj"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
-              <div class="mb-1 w-[35%] text-xs">
-                <label>Suku Bunga</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="suku_bunga"
-                  required
-                />
-              </div>
-              <div class="mb-1 w-3/6 text-xs">
-                <label class="float-right">Admin</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  required
-                />
-                <input
-                  class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="admin"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
-              <div class="mb-1 w-[35%] text-xs">
-                <label>Cara Hitung</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <select
-                  name="cara_hitung"
-                  id="cara_hitung"
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  placeholder=" "
-                  v-model="cara_hitung"
-                  required
-                >
-                  <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
-                  <option value="A">A - FLAT</option>
-                  <!-- <option v-for="agama in list_agama" :value="agama.value">
-                      {{ agama.nama }}
-                    </option> -->
-                </select>
-              </div>
-              <div class="mb-1 w-3/6 text-xs">
-                <label class="float-right">Provisi</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-3/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  required
-                />
-                <input
-                  class="w-9/12 h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="provisi"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Lama</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="lama_durasi"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Tanggal Mulai</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tgl_mulai"
-                  required
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
-              <div class="mb-1 w-3/6 text-xs">
-                <label>Tgl Jatuh Tempo</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="date"
-                  v-model="tgl_jatuh_tempo"
-                  required
-                />
-              </div>
+              <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
+                <div class="mb-1 w-3/6 text-xs">
+                  <label>Tgl Jatuh Tempo</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="tgl_jatuh_tempo"
+                    readonly
+                    required
+                  />
+                </div>
 
-              <div class="mb-1 w-3/6 text-xs">
-                <label class="float-right">Tgl Alih Bunga</label>
+                <div class="mb-1 w-3/6 text-xs">
+                  <label class="float-right">Tgl Alih Bunga</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="tgl_alih_bunga"
+                    readonly
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tgl_alih_bunga"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
-              <div class="mb-1 w-3/6 text-xs">
-                <label>Tgl Valuta</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tgl_valuta"
-                  readonly
-                />
-              </div>
-              <div class="mb-1 w-3/6 text-xs">
-                <label class="float-right">Tgl Lunas</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/6 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="tgl_lunas"
-                  readonly
-                />
-              </div>
-            </div>
-          </div>
-          <div class="bg-slate-100 p-3 rounded-t w-5/12 h-full">
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Angsuran Pokok</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="angsuran_pokok"
-                  readonly
-                />
+              <div class="text-gray-700 flex items-center mx-auto w-11/12 space-x-5">
+                <div class="mb-1 w-3/6 text-xs">
+                  <label>Tgl Valuta</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="tgl_valuta"
+                    readonly
+                  />
+                </div>
+                <div class="mb-1 w-3/6 text-xs">
+                  <label class="float-right">Tgl Lunas</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/6 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="tgl_lunas"
+                    readonly
+                  />
+                </div>
               </div>
             </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Angsuran Jasa</label>
+            <div class="bg-slate-100 p-3 rounded-t w-5/12 h-full">
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Angsuran Pokok</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="angsuran_pokok"
+                    readonly
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="angsuran_jasa"
-                  readonly
-                />
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Angsuran Jasa</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="angsuran_jasa"
+                    readonly
+                  />
+                </div>
               </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Angsuran Perbulan</label>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Angsuran Perbulan</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="angsuran_bulanan"
+                    readonly
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="angsuran_bulanan"
-                  readonly
-                />
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Sisa Pokok</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="sisa_pokok"
+                    readonly
+                  />
+                </div>
               </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Sisa Pokok</label>
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Sisa Jasa</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="sisa_jasa"
+                    readonly
+                  />
+                </div>
               </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="sisa_pokok"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Sisa Jasa</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="sisa_jasa"
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="text-gray-700 flex items-center mx-auto w-9/12">
-              <div class="mb-1 w-2/5 text-xs">
-                <label>Saldo Pinjaman</label>
-              </div>
-              <span class="mr-3 pb-2">:</span>
-              <div class="w-3/5 flex-grow">
-                <input
-                  class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                  type="text"
-                  v-model="saldo_pinjaman"
-                  readonly
-                />
+              <div class="text-gray-700 flex items-center mx-auto w-9/12">
+                <div class="mb-1 w-2/5 text-xs">
+                  <label>Saldo Pinjaman</label>
+                </div>
+                <span class="mr-3 pb-2">:</span>
+                <div class="w-3/5 flex-grow">
+                  <input
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    v-model="saldo_pinjaman"
+                    readonly
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </ModalBody>
     <ModalFooter class="text-right">
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
