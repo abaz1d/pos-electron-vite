@@ -111,7 +111,6 @@ const editGet = async (e) => {
   sisa_jasa.value = pinjaman.pot_bunga
   // saldo_pinjaman.value = pinjaman.
   isEdit.value = true
-
   modal_utama.value = true
 }
 const deleteGet = (e) => {
