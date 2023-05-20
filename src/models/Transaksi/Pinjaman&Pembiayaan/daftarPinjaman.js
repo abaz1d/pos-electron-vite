@@ -166,94 +166,68 @@ daftarPinjaman.getPinjaman = async (norek) => {
   }
 }
 daftarPinjaman.postPinjaman = async (
-  norek,
   tanggal,
-  no_pinjaman,
-  no_ktp,
-  no_kk,
-  nama_lengkap,
-  tempat_lahir,
-  tanggal_lahir,
-  jenis_kelamin,
-  agama,
-  alamat,
-  rt,
-  rw,
-  kelurahan,
-  kecamatan,
-  kota,
-  pendamping,
-  pekerjaan,
-  no_telepon,
+  cif,
+  nopk,
+  norek,
+  jenis,
   resort,
-  imageFoto,
-  imageTTD,
-  imagePA,
+  pokok,
+  rate,
+  kdhit,
+  tglmulai,
+  lama,
+  adm,
+  provisi,
+  tgljtempo,
+  tgl_alih_bunga,
+  tgl_valuta,
+  tgllunas,
+  pot_pokok,
+  pot_bunga,
+  sisa_pokok,
+  sisa_jasa,
+  isEdit,
   kantor
 ) => {
   try {
-    // console.log(
-    //   'POST AGT',
-
-    //   tanggal,
-    //   no_pinjaman,
-    //   no_ktp,
-    //   no_kk,
-    //   nama_lengkap,
-    //   tempat_lahir,
-    //   tanggal_lahir,
-    //   jenis_kelamin,
-    //   agama,
-    //   alamat,
-    //   rt,
-    //   rw,
-    //   kelurahan,
-    //   kecamatan,
-    //   kota,
-    //   pendamping,
-    //   pekerjaan,
-    //   no_telepon,
-    //   resort,
-    //   imageFoto,
-    //   imageTTD,
-    //   imagePA,
-    //    kantor
-    // )
     let rows
-    if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
-      if (norek == '') {
-        ;[rows] = await db.query(
-          `INSERT INTO pinjaman(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort, kantor) VALUES ('${no_pinjaman}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
-            [imageFoto],
-            { type: imageFoto.type }
-          )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
-            type: imagePA.type
-          })}', '${resort}', '${kantor}')`
-        )
-      } else {
-        ;[rows] = await db.query(
-          `UPDATE pinjaman SET cif = '${no_pinjaman}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', foto = ${new Blob(
-            [imageFoto],
-            { type: imageFoto.type }
-          )}', tandatangan = '${new Blob([imageTTD], {
-            type: imageTTD.type
-          })}', paraf = '${new Blob([imagePA], {
-            type: imagePA.type
-          })}', resort = '${resort}' WHERE norek = '${norek}'`
-        )
-      }
-    } else {
-      if (norek == '') {
-        ;[rows] = await db.query(
-          `INSERT INTO pinjaman(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, resort) VALUES ('${no_pinjaman}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', '${resort}')`
-        )
-      } else {
-        ;[rows] = await db.query(
-          `UPDATE pinjaman SET cif = '${no_pinjaman}', tanggal = '${tanggal}', nokK = '${no_kk}', noktp = '${no_ktp}', nama = '${nama_lengkap}', tempatlhr = '${tempat_lahir}', tanggallhr = '${tanggal_lahir}', jeniskl = '${jenis_kelamin}', alamat = '${alamat}', rt = '${rt}/${rw}', desa = '${kelurahan}', kecamatan = '${kecamatan}', kota = '${kota}', agama = '${agama}', pekerjaan = '${pekerjaan}', statuskawin = '${pendamping}', phone = '${no_telepon}', resort = '${resort}' WHERE norek = '${norek}'`
-        )
-      }
-    }
-    return new Response(rows)
+    // if (!isEdit) {
+    //   ;[rows] = await db.query(
+    //     `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '${kantor}')`
+    //   )
+    // } else {
+    //   ;[rows] = await db.query(
+    //     `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}'`
+    //   )
+    // }
+    console.log(
+      'post',
+      tanggal,
+      cif,
+      nopk,
+      norek,
+      jenis,
+      resort,
+      pokok,
+      rate,
+      kdhit,
+      tglmulai,
+      lama,
+      adm,
+      provisi,
+      tgljtempo,
+      tgl_alih_bunga,
+      tgl_valuta,
+      tgllunas,
+      pot_pokok,
+      pot_bunga,
+      sisa_pokok,
+      sisa_jasa,
+      isEdit,
+      kantor
+    )
+    //return new Response(rows)
   } catch (error) {
     console.error('error models', error)
     return new Response(error, false)

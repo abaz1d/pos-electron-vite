@@ -239,10 +239,31 @@ const itungPinjaman = async () => {
 const simpan_data = async (e) => {
   try {
     await daftarPinjaman.postItem(
-      //console.log(
-      norek.value
+      // console.log('simpan',
+      tanggal.value,
+      no_anggota.value,
+      no_pk.value,
+      norek.value,
+      jenis_kredit.value,
+      resort.value,
+      pokok_pinj.value,
+      suku_bunga.value,
+      cara_hitung.value,
+      tgl_mulai.value,
+      lama_durasi.value,
+      admin.value,
+      provisi.value,
+      tgl_jatuh_tempo.value,
+      tgl_alih_bunga.value,
+      tgl_valuta.value,
+      tgl_lunas.value,
+      angsuran_pokok.value,
+      angsuran_jasa.value,
+      sisa_pokok.value,
+      sisa_jasa.value,
+      isEdit.value
     )
-    e.target.reset()
+    //e.target.reset()
     resetForm()
   } catch (error) {
     swal({
@@ -1697,7 +1718,7 @@ onMounted(async () => {
       <div class="px-5 pb-8 text-center">
         <button
           type="button"
-          @click="modal_delete = false"
+          @click=";(userIds = []), (modal_delete = false)"
           class="btn btn-outline-secondary w-24 mr-1 text-xs"
         >
           Batal
