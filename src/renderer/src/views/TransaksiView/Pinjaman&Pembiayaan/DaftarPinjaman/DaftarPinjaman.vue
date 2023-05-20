@@ -3,7 +3,7 @@ import { useDaftarPinjamanStore } from '@renderer/stores/daftarPinjaman.js'
 import { onMounted, onBeforeMount, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import { list_jenis_kelamin, list_agama, list_resort } from '@renderer/utils/json'
+import DaftarNasabah from './DaftarNasabah.vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
@@ -14,6 +14,7 @@ const isAdd = ref(false)
 const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
+const modal_nasabah = ref(false)
 const modal_delete = ref(false)
 const sort_by = ref('a.nama')
 const sort_mode = ref(true)
@@ -177,11 +178,30 @@ const viewData = async (e) => {
   sisa_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
   modal_utama.value = true
 }
-const getNasabah = async () => {
+const getNasabah = async (e) => {
   if (no_anggota.value != '') {
     const data = await daftarPinjaman.getNasabah(no_anggota.value)
     if (data.success) {
       const nasabah = data.data.rows[0]
+      nama_lengkap.value = nasabah.nama
+      pendamping.value = nasabah.statuskawin
+      alamat.value = nasabah.alamat
+      desa.value = nasabah.desa
+      kecamatan.value = nasabah.kecamatan
+      kota.value = nasabah.kota
+    } else {
+      swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: data.data.message
+      })
+    }
+  } else if (typeof e == 'string') {
+    const data = await daftarPinjaman.getNasabah(e)
+    if (data.success) {
+      modal_nasabah.value = false
+      const nasabah = data.data.rows[0]
+      no_anggota.value = e
       nama_lengkap.value = nasabah.nama
       pendamping.value = nasabah.statuskawin
       alamat.value = nasabah.alamat
@@ -288,6 +308,7 @@ const resetForm = () => {
   resort.value = ''
   saldo_pinjaman.value = ''
   modal_utama.value = false
+  modal_nasabah.value = false
   modal_delete.value = false
   isAdd.value = false
   isEdit.value = false
@@ -1172,12 +1193,13 @@ onMounted(async () => {
                     type="text"
                     v-model="no_anggota"
                     @keyup.enter="getNasabah"
+                    @blur="getNasabah"
                     required
                     :readonly="isView"
                   />
                 </div>
                 <div
-                  @click="getNasabah"
+                  @click="modal_nasabah = true"
                   class="w-[15%] text-xs cursor-pointer py-[1.4px] flex justify-center mb-1 rounded-r bg-white hover:bg-slate-200"
                 >
                   <FolderSearchIcon />
@@ -1639,6 +1661,25 @@ onMounted(async () => {
       <button v-if="!isView" type="submit" form="daftarPinjamanForm" class="btn btn-primary w-32">
         Simpan
       </button>
+    </ModalFooter>
+  </Modal>
+  <Modal backdrop="static" size="modal-xl" :show="modal_nasabah" @hidden="modal_nasabah = false">
+    <ModalHeader>
+      <h2 class="font-medium text-base mr-auto">Daftar Anggota/ Nasabah</h2>
+
+      <a
+        data-tw-dismiss="modal"
+        href="javascript:;"
+        class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
+      >
+        <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
+      </a>
+    </ModalHeader>
+    <ModalBody>
+      <DaftarNasabah @selectNasabah="getNasabah" />
+    </ModalBody>
+    <ModalFooter class="text-right italic">
+      * Klik 2 kali untuk memilih Nasabah/ Anggota
     </ModalFooter>
   </Modal>
 

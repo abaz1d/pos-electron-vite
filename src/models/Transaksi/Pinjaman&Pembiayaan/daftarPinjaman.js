@@ -50,6 +50,53 @@ daftarPinjaman.fetchPinjaman = async (
     return token
   }
 }
+daftarPinjaman.fetchAnggota = async (
+  search_type,
+  search_data,
+  sort_by,
+  sort_mode,
+  page_number,
+  total_row_displayed,
+  kantor
+) => {
+  //console.log(isTokenValid() ? 'yes' : 'no')
+  const token = await isTokenValid()
+  if (token.success) {
+    var sortMode = sort_mode ? 'ASC' : 'DESC'
+    let row_number
+    if (page_number < 2) {
+      row_number = 0
+    } else {
+      row_number = (page_number - 1) * total_row_displayed
+    }
+
+    try {
+      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
+      if (search_data !== '') {
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
+      }
+      const [data] = await db.query(query)
+      let total_page
+      if (data[0].total % total_row_displayed == 0) {
+        total_page = parseInt(data[0].total / total_row_displayed)
+      } else {
+        total_page = parseInt(data[0].total / total_row_displayed) + 1
+      }
+      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
+      if (search_data !== '') {
+        query += ` AND ${search_type} LIKE '%${search_data}%'`
+      }
+      query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`
+      const [rows] = await db.query(query)
+      return new Response({ rows, total_page })
+    } catch (error) {
+      console.error(error)
+      return new Response(error, false)
+    }
+  } else {
+    return token
+  }
+}
 daftarPinjaman.getNasabah = async (cif) => {
   const [rows] = await db.query(
     `SELECT a.nama, a.statuskawin, a.desa, a.alamat, a.kecamatan, a.kota FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.cif = ${cif};`

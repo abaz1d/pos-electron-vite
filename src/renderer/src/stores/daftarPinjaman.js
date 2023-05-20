@@ -7,10 +7,12 @@ const request = window.api.daftarPinjaman
 export const useDaftarPinjamanStore = defineStore({
   id: 'daftar-pinjaman',
   state: () => ({
-    rawItems: []
+    rawItems: [],
+    rawItems2: []
   }),
   getters: {
-    items: (state) => state.rawItems
+    items: (state) => state.rawItems,
+    items2: (state) => state.rawItems2
   },
   actions: {
     async readItem(search_type, search_data, sort_by, sort_mode, page_number, total_row_displayed) {
@@ -27,6 +29,43 @@ export const useDaftarPinjamanStore = defineStore({
         )
         if (data.success) {
           this.rawItems = data.data.rows
+          return data.data.total_page
+        } else if (!data.success && data.data.message == 'token invalid') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Token Invalid',
+            text: 'Token Anda Invalid, silahkan login ulang'
+          }).then((data) => {
+            localStorage.removeItem('user')
+            router.push('/auth')
+            window.location.reload()
+          })
+        }
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    async readItem2(
+      search_type,
+      search_data,
+      sort_by,
+      sort_mode,
+      page_number,
+      total_row_displayed
+    ) {
+      try {
+        const Auth = useAuthStore()
+        const data = await request.fetchAnggota(
+          search_type,
+          search_data,
+          sort_by,
+          sort_mode,
+          page_number,
+          total_row_displayed,
+          Auth.items.kantor
+        )
+        if (data.success) {
+          this.rawItems2 = data.data.rows
           return data.data.total_page
         } else if (!data.success && data.data.message == 'token invalid') {
           Swal.fire({
