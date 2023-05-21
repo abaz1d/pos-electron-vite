@@ -82,7 +82,7 @@ daftarPinjaman.fetchAnggota = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
+      query = `SELECT iddata, cif, noktp, nokK, nama, alamat, desa, kecamatan, kota, statuskawin FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -192,15 +192,15 @@ daftarPinjaman.postPinjaman = async (
 ) => {
   try {
     let rows
-    // if (!isEdit) {
-    //   ;[rows] = await db.query(
-    //     `INSERT INTO setsandi_pinj(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '${kantor}')`
-    //   )
-    // } else {
-    //   ;[rows] = await db.query(
-    //     `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}'`
-    //   )
-    // }
+    if (!isEdit) {
+      ;[rows] = await db.query(
+        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, resort, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, kantor) VALUES ('${tanggal}', '${cif}', '${nopk}', '${norek}', '${jenis}', '${resort}', '${pokok}', '${rate}', '${kdhit}', '${tglmulai}', '${lama}', '${adm}', '${provisi}', '${tgljtempo}', '${tgl_alih_bunga}', '${tgl_valuta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisa_pokok}', '${sisa_jasa}', '${kantor}')`
+      )
+    } else {
+      ;[rows] = await db.query(
+        `UPDATE pinjaman SET tanggal = '${tanggal}', cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', resort = '${resort}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = '${tglmulai}', lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = '${tgljtempo}', tgl_alih_bunga = '${tgl_alih_bunga}', tgl_valuta = '${tgl_valuta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisa_pokok = '${sisa_pokok}',sisa_jasa = '${sisa_jasa}',kantor = '${kantor}'`
+      )
+    }
     console.log(
       'post',
       tanggal,

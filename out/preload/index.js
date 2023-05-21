@@ -301,7 +301,7 @@ daftarPinjaman.fetchAnggota = async (search_type, search_data, sort_by, sort_mod
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
+      query = `SELECT iddata, cif, noktp, nokK, nama, alamat, desa, kecamatan, kota, statuskawin FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -384,6 +384,17 @@ daftarPinjaman.getPinjaman = async (norek) => {
 daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, resort, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, isEdit, kantor) => {
   try {
     let rows;
+    if (!isEdit) {
+      ;
+      [rows] = await db.query(
+        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, resort, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, kantor) VALUES ('${tanggal}', '${cif}', '${nopk}', '${norek}', '${jenis}', '${resort}', '${pokok}', '${rate}', '${kdhit}', '${tglmulai}', '${lama}', '${adm}', '${provisi}', '${tgljtempo}', '${tgl_alih_bunga}', '${tgl_valuta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisa_pokok}', '${sisa_jasa}', '${kantor}')`
+      );
+    } else {
+      ;
+      [rows] = await db.query(
+        `UPDATE pinjaman SET tanggal = '${tanggal}', cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', resort = '${resort}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = '${tglmulai}', lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = '${tgljtempo}', tgl_alih_bunga = '${tgl_alih_bunga}', tgl_valuta = '${tgl_valuta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisa_pokok = '${sisa_pokok}',sisa_jasa = '${sisa_jasa}',kantor = '${kantor}'`
+      );
+    }
     console.log(
       "post",
       tanggal,
