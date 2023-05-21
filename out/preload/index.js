@@ -381,18 +381,18 @@ daftarPinjaman.getPinjaman = async (norek) => {
     return new Response(error, false);
   }
 };
-daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, resort, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, isEdit, kantor) => {
+daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, isEdit, kantor) => {
   try {
     let rows;
     if (!isEdit) {
       ;
       [rows] = await db.query(
-        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, resort, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, kantor) VALUES ('${tanggal}', '${cif}', '${nopk}', '${norek}', '${jenis}', '${resort}', '${pokok}', '${rate}', '${kdhit}', '${tglmulai}', '${lama}', '${adm}', '${provisi}', '${tgljtempo}', '${tgl_alih_bunga}', '${tgl_valuta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisa_pokok}', '${sisa_jasa}', '${kantor}')`
+        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, kantor) VALUES ('${tanggal}', '${cif}', '${nopk}', '${norek}', '${jenis}', '${marketing}', '${pokok}', '${rate}', '${kdhit}', '${tglmulai}', '${lama}', '${adm}', '${provisi}', '${tgljtempo}', '${tgl_alih_bunga}', '${tgl_valuta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisa_pokok}', '${sisa_jasa}', '${kantor}')`
       );
     } else {
       ;
       [rows] = await db.query(
-        `UPDATE pinjaman SET tanggal = '${tanggal}', cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', resort = '${resort}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = '${tglmulai}', lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = '${tgljtempo}', tgl_alih_bunga = '${tgl_alih_bunga}', tgl_valuta = '${tgl_valuta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisa_pokok = '${sisa_pokok}',sisa_jasa = '${sisa_jasa}',kantor = '${kantor}'`
+        `UPDATE pinjaman SET tanggal = '${tanggal}', cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = '${tglmulai}', lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = '${tgljtempo}', tgl_alih_bunga = '${tgl_alih_bunga}', tgl_valuta = '${tgl_valuta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisa_pokok = '${sisa_pokok}',sisa_jasa = '${sisa_jasa}',kantor = '${kantor}'`
       );
     }
     console.log(
@@ -402,7 +402,7 @@ daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, resort, p
       nopk,
       norek,
       jenis,
-      resort,
+      marketing,
       pokok,
       rate,
       kdhit,
