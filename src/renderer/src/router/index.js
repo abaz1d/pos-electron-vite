@@ -7,7 +7,7 @@ import Auth from '@renderer/views/Auth.vue'
 import ProdukPinjaman from '@renderer/views/SettingView/Pinjaman/ProdukPinjaman/ProdukPinjaman.vue'
 import CaraHitungPinjaman from '@renderer/views/SettingView/Pinjaman/CaraHitungPinjaman/CaraHitungPinjaman.vue'
 //Transaksi
-import DaftarPinjaman from '@renderer/views/TransaksiView/Pinjaman&Pembiayaan/DaftarPinjaman/DaftarPinjaman.vue'
+import DaftarPinjaman from '@renderer/views/TransaksiView/Pinjaman/DaftarPinjaman/DaftarPinjaman.vue'
 import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
 import HistoryAnggota from '@renderer/views/TransaksiView/Keanggotaan/HistoryAnggota/HistoryAnggota.vue'
 import JurnalTransaksi from '@renderer/views/TransaksiView/Akuntansi/JurnalTransaksi/JurnalTransaksi.vue'
