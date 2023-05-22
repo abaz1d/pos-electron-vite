@@ -97,18 +97,18 @@ onMounted(() => {
     class="h-screen w-full flex justify-center items-center bg-[#DDFBDF] bg-no-repeat bg-cover bg-center bg-fixed"
   >
     <div
-      class="shadow-2xl flex items-center rounded-3xl z-10 overflow-hidden w-8/12 lg:w-1/3 h-3/4 bg-white"
+      class="shadow-2xl flex items-center rounded-3xl z-10 overflow-hidden w-8/12 xl:w-1/3 h-3/4 bg-white"
     >
       <div class="flex min-h-full mx-auto justify-center px-4">
-        <div class="py-12">
+        <div class="py-12 grid items-center">
           <div>
             <img
-              class="mx-auto h-20 lg:h-28 w-auto hover:scale-125 transition duration-700 ease-in-out"
+              class="mx-auto h-20 2xl:h-28 w-auto hover:scale-125 transition duration-700 ease-in-out"
               src="@renderer/assets/icons.svg"
               alt="Your Company"
             />
             <h1
-              class="mt-4 w-96 mb-6 text-center text-lg lg:text-xl font-bold tracking-tight text-gray-900 uppercase"
+              class="mt-4 w-96 mb-6 text-center text-lg 2xl:text-xl font-bold tracking-tight text-gray-900 uppercase"
             >
               Koperasi Binaniaga
             </h1>
@@ -116,7 +116,7 @@ onMounted(() => {
               Silahkan Login untuk masuk aplikasi
             </h2>
           </div>
-          <form class="space-y-5 lg:space-y-10" action="#" method="POST">
+          <form class="space-y-5 2xl:space-y-10" action="#" method="POST">
             <input type="hidden" name="remember" value="true" />
             <div class="-space-y-px rounded-md shadow-sm">
               <div>
@@ -182,7 +182,7 @@ onMounted(() => {
               </button>
             </div>
           </form>
-          <h5 class="w-96 text-center text-sm text-slate-400 mt-10 lg:mt-20">
+          <h5 class="w-96 text-center text-sm text-slate-400 mt-10 2xl:mt-20">
             {{ moment(date).format('DD MMMM YYYY, HH:mm:ss') }}
           </h5>
         </div>
