@@ -54,9 +54,9 @@ export const useProdukPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async getItem(sandi) {
+    async getItem(id) {
       try {
-        const data = await request.getProduk(sandi)
+        const data = await request.getProduk(id)
         if (data.success) {
           return data.data.rows[0]
         }
@@ -65,6 +65,7 @@ export const useProdukPinjamanStore = defineStore({
       }
     },
     async postItem(
+      id,
       sandi,
       keterangan,
       kdhit,
@@ -85,6 +86,7 @@ export const useProdukPinjamanStore = defineStore({
       const Auth = useAuthStore()
       try {
         this.rawItems.push({
+          id,
           sandi,
           keterangan,
           kdhit,
@@ -99,9 +101,11 @@ export const useProdukPinjamanStore = defineStore({
           jurnal_adm,
           jurnal_prov,
           jurnal_yadit,
-          jurnal_ppap
+          jurnal_ppap,
+          kantor: Auth.items.kantor
         })
         await request.postProduk(
+          id,
           sandi,
           keterangan,
           kdhit,
@@ -124,11 +128,11 @@ export const useProdukPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async removeItem(sandi) {
+    async removeItem(id) {
       try {
         const Auth = useAuthStore()
-        this.rawItems = this.rawItems.filter((item) => item.sandi !== sandi)
-        const data = await request.deleteProduk(sandi, Auth.items.kantor)
+        this.rawItems = this.rawItems.filter((item) => item.id !== id)
+        const data = await request.deleteProduk(id, Auth.items.kantor)
       } catch (error) {
         throw new Error(error)
       }

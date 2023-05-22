@@ -16,8 +16,8 @@ const isView = ref(false)
 const modal_utama = ref(false)
 const modal_nasabah = ref(false)
 const modal_delete = ref(false)
-const sort_by = ref('a.nama')
-const sort_mode = ref(true)
+const sort_by = ref('p.tanggal')
+const sort_mode = ref(false)
 const search_data = ref('')
 const search_type = ref('a.nama')
 const page_number = ref(1)
@@ -65,8 +65,9 @@ const addGet = () => {
   modal_utama.value = true
 }
 const editGet = async (e) => {
+  isEdit.value = true
+  modal_utama.value = true
   const pinjaman = await daftarPinjaman.getItem(e)
-  console.log(pinjaman.tgljtempo)
   tanggal.value =
     moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -89,7 +90,7 @@ const editGet = async (e) => {
   tgl_mulai.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tglmulai).format('YYYY-DD-MM')
+      : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
   admin.value = parseFloat(pinjaman.adm)
   provisi.value = pinjaman.provisi
   tgl_jatuh_tempo.value =
@@ -109,10 +110,8 @@ const editGet = async (e) => {
   angsuran_jasa.value = pinjaman.pot_bunga
   angsuran_bulanan.value = pinjaman.pot_pokok + pinjaman.pot_bunga
   sisa_pokok.value = pinjaman.sisapokok
-  sisa_jasa.value = pinjaman.pot_bunga
-  // saldo_pinjaman.value = pinjaman.
-  isEdit.value = true
-  modal_utama.value = true
+  sisa_jasa.value = pinjaman.sisabunga
+  saldo_pinjaman.value = pinjaman.sisapokok + pinjaman.sisabunga
 }
 const deleteGet = (e) => {
   const pinjaman = e
@@ -131,8 +130,9 @@ const deleteGet = (e) => {
 }
 
 const viewData = async (e) => {
-  const pinjaman = await daftarPinjaman.getItem(e)
   isView.value = true
+  modal_utama.value = true
+  const pinjaman = await daftarPinjaman.getItem(e)
   tanggal.value =
     moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -155,7 +155,7 @@ const viewData = async (e) => {
   tgl_mulai.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tglmulai).format('YYYY-DD-MM')
+      : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
   admin.value = currencyFormatter.format(parseFloat(pinjaman.adm))
   provisi.value = currencyFormatter.format(pinjaman.provisi)
   tgl_jatuh_tempo.value =
@@ -175,8 +175,8 @@ const viewData = async (e) => {
   angsuran_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
   angsuran_bulanan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
   sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
-  sisa_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
-  modal_utama.value = true
+  sisa_jasa.value = currencyFormatter.format(pinjaman.sisabunga)
+  saldo_pinjaman.value = currencyFormatter.format(pinjaman.sisapokok + pinjaman.sisabunga)
 }
 const getNasabah = async (e) => {
   if (no_anggota.value != '') {
@@ -288,9 +288,9 @@ const deletePinjaman = async () => {
 const resetForm = () => {
   if (modal_utama.value == false && isEdit.value == false && isView.value == false) {
     search_data.value = ''
-    search_type.value = 'nama'
-    sort_by.value = 'nama'
-    sort_mode.value = true
+    search_type.value = 'a.nama'
+    sort_by.value = 'p.tanggal'
+    sort_mode.value = false
     page_number.value = 1
     total_pages.value = 0
     row_per_page.value = 50
@@ -498,7 +498,6 @@ watch(search_type, async (e) => {
 })
 watch(tgl_mulai, async (tanggal) => {
   try {
-    //console.log(moment(tanggal).add(1, 'M').format('YYYY-DD-MM'))
     if (jenis_kredit.value != '' && lama_durasi.value != '') {
       tgl_jatuh_tempo.value = moment(tanggal).add(lama_durasi.value, 'M').format('DD-MM-YYYY')
     }
@@ -512,7 +511,6 @@ watch(tgl_mulai, async (tanggal) => {
 })
 watch(jenis_kredit, async (sandi) => {
   try {
-    console.log(sandi)
     produk_pinjaman.value.map((produk) => {
       if (produk.sandi === sandi) {
         suku_bunga.value = parseFloat(produk.rate).toFixed(2)
@@ -768,7 +766,8 @@ onMounted(async () => {
               class="inline align-middle text-center select-none border w-14 font-normal whitespace-no-wrap rounded-r-lg no-underline h-9 mx-auto px-0 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
             >
               <option value="a.nama">Nama</option>
-              <option value="p.norek">norek</option>
+              <option value="p.norek">Norek</option>
+              <option value="p.nopk">No PK</option>
               <option value="p.cif">No Anggota</option>
               <option value="p.pokok">Pokok</option>
               <option value="a.alamat">Alamat</option>
@@ -1220,6 +1219,7 @@ onMounted(async () => {
                   />
                 </div>
                 <div
+                  v-if="!isView"
                   @click="modal_nasabah = true"
                   class="w-[15%] text-xs cursor-pointer py-[1.4px] flex justify-center mb-1 rounded-r bg-white hover:bg-slate-200"
                 >

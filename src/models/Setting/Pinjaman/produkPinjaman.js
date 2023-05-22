@@ -68,9 +68,9 @@ produkPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
     return new Response(error, false)
   }
 }
-produkPinjaman.getProduk = async (sandi) => {
+produkPinjaman.getProduk = async (id) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE sandi = '${sandi}';`)
+    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE id = '${id}';`)
     return new Response({ rows }, true)
   } catch (error) {
     console.error(error)
@@ -78,6 +78,7 @@ produkPinjaman.getProduk = async (sandi) => {
   }
 }
 produkPinjaman.postProduk = async (
+  id,
   sandi,
   keterangan,
   kdhit,
@@ -104,7 +105,7 @@ produkPinjaman.postProduk = async (
       )
     } else {
       ;[rows] = await db.query(
-        `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}'`
+        `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}' WHERE id = '${id}'`
       )
     }
     return new Response(rows)
@@ -113,9 +114,9 @@ produkPinjaman.postProduk = async (
     return new Response(error, false)
   }
 }
-produkPinjaman.deleteProduk = async (sandi, kantor) => {
+produkPinjaman.deleteProduk = async (id, kantor) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}' AND kantor = '${kantor}';`)
+    await db.query(`DELETE FROM setsandi_pinj WHERE id = '${id}' AND kantor = '${kantor}';`)
     return new Response({ message: 'success delete setsandi_pinj' }, true)
   } catch (error) {
     console.error(error)

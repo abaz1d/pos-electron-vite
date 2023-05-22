@@ -23,6 +23,7 @@ const total_pages = ref(0)
 const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
+const id_produk = ref('')
 const kode_produk = ref('')
 const nama_produk = ref('')
 const kode_perhitungan = ref('')
@@ -46,6 +47,7 @@ const addGet = () => {
 const editGet = async (e) => {
   const anggota = await produkPinjaman.getItem(e)
   isEdit.value = true
+  id_produk.value = anggota.id
   kode_produk.value = anggota.sandi
   nama_produk.value = anggota.keterangan
   kode_perhitungan.value = anggota.kdhit
@@ -66,9 +68,9 @@ const editGet = async (e) => {
 const deleteGet = (e) => {
   const anggota = e
 
-  if (anggota.sandi) {
+  if (anggota.id) {
     userIds.value = []
-    userIds.value.push(anggota.sandi)
+    userIds.value.push(anggota.id)
     console.log('delete get 1', userIds.value)
     modal_delete.value = true
   } else {
@@ -82,6 +84,7 @@ const deleteGet = (e) => {
 const viewData = async (e) => {
   const anggota = await produkPinjaman.getItem(e)
   isView.value = true
+  id_produk.value = anggota.id
   kode_produk.value = anggota.sandi
   nama_produk.value = anggota.keterangan
   kode_perhitungan.value = anggota.kdhit
@@ -102,6 +105,7 @@ const viewData = async (e) => {
 const simpan_data = async (e) => {
   try {
     await produkPinjaman.postItem(
+      id_produk.value,
       kode_produk.value,
       nama_produk.value,
       kode_perhitungan.value,
@@ -153,6 +157,7 @@ const resetForm = () => {
   }
   allSelected.value = false
   userIds.value = []
+  id_produk.value = ''
   kode_produk.value = ''
   nama_produk.value = null
   pembulatan_angsuran.value = null
@@ -340,7 +345,7 @@ const selectAll = (e) => {
 
   if (!allSelected.value || e) {
     for (let anggota = 0; anggota < produkPinjaman.items.length; anggota++) {
-      userIds.value.push(produkPinjaman.items[anggota].sandi)
+      userIds.value.push(produkPinjaman.items[anggota].id)
     }
   }
 }
@@ -645,7 +650,7 @@ onMounted(async () => {
                   >:::</span
                 >
                 <input
-                  :value="produk.sandi"
+                  :value="produk.id"
                   type="checkbox"
                   v-model="userIds"
                   @click="selectOne"
@@ -654,26 +659,26 @@ onMounted(async () => {
               </div>
             </td>
             <th
-              @dblclick="viewData(produk.sandi)"
+              @dblclick="viewData(produk.id)"
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
               {{ produk.sandi }}
             </th>
             <td
-              @dblclick="viewData(produk.sandi)"
+              @dblclick="viewData(produk.id)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
               {{ produk.keterangan }}
             </td>
             <td
-              @dblclick="viewData(produk.sandi)"
+              @dblclick="viewData(produk.id)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
               {{ moment(produk.TGLINP).format('DD-MM-YYYY') }}
             </td>
             <td
-              @dblclick="viewData(produk.sandi)"
+              @dblclick="viewData(produk.id)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
               {{ produk.kantor }}
@@ -681,7 +686,7 @@ onMounted(async () => {
             <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(produk.sandi)"
+                  @click="editGet(produk.id)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
@@ -718,7 +723,7 @@ onMounted(async () => {
       <h2 class="font-medium text-base mr-auto">
         <span v-if="isAdd">Tambah </span><span v-if="isEdit">Edit </span
         ><span v-if="isView">Data </span> Produk
-        <span v-if="isEdit || isView">{{ kode_produk }}</span>
+        <span v-if="isEdit || isView">{{ id_produk }}</span>
       </h2>
 
       <a
@@ -809,6 +814,7 @@ onMounted(async () => {
                 type="number"
                 v-model="jasa_perbulan"
                 required
+                step="0.1"
               />
             </div>
           </div>
@@ -843,6 +849,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="number"
                 v-model="administrasi"
+                step="0.1"
                 required
               />
             </div>
@@ -856,6 +863,7 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="number"
+                step="0.1"
                 v-model="provisi"
                 required
               />

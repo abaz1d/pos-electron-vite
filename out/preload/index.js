@@ -201,16 +201,16 @@ produkPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
     return new Response(error, false);
   }
 };
-produkPinjaman.getProduk = async (sandi) => {
+produkPinjaman.getProduk = async (id) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE sandi = '${sandi}';`);
+    const [rows] = await db.query(`SELECT * FROM setsandi_pinj WHERE id = '${id}';`);
     return new Response({ rows }, true);
   } catch (error) {
     console.error(error);
     return new Response(error, false);
   }
 };
-produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, isEdit, kantor) => {
+produkPinjaman.postProduk = async (id, sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, isEdit, kantor) => {
   try {
     let rows;
     if (!isEdit) {
@@ -221,7 +221,7 @@ produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, p
     } else {
       ;
       [rows] = await db.query(
-        `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}'`
+        `UPDATE setsandi_pinj SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}' WHERE id = '${id}'`
       );
     }
     return new Response(rows);
@@ -230,9 +230,9 @@ produkPinjaman.postProduk = async (sandi, keterangan, kdhit, pembulatan, rate, p
     return new Response(error, false);
   }
 };
-produkPinjaman.deleteProduk = async (sandi, kantor) => {
+produkPinjaman.deleteProduk = async (id, kantor) => {
   try {
-    await db.query(`DELETE FROM setsandi_pinj WHERE sandi = '${sandi}' AND kantor = '${kantor}';`);
+    await db.query(`DELETE FROM setsandi_pinj WHERE id = '${id}' AND kantor = '${kantor}';`);
     return new Response({ message: "success delete setsandi_pinj" }, true);
   } catch (error) {
     console.error(error);
@@ -373,26 +373,26 @@ daftarPinjaman.fetchLaporan = async (kantor, tanggal, resort, limit) => {
 daftarPinjaman.getPinjaman = async (norek) => {
   try {
     const [rows] = await db.query(
-      `SELECT a.nama, a.statuskawin, a.desa, a.alamat, a.kecamatan, a.kota, p.* FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.norek = ${norek};`
+      `SELECT p.*, a.nama, a.statuskawin, a.desa, a.alamat, a.kecamatan, a.kota FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.norek = ${norek};`
     );
-    return new Response({ rows }, true);
+    return new Response(rows, true);
   } catch (error) {
     console.error(error);
     return new Response(error, false);
   }
 };
-daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, isEdit, kantor) => {
+daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, isEdit, kantor) => {
   try {
     let rows;
     if (!isEdit) {
-      ;
+      console.log("ADDING");
       [rows] = await db.query(
-        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tgl_valuta, tgllunas, pot_pokok, pot_bunga, sisa_pokok, sisa_jasa, kantor) VALUES ('${tanggal}', '${cif}', '${nopk}', '${norek}', '${jenis}', '${marketing}', '${pokok}', '${rate}', '${kdhit}', '${tglmulai}', '${lama}', '${adm}', '${provisi}', '${tgljtempo}', '${tgl_alih_bunga}', '${tgl_valuta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisa_pokok}', '${sisa_jasa}', '${kantor}')`
+        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, kantor) VALUES (STR_TO_DATE('${tanggal}','%d-%m-%Y'), '${cif}', '${nopk}', '${norek}', '${jenis}', '${marketing + " "}', '${pokok}', '${rate}', '${kdhit}', STR_TO_DATE('${tglmulai}','%Y-%m-%d'), '${lama}', '${adm}', '${provisi}', STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), '${tglvaluta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisapokok}', '${sisabunga}', '${kantor}')`
       );
     } else {
-      ;
+      console.log("EDITING");
       [rows] = await db.query(
-        `UPDATE pinjaman SET tanggal = '${tanggal}', cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = '${tglmulai}', lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = '${tgljtempo}', tgl_alih_bunga = '${tgl_alih_bunga}', tgl_valuta = '${tgl_valuta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisa_pokok = '${sisa_pokok}',sisa_jasa = '${sisa_jasa}',kantor = '${kantor}'`
+        `UPDATE pinjaman SET tanggal = STR_TO_DATE('${tanggal}','%d-%m-%Y'), cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = STR_TO_DATE('${tglmulai}','%Y-%m-%d'), lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), tglvaluta = '${tglvaluta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisapokok = '${sisapokok}',sisabunga = '${sisabunga}',kantor = '${kantor}' WHERE norek = '${norek}'`
       );
     }
     console.log(
@@ -411,13 +411,13 @@ daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing
       adm,
       provisi,
       tgljtempo,
-      tgl_alih_bunga,
-      tgl_valuta,
+      //tgl_alih_bunga,
+      tglvaluta,
       tgllunas,
       pot_pokok,
       pot_bunga,
-      sisa_pokok,
-      sisa_jasa,
+      sisapokok,
+      sisabunga,
       isEdit,
       kantor
     );

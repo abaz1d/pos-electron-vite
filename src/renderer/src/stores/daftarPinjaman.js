@@ -106,7 +106,7 @@ export const useDaftarPinjamanStore = defineStore({
       try {
         const data = await request.getPinjaman(norek)
         if (data.success) {
-          return data.data.rows[0]
+          return data.data[0]
         }
       } catch (error) {
         throw new Error(error)
@@ -156,7 +156,7 @@ export const useDaftarPinjamanStore = defineStore({
       try {
         const Auth = useAuthStore()
         this.rawItems.push({
-          tanggal,
+          tanggal: Date.now(),
           cif,
           nopk,
           norek,
@@ -209,10 +209,10 @@ export const useDaftarPinjamanStore = defineStore({
         throw new Error(error)
       }
     },
-    async removeItem(iddata) {
+    async removeItem(norek) {
       try {
-        this.rawItems = this.rawItems.filter((item) => item.iddata !== iddata)
-        const data = await request.deletePinjaman(iddata)
+        this.rawItems = this.rawItems.filter((item) => item.norek !== norek)
+        const data = await request.deletePinjaman(norek)
       } catch (error) {
         throw new Error(error)
       }
