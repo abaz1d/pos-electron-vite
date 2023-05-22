@@ -269,7 +269,6 @@ daftarPinjaman.fetchPinjaman = async (search_type, search_data, sort_by, sort_mo
       }
       query += ` ORDER BY ${sort_by} ${sortMode} LIMIT ${row_number}, ${total_row_displayed};`;
       const [rows] = await db.query(query);
-      console.log(query);
       return new Response({ rows, total_page });
     } catch (error) {
       console.error(error);
@@ -381,46 +380,21 @@ daftarPinjaman.getPinjaman = async (norek) => {
     return new Response(error, false);
   }
 };
-daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, isEdit, kantor) => {
+daftarPinjaman.postPinjaman = async (tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tgl_alih_bunga, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, isEdit, kantor, opt) => {
   try {
     let rows;
     if (!isEdit) {
       console.log("ADDING");
       [rows] = await db.query(
-        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, kantor) VALUES (STR_TO_DATE('${tanggal}','%d-%m-%Y'), '${cif}', '${nopk}', '${norek}', '${jenis}', '${marketing + " "}', '${pokok}', '${rate}', '${kdhit}', STR_TO_DATE('${tglmulai}','%Y-%m-%d'), '${lama}', '${adm}', '${provisi}', STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), '${tglvaluta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisapokok}', '${sisabunga}', '${kantor}')`
+        `INSERT INTO pinjaman(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tglvaluta, tgllunas, pot_pokok, pot_bunga, sisapokok, sisabunga, kantor, opt) VALUES (STR_TO_DATE('${tanggal}','%d-%m-%Y'), '${cif}', '${nopk}', '${norek}', '${jenis}', '${marketing + " "}', '${pokok}', '${rate}', '${kdhit}', STR_TO_DATE('${tglmulai}','%Y-%m-%d'), '${lama}', '${adm}', '${provisi}', STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), '${tglvaluta}', '${tgllunas}', '${pot_pokok}', '${pot_bunga}', '${sisapokok}', '${sisabunga}', '${kantor}', '${opt}')`
       );
     } else {
       console.log("EDITING");
       [rows] = await db.query(
-        `UPDATE pinjaman SET tanggal = STR_TO_DATE('${tanggal}','%d-%m-%Y'), cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = STR_TO_DATE('${tglmulai}','%Y-%m-%d'), lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), tglvaluta = '${tglvaluta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisapokok = '${sisapokok}',sisabunga = '${sisabunga}',kantor = '${kantor}' WHERE norek = '${norek}'`
+        `UPDATE pinjaman SET tanggal = STR_TO_DATE('${tanggal}','%d-%m-%Y'), cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = STR_TO_DATE('${tglmulai}','%Y-%m-%d'), lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), tglvaluta = '${tglvaluta}',tgllunas = '${tgllunas}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisapokok = '${sisapokok}',sisabunga = '${sisabunga}',kantor = '${kantor}', opt = '${opt}' WHERE norek = '${norek}'`
       );
     }
-    console.log(
-      "post",
-      tanggal,
-      cif,
-      nopk,
-      norek,
-      jenis,
-      marketing,
-      pokok,
-      rate,
-      kdhit,
-      tglmulai,
-      lama,
-      adm,
-      provisi,
-      tgljtempo,
-      //tgl_alih_bunga,
-      tglvaluta,
-      tgllunas,
-      pot_pokok,
-      pot_bunga,
-      sisapokok,
-      sisabunga,
-      isEdit,
-      kantor
-    );
+    return new Response(rows);
   } catch (error) {
     console.error("error models", error);
     return new Response(error, false);

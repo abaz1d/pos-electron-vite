@@ -178,7 +178,8 @@ export const useDaftarPinjamanStore = defineStore({
           sisa_pokok,
           sisa_jasa,
           isEdit,
-          kantor: Auth.items.kantor
+          kantor: Auth.items.kantor,
+          marketing: Auth.items.username
         })
         await request.postPinjaman(
           tanggal,
@@ -203,7 +204,8 @@ export const useDaftarPinjamanStore = defineStore({
           sisa_pokok,
           sisa_jasa,
           isEdit,
-          Auth.items.kantor
+          Auth.items.kantor,
+          Auth.items.username
         )
       } catch (error) {
         throw new Error(error)
