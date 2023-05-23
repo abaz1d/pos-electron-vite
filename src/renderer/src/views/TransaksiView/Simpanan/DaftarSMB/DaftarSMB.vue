@@ -3,7 +3,7 @@ import { useDaftarPinjamanStore } from '@renderer/stores/daftarPinjaman.js'
 import { onMounted, onBeforeMount, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-import DaftarNasabah from './DaftarNasabah.vue'
+//import DaftarNasabah from './DaftarNasabah.vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
@@ -598,7 +598,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <Breadcrumbs title="Transaksi" subTitle="Pinjaman atau Pembiayaan" :icon="TRANSAKSI" />
+  <Breadcrumbs title="Transaksi" subTitle="Simpanan atau Funding" :icon="TRANSAKSI" />
   <div class="relative top-0 bg-white w-full border-y-2 border-[#d0d3d4]">
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
       <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
@@ -1697,7 +1697,7 @@ onMounted(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <DaftarNasabah @selectNasabah="getNasabah" />
+      <!-- <DaftarNasabah @selectNasabah="getNasabah" /> -->
     </ModalBody>
     <ModalFooter class="text-right italic">
       * Klik 2 kali untuk memilih Nasabah/ Anggota
