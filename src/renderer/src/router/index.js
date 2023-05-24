@@ -7,6 +7,7 @@ import Auth from '@renderer/views/Auth.vue'
 import ProdukPinjaman from '@renderer/views/SettingView/Pinjaman/ProdukPinjaman/ProdukPinjaman.vue'
 import CaraHitungPinjaman from '@renderer/views/SettingView/Pinjaman/CaraHitungPinjaman/CaraHitungPinjaman.vue'
 //Transaksi
+import DaftarSimpata from '@renderer/views/TransaksiView/Simpanan/DaftarSimpata/DaftarSimpata.vue'
 import DaftarSMB from '@renderer/views/TransaksiView/Simpanan/DaftarSMB/DaftarSMB.vue'
 import DaftarPinjaman from '@renderer/views/TransaksiView/Pinjaman/DaftarPinjaman/DaftarPinjaman.vue'
 import DaftarAnggota from '@renderer/views/TransaksiView/Keanggotaan/DaftarAnggota/DaftarAnggota.vue'
@@ -42,6 +43,12 @@ const routes = [
     path: '/daftar-smb',
     name: 'daftar-smb',
     component: DaftarSMB,
+    meta: { authorize: [] }
+  },
+  {
+    path: '/daftar-simpata',
+    name: 'daftar-simpata',
+    component: DaftarSimpata,
     meta: { authorize: [] }
   },
   {

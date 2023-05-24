@@ -212,7 +212,7 @@ onMounted(() => {
                   <a
                     class="rounded text-sm bg-transparent hover:text-primary p-2 -mt-3"
                     href="javascript:void(0);"
-                    >SMB / Simpanan
+                    >Simpanan
                     <ChevronDownIcon
                       class="sub-menu inline h-4 w-4 transition duration-150 ease-in-out stroke-[2.5px]"
                   /></a>
