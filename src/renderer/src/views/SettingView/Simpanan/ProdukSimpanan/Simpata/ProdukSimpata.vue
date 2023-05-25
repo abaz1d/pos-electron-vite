@@ -27,50 +27,49 @@ const userIds = ref([])
 const id_produk = ref('')
 const kode_produk = ref('')
 const nama_produk = ref('')
-const kode_perhitungan = ref('')
-const pembulatan_angsuran = ref('')
-const jasa_perbulan = ref('')
-const periode_pembayaran = ref('')
-const administrasi = ref('')
-const provisi = ref('')
-const batas_pajak = ref('')
-const pajak = ref('')
-const antar_bank = ref('')
-const jurnal_pokok_simpata = ref('')
-const jurnal_jasa_simpata = ref('')
-const jurnal_denda_simpata = ref('')
-const jurnal_admin = ref('')
-const jurnal_provisi = ref('')
-const jurnal_akrual = ref('')
-const jurnal_ppap = ref('')
+const opthari = ref('1')
+const versi_perhitungan = ref('1')
+const a_bunga = ref('0')
+const a_optadm = ref('1')
+const a_adm = ref('0')
+const p_bunga = ref('0')
+const p_optadm = ref('1')
+const p_adm = ref('0')
+const saldo_minimal = ref('0')
+const batas_bunga = ref('0')
+const optpasif1 = ref(true)
+const haripasif = ref('180')
+const optpasif2 = ref(false)
+const nomipasif = ref('0')
+const batas_pajak = ref('0')
+const pajak = ref('0')
+const antar_bank = ref('T')
 
 const addGet = () => {
   isAdd.value = true
   modal_utama.value = true
 }
 const editGet = async (e) => {
-  const anggota = await produkSimpata.getItem(e)
+  modal_utama.value = true
   isEdit.value = true
+  const anggota = await produkSimpata.getItem(e)
   id_produk.value = anggota.id
   kode_produk.value = anggota.SANDI
   nama_produk.value = anggota.KETERANGAN
-  kode_perhitungan.value = anggota.kdhit
-  pembulatan_angsuran.value = anggota.pembulatan
-  jasa_perbulan.value = anggota.rate
-  periode_pembayaran.value = anggota.periode
-  administrasi.value = anggota.adm
-  provisi.value = anggota.prov
-  batas_pajak.value = anggota.BATASPAJAK
-  pajak.value = anggota.PAJAK
-  antar_bank.value = anggota.ANTARBANK
-  jurnal_pokok_simpata.value = anggota.jurnal_pokok == '' ? '-' : anggota.jurnal_pokok
-  jurnal_jasa_simpata.value = anggota.jurnal_jasa == '' ? '-' : anggota.jurnal_jasa
-  jurnal_denda_simpata.value = anggota.jurnal_denda == '' ? '-' : anggota.jurnal_denda
-  jurnal_admin.value = anggota.jurnal_adm == '' ? '-' : anggota.jurnal_adm
-  jurnal_provisi.value = anggota.jurnal_prov == '' ? '-' : anggota.jurnal_prov
-  jurnal_akrual.value = anggota.jurnal_yadit == '' ? '-' : anggota.jurnal_yadit
-  jurnal_ppap.value = anggota.jurnal_ppap == '' ? '-' : anggota.jurnal_ppap
-  modal_utama.value = true
+  opthari.value = anggota.OPTHARI
+  versi_perhitungan.value = anggota.VER
+  a_bunga.value = anggota.A_RATE
+  a_optadm.value = anggota.A_OPTADM
+  a_adm.value = anggota.A_ADM
+  p_bunga.value = anggota.P_RATE
+  p_optadm.value = anggota.P_OPTADM
+  p_adm.value = anggota.P_ADM
+  saldo_minimal.value = anggota.SALDOMINIMAL
+  batas_bunga.value = anggota.BATASBUNGA
+  optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
+  haripasif.value = anggota.HARIPASIF
+  optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
+  nomipasif.value = anggota.NOMIPASIF
 }
 const deleteGet = (e) => {
   const anggota = e
@@ -89,28 +88,26 @@ const deleteGet = (e) => {
 }
 
 const viewData = async (e) => {
-  const anggota = await produkSimpata.getItem(e)
   isView.value = true
+  modal_utama.value = true
+  const anggota = await produkSimpata.getItem(e)
   id_produk.value = anggota.id
   kode_produk.value = anggota.SANDI
   nama_produk.value = anggota.KETERANGAN
-  kode_perhitungan.value = anggota.kdhit
-  pembulatan_angsuran.value = anggota.pembulatan
-  jasa_perbulan.value = anggota.rate
-  periode_pembayaran.value = anggota.periode
-  administrasi.value = anggota.adm
-  provisi.value = anggota.prov
-  batas_pajak.value = anggota.BATASPAJAK
-  pajak.value = anggota.PAJAK
-  antar_bank.value = anggota.ANTARBANK
-  jurnal_pokok_simpata.value = anggota.jurnal_pokok
-  jurnal_jasa_simpata.value = anggota.jurnal_jasa
-  jurnal_denda_simpata.value = anggota.jurnal_denda
-  jurnal_admin.value = anggota.jurnal_adm
-  jurnal_provisi.value = anggota.jurnal_prov
-  jurnal_akrual.value = anggota.jurnal_yadit
-  jurnal_ppap.value = anggota.jurnal_ppap
-  modal_utama.value = true
+  opthari.value = anggota.OPTHARI
+  versi_perhitungan.value = anggota.VER
+  a_bunga.value = anggota.A_RATE
+  a_optadm.value = anggota.A_OPTADM
+  a_adm.value = anggota.A_ADM
+  p_bunga.value = anggota.P_RATE
+  p_optadm.value = anggota.P_OPTADM
+  p_adm.value = anggota.P_ADM
+  saldo_minimal.value = anggota.SALDOMINIMAL
+  batas_bunga.value = anggota.BATASBUNGA
+  optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
+  haripasif.value = anggota.HARIPASIF
+  optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
+  nomipasif.value = anggota.NOMIPASIF
 }
 const simpan_data = async (e) => {
   try {
@@ -118,19 +115,20 @@ const simpan_data = async (e) => {
       id_produk.value,
       kode_produk.value,
       nama_produk.value,
-      kode_perhitungan.value,
-      pembulatan_angsuran.value,
-      jasa_perbulan.value,
-      periode_pembayaran.value,
-      administrasi.value,
-      provisi.value,
-      jurnal_pokok_simpata.value,
-      jurnal_jasa_simpata.value,
-      jurnal_denda_simpata.value,
-      jurnal_admin.value,
-      jurnal_provisi.value,
-      jurnal_akrual.value,
-      jurnal_ppap.value,
+      opthari.value,
+      versi_perhitungan.value,
+      a_bunga.value,
+      a_optadm.value,
+      a_adm.value,
+      p_bunga.value,
+      p_optadm.value,
+      p_adm.value,
+      saldo_minimal.value,
+      batas_bunga.value,
+      optpasif1.value,
+      haripasif.value,
+      optpasif2.value,
+      nomipasif.value,
       isEdit.value
     )
     e.target.reset()
@@ -170,21 +168,23 @@ const resetForm = () => {
   id_produk.value = ''
   kode_produk.value = ''
   nama_produk.value = null
-  pembulatan_angsuran.value = null
-  jasa_perbulan.value = null
-  kode_perhitungan.value = null
-  jurnal_admin.value = null
-  jurnal_provisi.value = null
-  jurnal_denda_simpata.value = null
-  periode_pembayaran.value = null
-  provisi.value = null
-  batas_pajak.value = ''
-  pajak.value = ''
-  antar_bank.value = ''
-  jurnal_pokok_simpata.value = null
-  jurnal_jasa_simpata.value = null
-  jurnal_akrual.value = ''
-  jurnal_ppap.value = ''
+  opthari.value = '1'
+  versi_perhitungan.value = '1'
+  a_bunga.value = '0'
+  a_optadm.value = '1'
+  a_adm.value = '0'
+  p_bunga.value = '0'
+  p_optadm.value = '1'
+  p_adm.value = '0'
+  saldo_minimal.value = '0'
+  batas_bunga.value = '0'
+  optpasif1.value = true
+  haripasif.value = '180'
+  optpasif2.value = false
+  nomipasif.value = '0'
+  batas_pajak.value = '0'
+  pajak.value = '0'
+  antar_bank.value = 'T'
   modal_utama.value = false
   modal_delete.value = false
   isAdd.value = false
@@ -791,8 +791,8 @@ onMounted(async () => {
                 <input
                   id="365-radio"
                   type="radio"
-                  value=""
-                  name="bordered-radio"
+                  value="1"
+                  v-model="opthari"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="365-radio" class="ml-2 text-xs font-medium"
@@ -803,8 +803,8 @@ onMounted(async () => {
                 <input
                   id="360-radio"
                   type="radio"
-                  value=""
-                  name="bordered-radio"
+                  value="2"
+                  v-model="opthari"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="360-radio" class="ml-2 text-xs font-medium"
@@ -824,8 +824,8 @@ onMounted(async () => {
                   <input
                     id="harian-radio"
                     type="radio"
-                    value=""
-                    name="versi-perhitungan-radio"
+                    value="1"
+                    v-model="versi_perhitungan"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="harian-radio" class="ml-2 text-xs font-medium">Harian</label>
@@ -834,8 +834,8 @@ onMounted(async () => {
                   <input
                     id="saldo-minimal-radio"
                     type="radio"
-                    value=""
-                    name="versi-perhitungan-radio"
+                    value="3"
+                    v-model="versi_perhitungan"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="saldo-minimal-radio" class="ml-2 text-xs font-medium"
@@ -848,8 +848,8 @@ onMounted(async () => {
                   <input
                     id="rata-radio"
                     type="radio"
-                    value=""
-                    name="versi-perhitungan-radio"
+                    value="2"
+                    v-model="versi_perhitungan"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="rata-radio" class="ml-2 text-xs font-medium">Rata - Rata</label>
@@ -858,8 +858,8 @@ onMounted(async () => {
                   <input
                     id="harian-berjenjang-radio"
                     type="radio"
-                    value=""
-                    name="versi-perhitungan-radio"
+                    value="4"
+                    v-model="versi_perhitungan"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="harian-berjenjang-radio" class="ml-2 text-xs font-medium"
@@ -881,6 +881,7 @@ onMounted(async () => {
                   class="w-1/3 mx-5 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
+                  v-model="a_bunga"
                   name="prosen-bunga"
                   required
                 />
@@ -895,8 +896,8 @@ onMounted(async () => {
                     <input
                       id="flate-aktif-radio"
                       type="radio"
-                      value=""
-                      name="ketentuan-tabungan-aktif"
+                      value="1"
+                      v-model="a_optadm"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <label for="flate-aktif-radio" class="ml-2 text-xs font-medium">Flate</label>
@@ -905,8 +906,8 @@ onMounted(async () => {
                     <input
                       id="berjenjang-aktif-radio"
                       type="radio"
-                      value=""
-                      name="ketentuan-tabungan-aktif"
+                      value="2"
+                      v-model="a_optadm"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <label for="berjenjang-aktif-radio" class="ml-2 text-xs font-medium"
@@ -919,10 +920,16 @@ onMounted(async () => {
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
                     float="0.05"
+                    v-model="a_adm"
                     name="admin-per-bulan"
                     required
                   />
-                  <button class="rounded h-7 text-xs bg-primary text-white w-full">Detail</button>
+                  <button
+                    v-if="a_optadm == '2'"
+                    class="rounded h-7 text-xs bg-primary text-white w-full"
+                  >
+                    Detail
+                  </button>
                 </div>
               </div>
             </div>
@@ -939,6 +946,7 @@ onMounted(async () => {
                   class="w-1/3 mx-5 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
+                  v-model="p_bunga"
                   name="prosen-bunga"
                   required
                 />
@@ -953,8 +961,8 @@ onMounted(async () => {
                     <input
                       id="flate-pasif-radio"
                       type="radio"
-                      value=""
-                      name="ketentuan-tabungan-pasif"
+                      value="1"
+                      v-model="p_optadm"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <label for="flate-pasif-radio" class="ml-2 text-xs font-medium">Flate</label>
@@ -963,8 +971,8 @@ onMounted(async () => {
                     <input
                       id="berjenjang-pasif-radio"
                       type="radio"
-                      value=""
-                      name="ketentuan-tabungan-pasif"
+                      value="2"
+                      v-model="p_optadm"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <label for="berjenjang-pasif-radio" class="ml-2 text-xs font-medium"
@@ -978,9 +986,15 @@ onMounted(async () => {
                     type="number"
                     float="0.05"
                     name="admin-per-bulan"
+                    v-model="p_adm"
                     required
                   />
-                  <button class="rounded h-7 text-xs bg-primary text-white w-full">Detail</button>
+                  <button
+                    v-if="p_optadm == '2'"
+                    class="rounded h-7 text-xs bg-primary text-white w-full"
+                  >
+                    Detail
+                  </button>
                 </div>
               </div>
             </div>
@@ -996,7 +1010,7 @@ onMounted(async () => {
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
-                  name="saldo-minimal"
+                  v-model="saldo_minimal"
                   required
                 />
               </div>
@@ -1006,7 +1020,7 @@ onMounted(async () => {
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
-                  name="saldo-minimal"
+                  v-model="batas_bunga"
                   required
                 />
               </div>
@@ -1025,7 +1039,7 @@ onMounted(async () => {
                   <input
                     id="harian-checkbox"
                     type="checkbox"
-                    value=""
+                    v-model="optpasif1"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="harian-checkbox" class="ml-2 text-xs font-medium"
@@ -1034,8 +1048,10 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-10 justify-start items-center w-[45%]">
                   <input
+                    v-if="optpasif1 == true"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
+                    v-model="haripasif"
                     float="0.05"
                     required
                   />
@@ -1046,7 +1062,7 @@ onMounted(async () => {
                   <input
                     id="saldo-checkbox"
                     type="checkbox"
-                    value=""
+                    v-model="optpasif2"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="saldo-checkbox" class="ml-2 text-xs font-medium"
@@ -1055,9 +1071,11 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-10 justify-start items-center w-[45%]">
                   <input
+                    v-if="optpasif2 == true"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
                     float="0.05"
+                    v-model="nomipasif"
                     required
                   />
                 </div>
