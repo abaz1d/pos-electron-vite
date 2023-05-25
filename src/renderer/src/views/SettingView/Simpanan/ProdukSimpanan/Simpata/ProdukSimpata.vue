@@ -1,12 +1,12 @@
 <script setup>
-import { useProdukPinjamanStore } from '@renderer/stores/produkPinjaman.js'
+import { useProdukSimpataStore } from '@renderer/stores/produkSimpata.js'
 import { onMounted, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
 import SETTING from '@renderer/assets/images/menu/setting.svg'
 
 const swal = inject('$swal')
-const produkPinjaman = useProdukPinjamanStore()
+const produkSimpata = useProdukSimpataStore()
 const Perkiraan_list = ref('')
 const isLoading = ref(false)
 const isAdd = ref(false)
@@ -23,6 +23,7 @@ const total_pages = ref(0)
 const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
+
 const id_produk = ref('')
 const kode_produk = ref('')
 const nama_produk = ref('')
@@ -32,9 +33,12 @@ const jasa_perbulan = ref('')
 const periode_pembayaran = ref('')
 const administrasi = ref('')
 const provisi = ref('')
-const jurnal_pokok_pinjaman = ref('')
-const jurnal_jasa_pinjaman = ref('')
-const jurnal_denda_pinjaman = ref('')
+const batas_pajak = ref('')
+const pajak = ref('')
+const antar_bank = ref('')
+const jurnal_pokok_simpata = ref('')
+const jurnal_jasa_simpata = ref('')
+const jurnal_denda_simpata = ref('')
 const jurnal_admin = ref('')
 const jurnal_provisi = ref('')
 const jurnal_akrual = ref('')
@@ -45,20 +49,23 @@ const addGet = () => {
   modal_utama.value = true
 }
 const editGet = async (e) => {
-  const anggota = await produkPinjaman.getItem(e)
+  const anggota = await produkSimpata.getItem(e)
   isEdit.value = true
   id_produk.value = anggota.id
-  kode_produk.value = anggota.sandi
-  nama_produk.value = anggota.keterangan
+  kode_produk.value = anggota.SANDI
+  nama_produk.value = anggota.KETERANGAN
   kode_perhitungan.value = anggota.kdhit
   pembulatan_angsuran.value = anggota.pembulatan
   jasa_perbulan.value = anggota.rate
   periode_pembayaran.value = anggota.periode
   administrasi.value = anggota.adm
   provisi.value = anggota.prov
-  jurnal_pokok_pinjaman.value = anggota.jurnal_pokok == '' ? '-' : anggota.jurnal_pokok
-  jurnal_jasa_pinjaman.value = anggota.jurnal_jasa == '' ? '-' : anggota.jurnal_jasa
-  jurnal_denda_pinjaman.value = anggota.jurnal_denda == '' ? '-' : anggota.jurnal_denda
+  batas_pajak.value = anggota.BATASPAJAK
+  pajak.value = anggota.PAJAK
+  antar_bank.value = anggota.ANTARBANK
+  jurnal_pokok_simpata.value = anggota.jurnal_pokok == '' ? '-' : anggota.jurnal_pokok
+  jurnal_jasa_simpata.value = anggota.jurnal_jasa == '' ? '-' : anggota.jurnal_jasa
+  jurnal_denda_simpata.value = anggota.jurnal_denda == '' ? '-' : anggota.jurnal_denda
   jurnal_admin.value = anggota.jurnal_adm == '' ? '-' : anggota.jurnal_adm
   jurnal_provisi.value = anggota.jurnal_prov == '' ? '-' : anggota.jurnal_prov
   jurnal_akrual.value = anggota.jurnal_yadit == '' ? '-' : anggota.jurnal_yadit
@@ -82,20 +89,23 @@ const deleteGet = (e) => {
 }
 
 const viewData = async (e) => {
-  const anggota = await produkPinjaman.getItem(e)
+  const anggota = await produkSimpata.getItem(e)
   isView.value = true
   id_produk.value = anggota.id
-  kode_produk.value = anggota.sandi
-  nama_produk.value = anggota.keterangan
+  kode_produk.value = anggota.SANDI
+  nama_produk.value = anggota.KETERANGAN
   kode_perhitungan.value = anggota.kdhit
   pembulatan_angsuran.value = anggota.pembulatan
   jasa_perbulan.value = anggota.rate
   periode_pembayaran.value = anggota.periode
   administrasi.value = anggota.adm
   provisi.value = anggota.prov
-  jurnal_pokok_pinjaman.value = anggota.jurnal_pokok
-  jurnal_jasa_pinjaman.value = anggota.jurnal_jasa
-  jurnal_denda_pinjaman.value = anggota.jurnal_denda
+  batas_pajak.value = anggota.BATASPAJAK
+  pajak.value = anggota.PAJAK
+  antar_bank.value = anggota.ANTARBANK
+  jurnal_pokok_simpata.value = anggota.jurnal_pokok
+  jurnal_jasa_simpata.value = anggota.jurnal_jasa
+  jurnal_denda_simpata.value = anggota.jurnal_denda
   jurnal_admin.value = anggota.jurnal_adm
   jurnal_provisi.value = anggota.jurnal_prov
   jurnal_akrual.value = anggota.jurnal_yadit
@@ -104,7 +114,7 @@ const viewData = async (e) => {
 }
 const simpan_data = async (e) => {
   try {
-    await produkPinjaman.postItem(
+    await produkSimpata.postItem(
       id_produk.value,
       kode_produk.value,
       nama_produk.value,
@@ -114,9 +124,9 @@ const simpan_data = async (e) => {
       periode_pembayaran.value,
       administrasi.value,
       provisi.value,
-      jurnal_pokok_pinjaman.value,
-      jurnal_jasa_pinjaman.value,
-      jurnal_denda_pinjaman.value,
+      jurnal_pokok_simpata.value,
+      jurnal_jasa_simpata.value,
+      jurnal_denda_simpata.value,
       jurnal_admin.value,
       jurnal_provisi.value,
       jurnal_akrual.value,
@@ -137,11 +147,11 @@ const deleteAnggota = async () => {
   if (userIds.value.length > 1) {
     for (let idAnggota = 0; idAnggota < userIds.value.length; idAnggota++) {
       console.log('delete post 1+', userIds.value[idAnggota])
-      await produkPinjaman.removeItem(userIds.value[idAnggota])
+      await produkSimpata.removeItem(userIds.value[idAnggota])
     }
   } else {
     console.log('delete post 1', userIds.value)
-    await produkPinjaman.removeItem(userIds.value[0])
+    await produkSimpata.removeItem(userIds.value[0])
   }
   resetForm()
 }
@@ -165,11 +175,14 @@ const resetForm = () => {
   kode_perhitungan.value = null
   jurnal_admin.value = null
   jurnal_provisi.value = null
-  jurnal_denda_pinjaman.value = null
+  jurnal_denda_simpata.value = null
   periode_pembayaran.value = null
   provisi.value = null
-  jurnal_pokok_pinjaman.value = null
-  jurnal_jasa_pinjaman.value = null
+  batas_pajak.value = ''
+  pajak.value = ''
+  antar_bank.value = ''
+  jurnal_pokok_simpata.value = null
+  jurnal_jasa_simpata.value = null
   jurnal_akrual.value = ''
   jurnal_ppap.value = ''
   modal_utama.value = false
@@ -185,7 +198,7 @@ const sorting = async (e) => {
   sort_mode.value = !sort_mode.value
 
   try {
-    await produkPinjaman.readItem(
+    await produkSimpata.readItem(
       search_type.value,
       search_data.value,
       e,
@@ -247,7 +260,7 @@ const lastPage = async () => {
 watch(page_number, async (e) => {
   try {
     isLoading.value = true
-    await produkPinjaman.readItem(
+    await produkSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -271,7 +284,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value || page_number.value == '') {
       page_number.value = 1
     }
-    const data = await produkPinjaman.readItem(
+    const data = await produkSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -298,7 +311,7 @@ watch(row_per_page, async (e) => {
 watch(search_data, async (e) => {
   try {
     isLoading.value = true
-    const data = await produkPinjaman.readItem(
+    const data = await produkSimpata.readItem(
       search_type.value,
       e,
       sort_by.value,
@@ -320,7 +333,7 @@ watch(search_data, async (e) => {
 watch(search_type, async (e) => {
   try {
     isLoading.value = true
-    const data = await produkPinjaman.readItem(
+    const data = await produkSimpata.readItem(
       e,
       search_data.value,
       sort_by.value,
@@ -344,8 +357,8 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let anggota = 0; anggota < produkPinjaman.items.length; anggota++) {
-      userIds.value.push(produkPinjaman.items[anggota].id)
+    for (let anggota = 0; anggota < produkSimpata.items.length; anggota++) {
+      userIds.value.push(produkSimpata.items[anggota].id)
     }
   }
 }
@@ -356,7 +369,7 @@ const selectOne = () => {
 onMounted(async () => {
   try {
     isLoading.value = true
-    const data = await produkPinjaman.readItem(
+    const data = await produkSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -378,7 +391,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <Breadcrumbs title="Setting" subTitle="Pinjaman" :icon="SETTING" />
+  <Breadcrumbs title="Setting" subTitle="Simpata" :icon="SETTING" />
   <div class="relative top-0 bg-white w-full border-y-2 border-[#d0d3d4]">
     <div class="flex space-x-4 w-full justify-center m-auto px-5">
       <div class="grid grid-cols-8 xl:grid-cols-10 w-full h-10">
@@ -638,7 +651,7 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="produk in produkPinjaman.items"
+            v-for="produk in produkSimpata.items"
             :key="produk.sandi"
             :produk="produk"
             :value="produk.sandi"
@@ -663,13 +676,13 @@ onMounted(async () => {
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
-              {{ produk.sandi }}
+              {{ produk.SANDI }}
             </th>
             <td
               @dblclick="viewData(produk.id)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ produk.keterangan }}
+              {{ produk.KETERANGAN }}
             </td>
             <td
               @dblclick="viewData(produk.id)"
@@ -736,7 +749,7 @@ onMounted(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <form method="post" id="produkPinjamanForm" @submit.prevent="simpan_data">
+      <form method="post" id="produkSimpataForm" @submit.prevent="simpan_data">
         <div class="bg-pink-100 p-3 rounded-t">
           <div class="text-gray-700 flex items-center mx-auto w-full">
             <div class="mb-1 w-4/12 text-xs mr-3">
@@ -1063,6 +1076,7 @@ onMounted(async () => {
                   type="number"
                   float="0.05"
                   name="batas-pajak"
+                  v-model="batas_pajak"
                   required
                 />
               </div>
@@ -1073,6 +1087,7 @@ onMounted(async () => {
                   type="number"
                   float="0.05"
                   name="batas-pajak"
+                  v-model="pajak"
                   required
                 />
               </div>
@@ -1088,7 +1103,8 @@ onMounted(async () => {
               <input
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
-                maxlength="4"
+                maxlength="1"
+                v-model="antar_bank"
                 required
               />
             </div>
@@ -1176,7 +1192,7 @@ onMounted(async () => {
       <button type="button" class="btn btn-outline-secondary w-32 mr-1" @click="resetForm">
         Cancel
       </button>
-      <button v-if="!isView" type="submit" form="produkPinjamanForm" class="btn btn-primary w-32">
+      <button v-if="!isView" type="submit" form="produkSimpataForm" class="btn btn-primary w-32">
         Simpan
       </button>
     </ModalFooter>
