@@ -44,6 +44,8 @@ const nomipasif = ref('0')
 const batas_pajak = ref('0')
 const pajak = ref('0')
 const antar_bank = ref('T')
+const dapat_shu = ref('1')
+const metode_shu = ref('1')
 
 const addGet = () => {
   isAdd.value = true
@@ -917,6 +919,7 @@ onMounted(async () => {
                 </div>
                 <div class="w-1/3 space-y-1 mx-auto">
                   <input
+                    v-if="a_optadm == '1'"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
                     float="0.05"
@@ -924,10 +927,7 @@ onMounted(async () => {
                     name="admin-per-bulan"
                     required
                   />
-                  <button
-                    v-if="a_optadm == '2'"
-                    class="rounded h-7 text-xs bg-primary text-white w-full"
-                  >
+                  <button v-else class="rounded h-7 text-xs bg-primary text-white w-full">
                     Detail
                   </button>
                 </div>
@@ -982,6 +982,7 @@ onMounted(async () => {
                 </div>
                 <div class="w-1/3 space-y-1 mx-auto">
                   <input
+                    v-if="p_optadm == '1'"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
                     float="0.05"
@@ -989,10 +990,7 @@ onMounted(async () => {
                     v-model="p_adm"
                     required
                   />
-                  <button
-                    v-if="p_optadm == '2'"
-                    class="rounded h-7 text-xs bg-primary text-white w-full"
-                  >
+                  <button v-else class="rounded h-7 text-xs bg-primary text-white w-full">
                     Detail
                   </button>
                 </div>
@@ -1155,8 +1153,8 @@ onMounted(async () => {
                 <input
                   id="ya-shu"
                   type="radio"
-                  value=""
-                  name="dapat-shu"
+                  value="1"
+                  v-model="dapat_shu"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="ya-shu" class="ml-2 text-xs font-medium">Ya</label>
@@ -1165,8 +1163,8 @@ onMounted(async () => {
                 <input
                   id="tidak-shu"
                   type="radio"
-                  value=""
-                  name="dapat-shu"
+                  value="2"
+                  v-model="dapat_shu"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="tidak-shu" class="ml-2 text-xs font-medium">Tidak</label>
@@ -1183,8 +1181,8 @@ onMounted(async () => {
                 <input
                   id="saldo-akhir-shu"
                   type="radio"
-                  value=""
-                  name="perhitungan-shu"
+                  value="1"
+                  v-model="metode_shu"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="saldo-akhir-shu" class="ml-2 text-xs font-medium">Saldo Akhir</label>
@@ -1193,8 +1191,8 @@ onMounted(async () => {
                 <input
                   id="jumlah-mutasi-shu"
                   type="radio"
-                  value=""
-                  name="perhitungan-shu"
+                  value="2"
+                  v-model="metode_shu"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="jumlah-mutasi-shu" class="ml-2 text-xs font-medium"
