@@ -45,8 +45,9 @@ const addGet = () => {
   modal_utama.value = true
 }
 const editGet = async (e) => {
-  const anggota = await produkPinjaman.getItem(e)
   isEdit.value = true
+  modal_utama.value = true
+  const anggota = await produkPinjaman.getItem(e)
   id_produk.value = anggota.id
   kode_produk.value = anggota.sandi
   nama_produk.value = anggota.keterangan
@@ -63,7 +64,6 @@ const editGet = async (e) => {
   jurnal_provisi.value = anggota.jurnal_prov == '' ? '-' : anggota.jurnal_prov
   jurnal_akrual.value = anggota.jurnal_yadit == '' ? '-' : anggota.jurnal_yadit
   jurnal_ppap.value = anggota.jurnal_ppap == '' ? '-' : anggota.jurnal_ppap
-  modal_utama.value = true
 }
 const deleteGet = (e) => {
   const anggota = e
@@ -82,8 +82,10 @@ const deleteGet = (e) => {
 }
 
 const viewData = async (e) => {
-  const anggota = await produkPinjaman.getItem(e)
   isView.value = true
+  modal_utama.value = true
+
+  const anggota = await produkPinjaman.getItem(e)
   id_produk.value = anggota.id
   kode_produk.value = anggota.sandi
   nama_produk.value = anggota.keterangan
@@ -100,7 +102,6 @@ const viewData = async (e) => {
   jurnal_provisi.value = anggota.jurnal_prov
   jurnal_akrual.value = anggota.jurnal_yadit
   jurnal_ppap.value = anggota.jurnal_ppap
-  modal_utama.value = true
 }
 const simpan_data = async (e) => {
   try {

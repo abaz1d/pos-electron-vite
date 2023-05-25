@@ -69,8 +69,9 @@ const addGet = () => {
   modal_utama.value = true
 }
 const editGet = async (e) => {
-  const anggota = await daftarAnggota.getItem(e)
   isEdit.value = true
+  modal_utama.value = true
+  const anggota = await daftarAnggota.getItem(e)
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
   no_anggota.value = anggota.cif
@@ -107,7 +108,6 @@ const editGet = async (e) => {
 
   // previewFoto.value = URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' }))
   // console.log('Image', URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' })))
-  modal_utama.value = true
 }
 const deleteGet = (e) => {
   const anggota = e
@@ -177,8 +177,9 @@ const uint8ToBase64 = (arrayBuffer) => {
   return base64
 }
 const viewData = async (e) => {
-  const anggota = await daftarAnggota.getItem(e)
   isView.value = true
+  modal_utama.value = true
+  const anggota = await daftarAnggota.getItem(e)
   id_anggota.value = anggota.iddata
   tanggal.value = moment(anggota.tanggal).format('DD-MM-YYYY')
   no_anggota.value = anggota.cif
@@ -220,7 +221,6 @@ const viewData = async (e) => {
     anggota.foto
     // URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' } /* (1) */))
   )
-  modal_utama.value = true
 }
 
 const getImgUrl = (gambar_varian) => {

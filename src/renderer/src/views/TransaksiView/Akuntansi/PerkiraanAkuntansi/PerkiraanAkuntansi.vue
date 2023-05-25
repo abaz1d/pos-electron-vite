@@ -37,6 +37,8 @@ const addGet = () => {
 }
 const editGet = async (e) => {
   if (e !== '') {
+    isEdit.value = true
+    modal_utama.value = true
     noper.value = e
     const perkiraan = await perkiraanAkuntansi.readPerkiraan(e)
     nama.value = perkiraan.nama
@@ -45,8 +47,6 @@ const editGet = async (e) => {
     kelompok.value = perkiraan.kel
     kelompok_data.value = perkiraan.keldata
     detail.value = perkiraan.detail
-    isEdit.value = true
-    modal_utama.value = true
   }
 }
 const deleteGet = (e) => {
