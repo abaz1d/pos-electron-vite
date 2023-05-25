@@ -5,6 +5,7 @@ import HomeView from '@renderer/views/HomeView.vue'
 import Auth from '@renderer/views/Auth.vue'
 //Settings
 import ProdukPinjaman from '@renderer/views/SettingView/Pinjaman/ProdukPinjaman/ProdukPinjaman.vue'
+import ProdukSimpata from '@renderer/views/SettingView/Simpanan/ProdukSimpanan/Simpata/ProdukSimpata.vue'
 import CaraHitungPinjaman from '@renderer/views/SettingView/Pinjaman/CaraHitungPinjaman/CaraHitungPinjaman.vue'
 //Transaksi
 import DaftarSimpata from '@renderer/views/TransaksiView/Simpanan/DaftarSimpata/DaftarSimpata.vue'
@@ -36,6 +37,12 @@ const routes = [
     path: '/cara-hitung-pinjaman',
     name: 'cara-hitung-pinjaman',
     component: CaraHitungPinjaman,
+    meta: { authorize: [] }
+  },
+  {
+    path: '/produk-simpata',
+    name: 'produk-simpata',
+    component: ProdukSimpata,
     meta: { authorize: [] }
   },
   //Transaksi

@@ -442,7 +442,7 @@ onMounted(async () => {
       </div>
       <div class="bg-slate-200 mt-1 p-1">
         <div class="text-center">
-          <button type="button" class="btn btn-outline-secondary w-32 mr-5 text-sm">
+          <button type="button" class="btn bg-white btn-outline-secondary w-32 mr-5 text-sm">
             <XIcon class="mr-1" />Batal
           </button>
           <button class="btn btn-primary w-32 text-sm space-x-3">

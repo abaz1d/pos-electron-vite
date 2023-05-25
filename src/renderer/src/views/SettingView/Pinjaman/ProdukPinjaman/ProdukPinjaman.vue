@@ -737,7 +737,7 @@ onMounted(async () => {
     </ModalHeader>
     <ModalBody>
       <form method="post" id="produkPinjamanForm" @submit.prevent="simpan_data">
-        <div class="bg-slate-100 p-3 rounded-t">
+        <div class="bg-pink-100 p-3 rounded-t">
           <div class="text-gray-700 flex items-center mx-auto w-9/12">
             <div class="mb-1 w-2/5 text-xs">
               <label>Kode Produk</label>
@@ -799,10 +799,10 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div class="w-full uppercase px-2 text-center bg-slate-200 font-medium text-sm">
+        <div class="w-full uppercase px-2 text-center bg-slate-100 font-medium text-sm">
           Default Isian
         </div>
-        <div class="bg-slate-100 p-3 rounded-t">
+        <div class="bg-pink-100 p-3 rounded-t">
           <div class="text-gray-700 flex items-center mx-auto w-9/12">
             <div class="mb-1 w-2/5 text-xs">
               <label>Jasa Perbulan (%)</label>
@@ -870,10 +870,10 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div class="w-full uppercase px-2 text-center bg-slate-200 font-medium text-sm">
+        <div class="w-full uppercase px-2 text-center bg-slate-100 font-medium text-sm">
           Rekening Jurnal Akuntansi
         </div>
-        <div class="bg-slate-100 p-3 rounded-b">
+        <div class="bg-pink-100 p-3 rounded-b">
           <div class="text-gray-700 flex items-center mx-auto w-9/12 mb-1">
             <div class="mb-1 w-2/5 text-xs">
               <label>Jurnal Pokok Pinjaman</label>
