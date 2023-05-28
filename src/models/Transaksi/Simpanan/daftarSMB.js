@@ -114,9 +114,6 @@ daftarSMB.getNasabah = async (cif) => {
 }
 daftarSMB.setupPinjaman = async (kantor) => {
   try {
-    // const [anggota] = await db.query(
-    //   `SELECT a.nama, a.cif, a.kota FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas != '0000-00-00' AND p.kantor = ${kantor} ORDER BY a.nama;`
-    // )
     const [produk_pinjaman] = await db.query(
       `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`
     )
