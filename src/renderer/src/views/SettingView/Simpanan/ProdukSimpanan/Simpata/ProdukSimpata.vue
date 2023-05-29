@@ -32,27 +32,27 @@ const userIds = ref([])
 const id_produk = ref('')
 const kode_produk = ref('')
 const nama_produk = ref('')
-const opthari = ref('1')
-const versi_perhitungan = ref('1')
-const a_bunga = ref('0')
-const a_optadm = ref('1')
-const a_adm = ref('0')
-const a_adm1 = ref('0')
-const a_nomi_adm1 = ref('0')
-const p_bunga = ref('0')
-const p_optadm = ref('1')
-const p_adm = ref('0')
-const p_adm1 = ref('0')
-const p_nomi_adm1 = ref('0')
-const saldo_minimal = ref('0')
-const batas_bunga = ref('0')
+const opthari = ref('')
+const versi_perhitungan = ref('')
+const a_bunga = ref('')
+const a_optadm = ref('')
+const a_adm = ref('')
+const a_adm1 = ref('')
+const a_nomi_adm1 = ref('')
+const p_bunga = ref('')
+const p_optadm = ref('')
+const p_adm = ref('')
+const p_adm1 = ref('')
+const p_nomi_adm1 = ref('')
+const saldo_minimal = ref('')
+const batas_bunga = ref('')
 const optpasif1 = ref(true)
-const haripasif = ref('180')
+const haripasif = ref('')
 const optpasif2 = ref(false)
-const nomipasif = ref('0')
-const batas_pajak = ref('0')
-const pajak = ref('0')
-const antar_bank = ref('T')
+const nomipasif = ref('')
+const batas_pajak = ref('')
+const pajak = ref('')
+const antar_bank = ref('')
 const jurnaltab = ref('')
 const jurnalutangbg = ref('')
 const jurnalbunga = ref('')
@@ -60,8 +60,8 @@ const jurnaladm = ref('')
 const jurnaladmtutup = ref('')
 const jurnalpajak = ref('')
 const jurnalksd = ref('')
-const dapat_shu = ref('1')
-const metode_shu = ref('1')
+const dapat_shu = ref('')
+const metode_shu = ref('')
 
 const addGet = () => {
   isAdd.value = true
@@ -91,7 +91,7 @@ const editGet = async (e) => {
   optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
   haripasif.value = anggota.HARIPASIF
   optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
-  nomipasif.value = anggota.NOMIPASIFconst
+  nomipasif.value = anggota.NOMIPASIF
   batas_pajak.value = anggota.BATASPAJAK
   pajak.value = anggota.PAJAK
   antar_bank.value = anggota.ANTARBANK
@@ -102,7 +102,8 @@ const editGet = async (e) => {
   jurnaladmtutup.value = anggota.JURNALADMTUTUP
   jurnalpajak.value = anggota.JURNALPAJAK
   jurnalksd.value = anggota.JURNALKSD
-  console.log('anggota.JURNALBUNGA', anggota.JURNALBUNGA)
+  dapat_shu.value = '1'
+  metode_shu.value = '1'
 }
 const deleteGet = (e) => {
   const anggota = e
@@ -144,7 +145,7 @@ const viewData = async (e) => {
   optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
   haripasif.value = anggota.HARIPASIF
   optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
-  nomipasif.value = anggota.NOMIPASIFconst
+  nomipasif.value = anggota.NOMIPASIF
   batas_pajak.value = anggota.BATASPAJAK
   pajak.value = anggota.PAJAK
   antar_bank.value = anggota.ANTARBANK
@@ -155,10 +156,15 @@ const viewData = async (e) => {
   jurnaladmtutup.value = anggota.JURNALADMTUTUP
   jurnalpajak.value = anggota.JURNALPAJAK
   jurnalksd.value = anggota.JURNALKSD
+  dapat_shu.value = '1'
+  metode_shu.value = '1'
 }
 const simpan_data = async (e) => {
   try {
-    //if a_optadm == '1'  a_adm1.value =0 a_nomi_adm1.value = 0
+    //if a_optadm.value == '1' ? a_adm1.value : '0'
+    //if a_optadm.value == '1' ? a_nomi_adm1.value : '0'
+    //if p_optadm.value == '1' ? p_adm1.value : '0'
+    //if p_optadm.value == '1' ? p_nomi_adm1.value : '0'
     await produkSimpata.postItem(
       id_produk.value,
       kode_produk.value,
@@ -168,15 +174,42 @@ const simpan_data = async (e) => {
       a_bunga.value,
       a_optadm.value,
       a_adm.value,
+      a_optadm.value == '1' ? a_adm1.value : '0',
+      a_optadm.value == '1' ? a_nomi_adm1.value : '0',
+      // a_adm1.value
+      // a_nomi_adm1.value
       p_bunga.value,
       p_optadm.value,
       p_adm.value,
+      p_optadm.value == '1' ? p_adm1.value : '0',
+      p_optadm.value == '1' ? p_nomi_adm1.value : '0',
+      // p_adm1.value
+      // p_nomi_adm1.value
       saldo_minimal.value,
       batas_bunga.value,
-      optpasif1.value,
+      optpasif1.value == true && optpasif2.value == true
+        ? '3'
+        : optpasif1.value == false && optpasif2.value == true
+        ? '2'
+        : optpasif1.value == true && optpasif2.value == false
+        ? '1'
+        : '0',
+      //optpasif1.value,
       haripasif.value,
-      optpasif2.value,
+      //optpasif2.value,
       nomipasif.value,
+      batas_pajak.value,
+      pajak.value,
+      antar_bank.value,
+      jurnaltab.value,
+      jurnalutangbg.value,
+      jurnalbunga.value,
+      jurnaladm.value,
+      jurnaladmtutup.value,
+      jurnalpajak.value,
+      jurnalksd.value,
+      // dapat_shu.value
+      // metode_shu.value
       isEdit.value
     )
     e.target.reset()
@@ -216,27 +249,27 @@ const resetForm = () => {
   id_produk.value = ''
   kode_produk.value = ''
   nama_produk.value = null
-  opthari.value = '1'
-  versi_perhitungan.value = '1'
-  a_bunga.value = '0'
-  a_optadm.value = '1'
-  a_adm.value = '0'
-  a_adm1.value = '0'
-  a_nomi_adm1.value = '0'
-  p_bunga.value = '0'
-  p_optadm.value = '1'
-  p_adm.value = '0'
-  p_adm1.value = '0'
-  p_nomi_adm1.value = '0'
-  saldo_minimal.value = '0'
-  batas_bunga.value = '0'
+  opthari.value = ''
+  versi_perhitungan.value = ''
+  a_bunga.value = ''
+  a_optadm.value = ''
+  a_adm.value = ''
+  a_adm1.value = ''
+  a_nomi_adm1.value = ''
+  p_bunga.value = ''
+  p_optadm.value = ''
+  p_adm.value = ''
+  p_adm1.value = ''
+  p_nomi_adm1.value = ''
+  saldo_minimal.value = ''
+  batas_bunga.value = ''
   optpasif1.value = true
-  haripasif.value = '180'
+  haripasif.value = ''
   optpasif2.value = false
-  nomipasif.value = '0'
-  batas_pajak.value = '0'
-  pajak.value = '0'
-  antar_bank.value = 'T'
+  nomipasif.value = ''
+  batas_pajak.value = ''
+  pajak.value = ''
+  antar_bank.value = ''
   modal_utama.value = false
   modal_detail.value = false
   detail_jurnal.value = false
@@ -247,6 +280,8 @@ const resetForm = () => {
   isAdd.value = false
   isEdit.value = false
   isView.value = false
+  dapat_shu.value = ''
+  metode_shu.value = ''
 }
 
 const sorting = async (e) => {

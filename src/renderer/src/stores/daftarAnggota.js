@@ -100,6 +100,7 @@ export const useDaftarAnggotaStore = defineStore({
       resort
     ) {
       try {
+        const Auth = useAuthStore()
         this.rawItems.push({
           iddata,
           tanggal,

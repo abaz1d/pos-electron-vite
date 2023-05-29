@@ -79,33 +79,57 @@ produkSimpata.getProduk = async (id) => {
 }
 produkSimpata.postProduk = async (
   id,
-  sandi,
-  keterangan,
-  kdhit,
-  pembulatan,
-  rate,
-  periode,
-  adm,
-  prov,
-  jurnal_pokok,
-  jurnal_jasa,
-  jurnal_denda,
-  jurnal_adm,
-  jurnal_prov,
-  jurnal_yadit,
-  jurnal_ppap,
+  SANDI,
+  KETERANGAN,
+  OPTHARI,
+  VER,
+  A_RATE,
+  A_OPTADM,
+  A_ADM,
+  // a_optadm == '1' ? a_adm1 : '0',
+  // a_optadm == '1' ? a_nomi_adm1 : '0',
+  A_ADM1,
+  A_NOMI_ADM1,
+  P_RATE,
+  P_OPTADM,
+  P_ADM,
+  // p_optadm == '1' ? p_adm1 : '0',
+  // p_optadm == '1' ? p_nomi_adm1 : '0',
+  P_ADM1,
+  P_NOMI_ADM1,
+  SALDOMINIMAL,
+  BATASBUNGA,
+  OPTPASIF,
+  //optpasif1,
+  HARIPASIF,
+  //optpasif2,
+  NOMIPASIF,
+  BATASPAJAK,
+  PAJAK,
+  ANTARBANK,
+  JURNALTAB,
+  JURNALUTANGBG,
+  JURNALBUNGA,
+  JURNALADM,
+  JURNALADMTUTUP,
+  JURNALPAJAK,
+  JURNALKSD,
+  // dapat_shu
+  // metode_shu
   isEdit,
   kantor
 ) => {
   try {
     let rows
+    console.log('edit', isEdit)
     if (!isEdit) {
       ;[rows] = await db.query(
-        `INSERT INTO setsandi_tab(sandi, keterangan, kdhit, pembulatan, rate, periode, adm, prov, jurnal_pokok, jurnal_jasa, jurnal_denda, jurnal_adm, jurnal_prov, jurnal_yadit, jurnal_ppap, kantor) VALUES ('${sandi}', '${keterangan}', '${kdhit}', '${pembulatan}', '${rate}', '${periode}', '${adm}', '${prov}', '${jurnal_pokok}', '${jurnal_jasa}', '${jurnal_denda}', '${jurnal_adm}', '${jurnal_prov}', '${jurnal_yadit}', '${jurnal_ppap}', '${kantor}')`
+        `INSERT INTO setsandi_tab(SANDI, KETERANGAN, OPTHARI, VER, A_RATE, A_OPTADM, A_ADM, A_ADM1, A_NOMI_ADM1, P_RATE, P_OPTADM, P_ADM, P_ADM1, P_NOMI_ADM1, SALDOMINIMAL,BATASBUNGA,OPTPASIF,HARIPASIF,NOMIPASIF,BATASPAJAK,PAJAK,ANTARBANK,JURNALTAB,JURNALUTANGBG,JURNALBUNGA,JURNALADM,JURNALADMTUTUP,JURNALPAJAK,JURNALKSD, jenis, kantor) VALUES ('${SANDI}', '${KETERANGAN}', '${OPTHARI}', '${VER}', '${A_RATE}', '${A_OPTADM}', '${A_ADM}', '${A_ADM1}', '${A_NOMI_ADM1}', '${P_RATE}', '${P_OPTADM}', '${P_ADM}', '${P_ADM1}', '${P_NOMI_ADM1}', '${SALDOMINIMAL}','${BATASBUNGA}','${OPTPASIF}','${HARIPASIF}','${NOMIPASIF}','${BATASPAJAK}','${PAJAK}','${ANTARBANK}','${JURNALTAB}','${JURNALUTANGBG}','${JURNALBUNGA}','${JURNALADM}','${JURNALADMTUTUP}','${JURNALPAJAK}','${JURNALKSD}', '1', '${kantor}')`
       )
     } else {
+      console.log('edit')
       ;[rows] = await db.query(
-        `UPDATE setsandi_tab SET sandi = '${sandi}', keterangan = '${keterangan}', kdhit = '${kdhit}', pembulatan = '${pembulatan}', rate = '${rate}', periode = '${periode}', adm = '${adm}', prov = '${prov}', jurnal_pokok = '${jurnal_pokok}', jurnal_jasa = '${jurnal_jasa}', jurnal_denda = '${jurnal_denda}', jurnal_adm = '${jurnal_adm}', jurnal_prov = '${jurnal_prov}', jurnal_yadit = '${jurnal_yadit}', jurnal_ppap = '${jurnal_ppap}' WHERE id = '${id}'`
+        `UPDATE setsandi_tab SET SANDI = '${SANDI}', KETERANGAN = '${KETERANGAN}', OPTHARI = '${OPTHARI}', VER = '${VER}', A_RATE = '${A_RATE}', A_OPTADM = '${A_OPTADM}', A_ADM = '${A_ADM}', A_ADM1 = '${A_ADM1}', A_NOMI_ADM1 = '${A_NOMI_ADM1}', P_RATE = '${P_RATE}', P_OPTADM = '${P_OPTADM}', P_ADM = '${P_ADM}', P_ADM1 = '${P_ADM1}', P_NOMI_ADM1 = '${P_NOMI_ADM1}', SALDOMINIMAL = '${SALDOMINIMAL}', BATASBUNGA ='${BATASBUNGA}',OPTPASIF ='${OPTPASIF}',HARIPASIF ='${HARIPASIF}',NOMIPASIF ='${NOMIPASIF}',BATASPAJAK ='${BATASPAJAK}',PAJAK ='${PAJAK}',ANTARBANK ='${ANTARBANK}',JURNALTAB ='${JURNALTAB}',JURNALUTANGBG ='${JURNALUTANGBG}',JURNALBUNGA ='${JURNALBUNGA}',JURNALADM ='${JURNALADM}',JURNALADMTUTUP ='${JURNALADMTUTUP}',JURNALPAJAK ='${JURNALPAJAK}',JURNALKSD ='${JURNALKSD}' WHERE id = '${id}'`
       )
     }
     return new Response(rows)

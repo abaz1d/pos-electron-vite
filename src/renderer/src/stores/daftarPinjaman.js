@@ -155,7 +155,7 @@ export const useDaftarPinjamanStore = defineStore({
     ) {
       try {
         const Auth = useAuthStore()
-        this.rawItems.push({
+        const pinjaman = {
           tanggal: Date.now(),
           cif,
           nopk,
@@ -180,7 +180,17 @@ export const useDaftarPinjamanStore = defineStore({
           isEdit,
           kantor: Auth.items.kantor,
           marketing: Auth.items.username
-        })
+        }
+        if (isEdit) {
+          this.rawItems = this.rawItems.map((item) => {
+            if (item.norek === norek) {
+              return pinjaman
+            }
+            return item
+          })
+        } else {
+          this.rawItems.push(pinjaman)
+        }
         await request.postPinjaman(
           tanggal,
           cif,
