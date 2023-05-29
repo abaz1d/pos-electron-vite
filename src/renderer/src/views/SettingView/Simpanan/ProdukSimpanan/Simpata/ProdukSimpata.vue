@@ -13,6 +13,11 @@ const isAdd = ref(false)
 const isEdit = ref(false)
 const isView = ref(false)
 const modal_utama = ref(false)
+const modal_detail = ref(false)
+const detail_jurnal = ref(false)
+const detail_lain = ref(false)
+const detail_aktif = ref(false)
+const detail_pasif = ref(false)
 const modal_delete = ref(false)
 const sort_by = ref('sandi')
 const sort_mode = ref(true)
@@ -188,6 +193,11 @@ const resetForm = () => {
   pajak.value = '0'
   antar_bank.value = 'T'
   modal_utama.value = false
+  modal_detail.value = false
+  detail_jurnal.value = false
+  detail_lain.value = false
+  detail_aktif.value = false
+  detail_pasif.value = false
   modal_delete.value = false
   isAdd.value = false
   isEdit.value = false
@@ -927,7 +937,12 @@ onMounted(async () => {
                     name="admin-per-bulan"
                     required
                   />
-                  <button v-else class="rounded h-7 text-xs bg-primary text-white w-full">
+                  <button
+                    v-else
+                    @click=";(modal_detail = true), (detail_aktif = true)"
+                    type="button"
+                    class="rounded h-7 text-xs bg-primary hover:bg-primary/80 text-white w-full"
+                  >
                     Detail
                   </button>
                 </div>
@@ -990,7 +1005,12 @@ onMounted(async () => {
                     v-model="p_adm"
                     required
                   />
-                  <button v-else class="rounded h-7 text-xs bg-primary text-white w-full">
+                  <button
+                    v-else
+                    type="button"
+                    @click=";(modal_detail = true), (detail_pasif = true)"
+                    class="rounded h-7 text-xs bg-primary hover:bg-primary/80 text-white w-full"
+                  >
                     Detail
                   </button>
                 </div>
@@ -1131,7 +1151,13 @@ onMounted(async () => {
             </div>
 
             <div class="w-8/12 flex-grow">
-              <button class="rounded bg-primary mb-1 text-xs w-24 h-7 text-white">Detail</button>
+              <button
+                @click=";(modal_detail = true), (detail_jurnal = true)"
+                type="button"
+                class="rounded bg-primary hover:bg-primary/80 mb-1 text-xs w-24 h-7 text-white justify-center flex items-center"
+              >
+                <BookIcon class="inline w-5 h-5 mr-1" /> Detail
+              </button>
             </div>
           </div>
           <div class="text-gray-700 flex items-center mx-auto w-full">
@@ -1140,7 +1166,13 @@ onMounted(async () => {
             </div>
 
             <div class="w-8/12 flex-grow">
-              <button class="rounded bg-primary mb-1 text-xs w-24 h-7 text-white">Detail</button>
+              <button
+                @click=";(modal_detail = true), (detail_lain = true)"
+                type="button"
+                class="rounded bg-primary hover:bg-primary/80 mb-1 text-xs w-24 h-7 text-white justify-center flex items-center"
+              >
+                <InfoIcon class="inline w-5 h-5 mr-1" /> Detail
+              </button>
             </div>
           </div>
           <div class="text-gray-700 flex items-center mx-auto w-full">
@@ -1173,7 +1205,7 @@ onMounted(async () => {
           </div>
           <div class="text-gray-700 flex items-center mx-auto w-full">
             <div class="mb-1 w-4/12 text-xs mr-3">
-              <label class="float-right">perhitungan SHU</label>
+              <label class="float-right">Perhitungan SHU</label>
             </div>
 
             <div class="flex items-center w-8/12 px-2 h-7 rounded bg-white border mb-1">
@@ -1209,6 +1241,289 @@ onMounted(async () => {
         Cancel
       </button>
       <button v-if="!isView" type="submit" form="produkSimpataForm" class="btn btn-primary w-32">
+        Simpan
+      </button>
+    </ModalFooter>
+  </Modal>
+
+  <Modal backdrop="static" size="modal-lg" :show="modal_detail" @hidden="modal_detail = false">
+    <ModalHeader>
+      <h2 v-if="detail_jurnal" class="font-medium text-base mr-auto">Rekening Jurnal</h2>
+      <h2 v-else-if="detail_lain" class="font-medium text-base mr-auto">Ketentuan Lainya</h2>
+      <h2 v-else-if="detail_aktif" class="font-medium text-base mr-auto">
+        Admin Berjenjang Tabungan Aktif
+      </h2>
+      <h2 v-else-if="detail_pasif" class="font-medium text-base mr-auto">
+        Admin Berjenjang Tabungan Pasif
+      </h2>
+
+      <a
+        data-tw-dismiss="modal"
+        href="javascript:;"
+        @click="
+          ;(modal_detail = false), (detail_jurnal = false)
+          ;(detail_lain = false), (detail_aktif = false), (detail_pasif = false)
+        "
+        class="border bg-danger rounded-lg hover:bg-red-700 -my-5 -mr-3"
+      >
+        <XIcon class="lucide lucide-x w-7 h-7 text-white hover:text-slate-100" />
+      </a>
+    </ModalHeader>
+    <ModalBody>
+      <form method="post" v-if="detail_jurnal" id="rekening-jurnal" @submit.prevent="">
+        <div class="text-gray-700 flex items-center mx-auto w-9/12">
+          <div class="mb-1 w-2/12 text-xs mr-3">
+            <label class="float-right">Kode Produk</label>
+          </div>
+
+          <div class="w-9/12 flex-grow">
+            <input
+              class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+              type="text"
+              v-model="kode_produk"
+              maxlength="4"
+              required
+            />
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-9/12">
+          <div class="mb-1 w-2/12 text-xs mr-3">
+            <label class="float-right">Nama Produk</label>
+          </div>
+
+          <div class="w-9/12 flex-grow">
+            <input
+              class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+              type="text"
+              v-model="nama_produk"
+              maxlength="40"
+              required
+            />
+          </div>
+        </div>
+        <div class="bg-pink-100 p-3 rounded-b">
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>SIMPANAN - Tabungan</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>UTANG BUNGA - Beban Jasa Tabungan yang masih harus dibayar</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>BEBAN BUNGA - Beban Jasa Tabungan</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>PENDAPATAN LAIN-LAIN - Biaya Administrasi</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>PENDAPATAN LAIN-LAIN - Biaya Administrasi Penutupan Rekening</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>KEWAJIBAN SEGERA - Potongan Pajak</label>
+            </div>
+          </div>
+          <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
+            <div class="mb-1 w-3/12 text-xs">
+              <input
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                readonly
+              />
+            </div>
+            <div class="w-1/12 flex-grow">
+              <select
+                name="simpanan-tabungan"
+                id="simpanan-tabungan"
+                class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
+              >
+                <option value="-" selected disabled>-</option>
+                <option v-for="perkiraan in Perkiraan_list" :value="perkiraan.noper">
+                  {{ perkiraan.noper }}
+                  -
+                  {{ perkiraan.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 w-8/12 text-xs">
+              <label>KEWAJIBAN KEPADA NASABAH - Hadiah</label>
+            </div>
+          </div>
+        </div>
+      </form>
+      <form method="post" v-else-if="detail_lain" id="ketentuan-lain" @submit.prevent="">
+        ketentuan-lain
+      </form>
+      <form method="post" v-else-if="detail_lain" id="ketentuan-lain" @submit.prevent="">
+        ketentuan-lain
+      </form>
+      <form method="post" v-else-if="detail_lain" id="tabungan-aktif" @submit.prevent="">
+        tabungan-aktif
+      </form>
+      <form method="post" v-else-if="detail_lain" id="tabungan-pasif" @submit.prevent="">
+        tabungan-pasif
+      </form>
+    </ModalBody>
+    <ModalFooter class="text-right">
+      <button
+        type="button"
+        class="btn btn-outline-secondary w-32 mr-1"
+        @click="
+          ;(modal_detail = false), (detail_jurnal = false)
+          ;(detail_lain = false), (detail_aktif = false), (detail_pasif = false)
+        "
+      >
+        Cancel
+      </button>
+      <button
+        v-if="!isView"
+        type="submit"
+        :form="
+          detail_jurnal
+            ? 'rekening-jurnal'
+            : detail_lain
+            ? 'ketentuan-lain'
+            : detail_aktif
+            ? 'tabungan-aktif'
+            : 'tabungan-pasif'
+        "
+        class="btn btn-primary w-32"
+      >
         Simpan
       </button>
     </ModalFooter>
