@@ -37,9 +37,13 @@ const versi_perhitungan = ref('1')
 const a_bunga = ref('0')
 const a_optadm = ref('1')
 const a_adm = ref('0')
+const a_adm1 = ref('0')
+const a_nomi_adm1 = ref('0')
 const p_bunga = ref('0')
 const p_optadm = ref('1')
 const p_adm = ref('0')
+const p_adm1 = ref('0')
+const p_nomi_adm1 = ref('0')
 const saldo_minimal = ref('0')
 const batas_bunga = ref('0')
 const optpasif1 = ref(true)
@@ -49,6 +53,13 @@ const nomipasif = ref('0')
 const batas_pajak = ref('0')
 const pajak = ref('0')
 const antar_bank = ref('T')
+const jurnaltab = ref('')
+const jurnalutangbg = ref('')
+const jurnalbunga = ref('')
+const jurnaladm = ref('')
+const jurnaladmtutup = ref('')
+const jurnalpajak = ref('')
+const jurnalksd = ref('')
 const dapat_shu = ref('1')
 const metode_shu = ref('1')
 
@@ -68,15 +79,30 @@ const editGet = async (e) => {
   a_bunga.value = anggota.A_RATE
   a_optadm.value = anggota.A_OPTADM
   a_adm.value = anggota.A_ADM
+  a_adm1.value = anggota.A_ADM1
+  a_nomi_adm1.value = anggota.A_NOMI_ADM1
   p_bunga.value = anggota.P_RATE
   p_optadm.value = anggota.P_OPTADM
   p_adm.value = anggota.P_ADM
+  p_adm1.value = anggota.P_ADM1
+  p_nomi_adm1.value = anggota.P_NOMI_ADM1
   saldo_minimal.value = anggota.SALDOMINIMAL
   batas_bunga.value = anggota.BATASBUNGA
   optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
   haripasif.value = anggota.HARIPASIF
   optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
-  nomipasif.value = anggota.NOMIPASIF
+  nomipasif.value = anggota.NOMIPASIFconst
+  batas_pajak.value = anggota.BATASPAJAK
+  pajak.value = anggota.PAJAK
+  antar_bank.value = anggota.ANTARBANK
+  jurnaltab.value = anggota.JURNALTAB
+  jurnalutangbg.value = anggota.JURNALUTANGBG
+  jurnalbunga.value = anggota.JURNALBUNGA
+  jurnaladm.value = anggota.JURNALADM
+  jurnaladmtutup.value = anggota.JURNALADMTUTUP
+  jurnalpajak.value = anggota.JURNALPAJAK
+  jurnalksd.value = anggota.JURNALKSD
+  console.log('anggota.JURNALBUNGA', anggota.JURNALBUNGA)
 }
 const deleteGet = (e) => {
   const anggota = e
@@ -106,18 +132,33 @@ const viewData = async (e) => {
   a_bunga.value = anggota.A_RATE
   a_optadm.value = anggota.A_OPTADM
   a_adm.value = anggota.A_ADM
+  a_adm1.value = anggota.A_ADM1
+  a_nomi_adm1.value = anggota.A_NOMI_ADM1
   p_bunga.value = anggota.P_RATE
   p_optadm.value = anggota.P_OPTADM
   p_adm.value = anggota.P_ADM
+  p_adm1.value = anggota.P_ADM1
+  p_nomi_adm1.value = anggota.P_NOMI_ADM1
   saldo_minimal.value = anggota.SALDOMINIMAL
   batas_bunga.value = anggota.BATASBUNGA
   optpasif1.value = anggota.OPTPASIF == '1' || anggota.OPTPASIF == '3' ? true : false
   haripasif.value = anggota.HARIPASIF
   optpasif2.value = anggota.OPTPASIF == '2' || anggota.OPTPASIF == '3' ? true : false
-  nomipasif.value = anggota.NOMIPASIF
+  nomipasif.value = anggota.NOMIPASIFconst
+  batas_pajak.value = anggota.BATASPAJAK
+  pajak.value = anggota.PAJAK
+  antar_bank.value = anggota.ANTARBANK
+  jurnaltab.value = anggota.JURNALTAB
+  jurnalutangbg.value = anggota.JURNALUTANGBG
+  jurnalbunga.value = anggota.JURNALBUNGA
+  jurnaladm.value = anggota.JURNALADM
+  jurnaladmtutup.value = anggota.JURNALADMTUTUP
+  jurnalpajak.value = anggota.JURNALPAJAK
+  jurnalksd.value = anggota.JURNALKSD
 }
 const simpan_data = async (e) => {
   try {
+    //if a_optadm == '1'  a_adm1.value =0 a_nomi_adm1.value = 0
     await produkSimpata.postItem(
       id_produk.value,
       kode_produk.value,
@@ -180,9 +221,13 @@ const resetForm = () => {
   a_bunga.value = '0'
   a_optadm.value = '1'
   a_adm.value = '0'
+  a_adm1.value = '0'
+  a_nomi_adm1.value = '0'
   p_bunga.value = '0'
   p_optadm.value = '1'
   p_adm.value = '0'
+  p_adm1.value = '0'
+  p_nomi_adm1.value = '0'
   saldo_minimal.value = '0'
   batas_bunga.value = '0'
   optpasif1.value = true
@@ -773,6 +818,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="kode_produk"
+                :readonly="isView"
                 maxlength="4"
                 required
               />
@@ -788,6 +834,7 @@ onMounted(async () => {
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 v-model="nama_produk"
+                :readonly="isView"
                 maxlength="40"
                 required
               />
@@ -805,6 +852,7 @@ onMounted(async () => {
                   type="radio"
                   value="1"
                   v-model="opthari"
+                  :disabled="isView"
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label for="365-radio" class="ml-2 text-xs font-medium"
@@ -813,6 +861,7 @@ onMounted(async () => {
               </div>
               <div class="flex mx-auto justify-center items-center w-1/2">
                 <input
+                  :disabled="isView"
                   id="360-radio"
                   type="radio"
                   value="2"
@@ -834,6 +883,7 @@ onMounted(async () => {
               <div class="flex items-center w-full">
                 <div class="flex mx-[46.5px] justify-start items-center w-1/2">
                   <input
+                    :disabled="isView"
                     id="harian-radio"
                     type="radio"
                     value="1"
@@ -844,6 +894,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-[46.5px] justify-start items-center w-1/2">
                   <input
+                    :disabled="isView"
                     id="saldo-minimal-radio"
                     type="radio"
                     value="3"
@@ -858,6 +909,7 @@ onMounted(async () => {
               <div class="flex items-center w-full">
                 <div class="flex mx-[46.5px] justify-start items-center w-1/2">
                   <input
+                    :disabled="isView"
                     id="rata-radio"
                     type="radio"
                     value="2"
@@ -868,6 +920,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-[46.5px] justify-start items-center w-1/2">
                   <input
+                    :disabled="isView"
                     id="harian-berjenjang-radio"
                     type="radio"
                     value="4"
@@ -895,6 +948,7 @@ onMounted(async () => {
                   float="0.05"
                   v-model="a_bunga"
                   name="prosen-bunga"
+                  :readonly="isView"
                   required
                 />
                 <label for="prosen-bunga" class="text-xs font-medium pb-1">Prosen Per Tahun</label>
@@ -906,6 +960,7 @@ onMounted(async () => {
                 <div class="w-1/3 space-y-1 mx-auto border p-1">
                   <div class="flex ml-8 justify-start items-center">
                     <input
+                      :disabled="isView"
                       id="flate-aktif-radio"
                       type="radio"
                       value="1"
@@ -916,6 +971,7 @@ onMounted(async () => {
                   </div>
                   <div class="flex ml-8 justify-start items-center">
                     <input
+                      :disabled="isView"
                       id="berjenjang-aktif-radio"
                       type="radio"
                       value="2"
@@ -930,6 +986,7 @@ onMounted(async () => {
                 <div class="w-1/3 space-y-1 mx-auto">
                   <input
                     v-if="a_optadm == '1'"
+                    :readonly="isView"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
                     float="0.05"
@@ -958,6 +1015,7 @@ onMounted(async () => {
               <div class="flex justify-center items-center w-full mb-1 border bg-slate-50 p-1">
                 <label for="prosen-bunga" class="text-xs font-medium pb-1">Prosen Bunga</label>
                 <input
+                  :readonly="isView"
                   class="w-1/3 mx-5 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
@@ -974,6 +1032,7 @@ onMounted(async () => {
                 <div class="w-1/3 space-y-1 mx-auto border p-1">
                   <div class="flex ml-8 justify-start items-center">
                     <input
+                      :disabled="isView"
                       id="flate-pasif-radio"
                       type="radio"
                       value="1"
@@ -984,6 +1043,7 @@ onMounted(async () => {
                   </div>
                   <div class="flex ml-8 justify-start items-center">
                     <input
+                      :disabled="isView"
                       id="berjenjang-pasif-radio"
                       type="radio"
                       value="2"
@@ -997,6 +1057,7 @@ onMounted(async () => {
                 </div>
                 <div class="w-1/3 space-y-1 mx-auto">
                   <input
+                    :readonly="isView"
                     v-if="p_optadm == '1'"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
@@ -1025,6 +1086,7 @@ onMounted(async () => {
             <div class="flex items-center w-8/12 h-9 rounded bg-slate-50 border mb-1">
               <div class="flex mx-auto justify-center items-center w-1/3">
                 <input
+                  :readonly="isView"
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
@@ -1035,6 +1097,7 @@ onMounted(async () => {
               <label for="360-radio" class="mx-2 text-xs font-medium">Batas Bunga</label>
               <div class="flex mx-auto justify-center items-center w-1/3">
                 <input
+                  :readonly="isView"
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
@@ -1055,6 +1118,7 @@ onMounted(async () => {
               <div class="flex items-center w-full">
                 <div class="flex ml-4 justify-start items-center w-[55%]">
                   <input
+                    :disabled="isView"
                     id="harian-checkbox"
                     type="checkbox"
                     v-model="optpasif1"
@@ -1066,6 +1130,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-10 justify-start items-center w-[45%]">
                   <input
+                    :readonly="isView"
                     v-if="optpasif1 == true"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
@@ -1078,6 +1143,7 @@ onMounted(async () => {
               <div class="flex w-full">
                 <div class="flex ml-4 justify-start items-center w-[55%]">
                   <input
+                    :disabled="isView"
                     id="saldo-checkbox"
                     type="checkbox"
                     v-model="optpasif2"
@@ -1089,6 +1155,7 @@ onMounted(async () => {
                 </div>
                 <div class="flex mx-10 justify-start items-center w-[45%]">
                   <input
+                    :readonly="isView"
                     v-if="optpasif2 == true"
                     class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                     type="number"
@@ -1108,6 +1175,7 @@ onMounted(async () => {
             <div class="flex items-center w-8/12 h-9 rounded bg-slate-50 border mb-1">
               <div class="flex mx-auto justify-center items-center w-[27%]">
                 <input
+                  :readonly="isView"
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
@@ -1119,6 +1187,7 @@ onMounted(async () => {
               <label class="mx-auto text-xs font-medium">Prosen Pajak</label>
               <div class="flex mx-auto justify-center items-center w-[27%]">
                 <input
+                  :readonly="isView"
                   class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                   type="number"
                   float="0.05"
@@ -1137,6 +1206,7 @@ onMounted(async () => {
 
             <div class="w-8/12 flex-grow">
               <input
+                :readonly="isView"
                 class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                 type="text"
                 maxlength="1"
@@ -1183,6 +1253,7 @@ onMounted(async () => {
             <div class="flex items-center w-8/12 px-2 h-7 rounded bg-white border mb-1">
               <div class="flex mx-auto justify-center items-center w-1/2">
                 <input
+                  :disabled="isView"
                   id="ya-shu"
                   type="radio"
                   value="1"
@@ -1193,6 +1264,7 @@ onMounted(async () => {
               </div>
               <div class="flex mx-auto justify-center items-center w-1/2">
                 <input
+                  :disabled="isView"
                   id="tidak-shu"
                   type="radio"
                   value="2"
@@ -1211,6 +1283,7 @@ onMounted(async () => {
             <div class="flex items-center w-8/12 px-2 h-7 rounded bg-white border mb-1">
               <div class="flex mx-auto justify-center items-center w-1/2">
                 <input
+                  :disabled="isView"
                   id="saldo-akhir-shu"
                   type="radio"
                   value="1"
@@ -1221,6 +1294,7 @@ onMounted(async () => {
               </div>
               <div class="flex mx-auto justify-center items-center w-1/2">
                 <input
+                  :disabled="isView"
                   id="jumlah-mutasi-shu"
                   type="radio"
                   value="2"
@@ -1253,9 +1327,7 @@ onMounted(async () => {
       <h2 v-else-if="detail_aktif" class="font-medium text-base mr-auto">
         Admin Berjenjang Tabungan Aktif
       </h2>
-      <h2 v-else-if="detail_pasif" class="font-medium text-base mr-auto">
-        Admin Berjenjang Tabungan Pasif
-      </h2>
+      <h2 v-else class="font-medium text-base mr-auto">Admin Berjenjang Tabungan Pasif</h2>
 
       <a
         data-tw-dismiss="modal"
@@ -1278,11 +1350,12 @@ onMounted(async () => {
 
           <div class="w-9/12 flex-grow">
             <input
+              :readonly="isView"
               class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
               type="text"
               v-model="kode_produk"
               maxlength="4"
-              required
+              readonly
             />
           </div>
         </div>
@@ -1293,11 +1366,12 @@ onMounted(async () => {
 
           <div class="w-9/12 flex-grow">
             <input
+              :readonly="isView"
               class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
               type="text"
               v-model="nama_produk"
               maxlength="40"
-              required
+              readonly
             />
           </div>
         </div>
@@ -1305,6 +1379,8 @@ onMounted(async () => {
           <div class="text-gray-700 flex items-center mx-auto w-10/12 mb-1 space-x-3">
             <div class="mb-1 w-3/12 text-xs">
               <input
+                :readonly="isView"
+                v-model="jurnaltab"
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
                 readonly
@@ -1312,8 +1388,8 @@ onMounted(async () => {
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnaltab"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1333,13 +1409,14 @@ onMounted(async () => {
               <input
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
+                v-model="jurnalutangbg"
                 readonly
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnalutangbg"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1359,13 +1436,14 @@ onMounted(async () => {
               <input
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
+                v-model="jurnalbunga"
                 readonly
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnalbunga"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1385,13 +1463,14 @@ onMounted(async () => {
               <input
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
+                v-model="jurnaladm"
                 readonly
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnaladm"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1411,13 +1490,14 @@ onMounted(async () => {
               <input
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
+                v-model="jurnaladmtutup"
                 readonly
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnaladmtutup"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1437,13 +1517,14 @@ onMounted(async () => {
               <input
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
+                v-model="jurnalpajak"
                 readonly
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnalpajak"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1464,12 +1545,13 @@ onMounted(async () => {
                 class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
                 type="text"
                 readonly
+                v-model="jurnalksd"
               />
             </div>
             <div class="w-1/12 flex-grow">
               <select
-                name="simpanan-tabungan"
-                id="simpanan-tabungan"
+                :disabled="isView"
+                v-model="jurnalksd"
                 class="w-full h-7 mb-1 px-0 text-xs border rounded focus:shadow-outline"
               >
                 <option value="-" selected disabled>-</option>
@@ -1487,16 +1569,310 @@ onMounted(async () => {
         </div>
       </form>
       <form method="post" v-else-if="detail_lain" id="ketentuan-lain" @submit.prevent="">
-        ketentuan-lain
+        <div class="text-gray-700 flex items-center mx-auto w-full">
+          <div class="mb-1 w-4/12 text-xs mr-3">
+            <label class="float-right">Pada Saat Buka Rekening</label>
+          </div>
+
+          <div class="grid items-center mx-auto w-8/12 p-2 h-32 rounded bg-white border-2 mb-1">
+            <div class="flex justify-center items-center w-full mb-1 border bg-slate-50 p-1">
+              <label for="max-tgl" class="text-xs font-medium pb-1">Maksimal Tgl</label>
+              <input
+                :readonly="isView"
+                class="w-[10%] mx-5 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="number"
+                name="max-tgl"
+                value="5"
+                required
+              />
+              <label for="max-tgl" class="text-xs font-medium pb-1"
+                >Bunga Diperhitungkan (Bunga Saldo Minimal)</label
+              >
+            </div>
+            <div class="flex justify-center items-center w-full mb-1 border bg-slate-50 p-1">
+              <label for="kupon" class="text-xs font-medium pb-1">Kupon</label>
+              <input
+                :readonly="isView"
+                class="w-[10%] mx-5 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="number"
+                name="kupon"
+                value="1"
+                required
+              />
+              <label for="kupon" class="text-xs font-medium pb-1"
+                >Tambahan Kupon untuk Rekening Baru</label
+              >
+            </div>
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-full">
+          <div class="mb-1 w-4/12 text-xs mr-3">
+            <label class="float-right">Perhitungan Kupon Undian</label>
+          </div>
+
+          <div
+            class="grid items-center mx-auto w-8/12 py-1 px-2 space-y-0.5 h-60 rounded bg-white border-2 mb-1"
+          >
+            <div class="text-gray-700 flex items-center mx-auto w-full">
+              <div class="mb-1 w-4/12 text-xs mr-3">
+                <label class="float-right">Tabungan Berhadiah</label>
+              </div>
+
+              <div class="flex items-center w-8/12 px-2 h-7 rounded bg-white border mb-1">
+                <div class="flex mx-auto justify-center items-center w-1/2">
+                  <input
+                    :disabled="isView"
+                    id="ya-hadiah"
+                    checked
+                    type="radio"
+                    value="1"
+                    name="dapat_hadiah"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="ya-hadiah" class="ml-2 text-xs font-medium">Ya</label>
+                </div>
+                <div class="flex mx-auto justify-center items-center w-1/2">
+                  <input
+                    :disabled="isView"
+                    id="tidak-hadiah"
+                    type="radio"
+                    value="2"
+                    name="dapat_hadiah"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="tidak-hadiah" class="ml-2 text-xs font-medium">Tidak</label>
+                </div>
+              </div>
+            </div>
+            <div class="text-gray-700 flex items-center mx-auto w-full">
+              <div class="mb-1 w-4/12 text-xs mr-3">
+                <label class="float-right">Dasar Perhitungan Kupon</label>
+              </div>
+
+              <div class="w-8/12 p-3 h-20 rounded bg-white border mb-1">
+                <div class="flex mx-2 justify-start mb-1 items-center w-full">
+                  <input
+                    :disabled="isView"
+                    checked
+                    id="saldo-minimal"
+                    type="radio"
+                    value="1"
+                    name="saldo_perhitungan"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="saldo-minimal" class="ml-2 text-xs font-medium">Saldo Minimal</label>
+                </div>
+                <div class="flex mx-2 justify-start mb-1 items-center w-full">
+                  <input
+                    :disabled="isView"
+                    id="saldo-rata"
+                    type="radio"
+                    value="2"
+                    name="saldo_perhitungan"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="saldo-rata" class="ml-2 text-xs font-medium">Saldo Rata - Rata</label>
+                </div>
+                <div class="flex mx-2 justify-start mb-1 items-center w-full">
+                  <input
+                    :disabled="isView"
+                    id="saldo-akhir"
+                    type="radio"
+                    value="3"
+                    name="saldo_perhitungan"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="saldo-akhir" class="ml-2 text-xs font-medium">Saldo Akhir</label>
+                </div>
+              </div>
+            </div>
+            <div class="text-gray-700 flex items-center mx-auto w-full">
+              <div class="text-gray-700 flex items-center mx-auto w-full">
+                <div class="mb-1 w-4/12 text-xs mr-3">
+                  <label class="float-right">Setiap Kelipatan</label>
+                </div>
+
+                <div class="w-8/12 flex-grow">
+                  <input
+                    :readonly="isView"
+                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                    type="text"
+                    required
+                    value="10000"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="text-gray-700 flex items-center mx-auto w-full">
+              <div class="mb-1 w-4/12 text-xs mr-3">
+                <label class="float-right">Penomoran Kupon</label>
+              </div>
+
+              <div class="w-8/12 p-3 h-14 rounded bg-white border mb-1">
+                <div class="flex mx-2 justify-start mb-1 items-center w-full">
+                  <input
+                    :disabled="isView"
+                    id="kupon-global"
+                    type="radio"
+                    checked
+                    value="1"
+                    name="penomoran-kupon"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="kupon-global" class="ml-2 text-xs font-medium">Global</label>
+                </div>
+                <div class="flex mx-2 justify-start mb-1 items-center w-full">
+                  <input
+                    :disabled="isView"
+                    id="kupon-khusus"
+                    type="radio"
+                    value="2"
+                    name="penomoran-kupon"
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label for="kupon-khusus" class="ml-2 text-xs font-medium">Khusus</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-gray-700 flex items-center mx-auto w-full">
+          <div class="mb-1 w-4/12 text-xs mr-3">
+            <label class="float-right">Penutupan Rekening Otomatis</label>
+          </div>
+
+          <div
+            class="grid items-center mx-auto w-8/12 py-1 px-2 space-y-0.5 h-28 rounded bg-white border-2 mb-1"
+          >
+            <div class="flex items-center w-full">
+              <div class="flex ml-4 justify-start items-center w-[55%]">
+                <input
+                  :disabled="isView"
+                  checked
+                  id="rekening-pasif"
+                  type="checkbox"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label for="rekening-pasif" class="ml-2 text-xs font-medium">Rekening Pasif</label>
+              </div>
+            </div>
+            <div class="flex items-center w-full">
+              <div class="flex ml-4 justify-start items-center w-[55%]">
+                <input
+                  :disabled="isView"
+                  id="no-actifity"
+                  checked
+                  type="checkbox"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label for="no-actifity" class="ml-2 text-xs font-medium"
+                  >Tidak Ada Aktifitas</label
+                >
+              </div>
+              <div class="flex mx-10 justify-start items-center w-[45%]">
+                <input
+                  :readonly="isView"
+                  class="w-9/12 h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                  type="number"
+                  value="1"
+                  required
+                />
+                <label for="no-actifity" class="ml-2 w-3/12 text-xs font-medium">Hari</label>
+              </div>
+            </div>
+            <div class="flex w-full">
+              <div class="flex ml-4 justify-start items-center w-[55%]">
+                <input
+                  :disabled="isView"
+                  id="saldo-lebih"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label for="saldo-lebih" class="ml-2 text-xs font-medium"
+                  >Saldo Lebih Kecil Atau Sama Dengan</label
+                >
+              </div>
+              <div class="flex mx-10 justify-start items-center w-[45%]">
+                <input
+                  :readonly="isView"
+                  class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                  type="number"
+                  value="1"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
-      <form method="post" v-else-if="detail_lain" id="ketentuan-lain" @submit.prevent="">
-        ketentuan-lain
-      </form>
-      <form method="post" v-else-if="detail_lain" id="tabungan-aktif" @submit.prevent="">
-        tabungan-aktif
-      </form>
-      <form method="post" v-else-if="detail_lain" id="tabungan-pasif" @submit.prevent="">
-        tabungan-pasif
+      <form
+        method="post"
+        v-else
+        :id="detail_aktif ? 'tabungan-aktif' : 'tabungan-pasif'"
+        @submit.prevent=""
+      >
+        <div class="border-2 px-[25px] py-1 rounded-t">
+          <div class="text-gray-700 flex justify-center items-center mx-auto w-full space-x-2">
+            <div class="w-10/12 text-sm font-semibold text-center">Range Saldo</div>
+            <div class="w-2/12 font-semibold text-sm text-center">Administrasi</div>
+          </div>
+        </div>
+        <div class="bg-pink-100 p-3 rounded-b">
+          <div class="text-gray-700 flex justify-center items-center mx-auto w-full mb-1 space-x-3">
+            <div class="mb-1 w-4/12 text-xs">
+              <input
+                :readonly="isView"
+                v-if="detail_aktif"
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="a_nomi_adm1"
+              />
+              <input
+                :readonly="isView"
+                v-else
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="p_nomi_adm1"
+              />
+            </div>
+            <div class="mb-1 w-1/12 text-xs text-center">
+              <label>S / D</label>
+            </div>
+            <div class="mb-1 w-4/12 text-xs">
+              <input
+                :readonly="isView"
+                v-if="detail_aktif"
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="a_nomi_adm1"
+              />
+              <input
+                :readonly="isView"
+                v-else
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="p_nomi_adm1"
+              />
+            </div>
+            <div class="mb-1 w-2/12 text-xs">
+              <input
+                :readonly="isView"
+                v-if="detail_aktif"
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="a_adm1"
+              />
+              <input
+                :readonly="isView"
+                v-else
+                class="w-full h-7 px-0.5 text-xs border-2 rounded focus:shadow-outline"
+                type="text"
+                v-model="p_adm1"
+              />
+            </div>
+          </div>
+        </div>
       </form>
     </ModalBody>
     <ModalFooter class="text-right">
