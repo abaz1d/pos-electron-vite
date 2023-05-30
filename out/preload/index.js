@@ -580,16 +580,17 @@ daftarAnggota.getAnggota = async (iddata) => {
 daftarAnggota.postAnggota = async (iddata, tanggal, no_anggota, no_ktp, no_kk, nama_lengkap, tempat_lahir, tanggal_lahir, jenis_kelamin, agama, alamat, rt, rw, kelurahan, kecamatan, kota, pendamping, pekerjaan, no_telepon, resort, imageFoto, imageTTD, imagePA, kantor) => {
   try {
     let rows;
+    console.log("Add", imageFoto, imageTTD, imagePA, kantor);
     if (imageFoto !== null || imageTTD !== null || imagePA !== null) {
       if (iddata == "") {
         ;
         [rows] = await db.query(
-          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort, kantor) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, foto, tandatangan, paraf, resort, tglbht, kantor) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}/${rw}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}','${new Blob(
             [imageFoto],
             { type: imageFoto.type }
           )}','${new Blob([imageTTD], { type: imageTTD.type })}','${new Blob([imagePA], {
             type: imagePA.type
-          })}', '${resort}', '${kantor}')`
+          })}', '${resort}', '0000-00-00', '${kantor}')`
         );
       } else {
         ;
@@ -608,7 +609,7 @@ daftarAnggota.postAnggota = async (iddata, tanggal, no_anggota, no_ktp, no_kk, n
       if (iddata == "") {
         ;
         [rows] = await db.query(
-          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, resort) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', '${resort}')`
+          `INSERT INTO anggota(cif, tanggal, nokK, noktp, nama, tempatlhr, tanggallhr, jeniskl, alamat, rt, desa, kecamatan, kota, agama, pekerjaan, statuskawin, phone, resort, tglbht, kantor) VALUES ('${no_anggota}', '${tanggal}', '${no_kk}', '${no_ktp}', '${nama_lengkap}', '${tempat_lahir}', '${tanggal_lahir}', '${jenis_kelamin}', '${alamat}', '${rt}/${rw}', '${kelurahan}', '${kecamatan}', '${kota}', '${agama}', '${pekerjaan}', '${pendamping}', '${no_telepon}', '${resort}', '0000-00-00', '${kantor}')`
         );
       } else {
         ;

@@ -83,9 +83,9 @@ export const useProdukPinjamanStore = defineStore({
       jurnal_ppap,
       isEdit
     ) {
-      const Auth = useAuthStore()
       try {
-        this.rawItems.push({
+        const Auth = useAuthStore()
+        const produk = {
           id,
           sandi,
           keterangan,
@@ -103,7 +103,17 @@ export const useProdukPinjamanStore = defineStore({
           jurnal_yadit,
           jurnal_ppap,
           kantor: Auth.items.kantor
-        })
+        }
+        if (isEdit) {
+          this.rawItems = this.rawItems.map((item) => {
+            if (item.id === id) {
+              return produk
+            }
+            return item
+          })
+        } else {
+          this.rawItems.push(produk)
+        }
         await request.postProduk(
           id,
           sandi,

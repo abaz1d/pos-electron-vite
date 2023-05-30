@@ -1913,15 +1913,15 @@ onMounted(async () => {
     <ModalFooter class="text-right">
       <button
         type="button"
-        class="btn btn-outline-secondary w-32 mr-1"
+        class="btn btn-primary w-32"
         @click="
           ;(modal_detail = false), (detail_jurnal = false)
           ;(detail_lain = false), (detail_aktif = false), (detail_pasif = false)
         "
       >
-        Cancel
+        OK
       </button>
-      <button
+      <!-- <button
         v-if="!isView"
         type="submit"
         :form="
@@ -1936,7 +1936,7 @@ onMounted(async () => {
         class="btn btn-primary w-32"
       >
         Simpan
-      </button>
+      </button> -->
     </ModalFooter>
   </Modal>
 

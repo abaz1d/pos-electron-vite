@@ -101,30 +101,39 @@ export const useDaftarAnggotaStore = defineStore({
     ) {
       try {
         const Auth = useAuthStore()
-        this.rawItems.push({
+        const anggota = {
           iddata,
           tanggal,
-          no_anggota,
-          no_ktp,
-          no_kk,
-          nama_lengkap,
-          tempat_lahir,
-          tanggal_lahir,
-          jenis_kelamin,
+          cif: no_anggota,
+          noktp: no_ktp,
+          nokK: no_kk,
+          nama: nama_lengkap,
+          tempatlhr: tempat_lahir,
+          tanggallhr: tanggal_lahir,
+          jeniskl: jenis_kelamin,
           agama,
           alamat,
-          rt,
-          rw,
-          kelurahan,
-          kecamatan,
+          rt: `${rt}/${rw}`,
+          desa: kelurahan,
+          kecamatan: kecamatan,
           kota,
-          pendamping,
+          statuskawin: pendamping,
           pekerjaan,
-          no_telepon,
+          phone: no_telepon,
           resort,
           kantor: Auth.items.kantor
-        })
-        await request.postAnggota(
+        }
+        if (iddata != '') {
+          this.rawItems = this.rawItems.map((item) => {
+            if (item.iddata === iddata) {
+              return anggota
+            }
+            return item
+          })
+        } else {
+          this.rawItems.push(anggota)
+        }
+        const data = await request.postAnggota(
           iddata,
           tanggal,
           no_anggota,
@@ -151,6 +160,7 @@ export const useDaftarAnggotaStore = defineStore({
           imagePA,
           Auth.items.kantor
         )
+        console.log('d', data)
       } catch (error) {
         throw new Error(error)
       }
