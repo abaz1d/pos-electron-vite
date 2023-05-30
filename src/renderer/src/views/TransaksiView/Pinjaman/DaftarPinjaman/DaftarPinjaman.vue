@@ -1212,7 +1212,7 @@ onMounted(async () => {
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded-l focus:shadow-outline"
                     type="text"
                     v-model="no_anggota"
-                    @keyup.enter="getNasabah"
+                    @keyup.enter="no_anggota == '' ? (modal_nasabah = true) : getNasabah"
                     @blur="getNasabah"
                     required
                     :readonly="isView"

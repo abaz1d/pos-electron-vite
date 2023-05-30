@@ -1,5 +1,5 @@
 <script setup>
-import { useDaftarPinjamanStore } from '@renderer/stores/daftarPinjaman.js'
+import { useDaftarSimpataStore } from '@renderer/stores/daftarSimpata.js'
 import { onMounted, onBeforeMount, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
@@ -8,7 +8,7 @@ import { currencyFormatter } from '@renderer/utils/helper'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
 const swal = inject('$swal')
-const daftarPinjaman = useDaftarPinjamanStore()
+const daftarSimpata = useDaftarSimpataStore()
 const isLoading = ref(false)
 const isAdd = ref(false)
 const isEdit = ref(false)
@@ -44,7 +44,7 @@ const pokok_pinj = ref('')
 const suku_bunga = ref('')
 const cara_hitung = ref('')
 const tgl_mulai = ref('')
-const lama_durasi = ref('')
+const pajak = ref('')
 const admin = ref('')
 const provisi = ref('')
 const admin_percent = ref('')
@@ -67,7 +67,7 @@ const addGet = () => {
 const editGet = async (e) => {
   isEdit.value = true
   modal_utama.value = true
-  const pinjaman = await daftarPinjaman.getItem(e)
+  const pinjaman = await daftarSimpata.getItem(e)
   tanggal.value =
     moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -86,7 +86,7 @@ const editGet = async (e) => {
   pokok_pinj.value = pinjaman.pokok
   suku_bunga.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
-  lama_durasi.value = pinjaman.lama
+  pajak.value = pinjaman.lama
   tgl_mulai.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -106,9 +106,9 @@ const editGet = async (e) => {
     moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  angsuran_pokok.value = pinjaman.pot_pokok
+  angsuran_pokok.value = pinjaman.saldo
   angsuran_jasa.value = pinjaman.pot_bunga
-  angsuran_bulanan.value = pinjaman.pot_pokok + pinjaman.pot_bunga
+  angsuran_bulanan.value = pinjaman.saldo
   sisa_pokok.value = pinjaman.sisapokok
   sisa_jasa.value = pinjaman.sisabunga
   saldo_pinjaman.value = pinjaman.sisapokok + pinjaman.sisabunga
@@ -132,7 +132,7 @@ const deleteGet = (e) => {
 const viewData = async (e) => {
   isView.value = true
   modal_utama.value = true
-  const pinjaman = await daftarPinjaman.getItem(e)
+  const pinjaman = await daftarSimpata.getItem(e)
   tanggal.value =
     moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -151,7 +151,7 @@ const viewData = async (e) => {
   pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
   suku_bunga.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
-  lama_durasi.value = pinjaman.lama
+  pajak.value = pinjaman.lama
   tgl_mulai.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
@@ -180,7 +180,7 @@ const viewData = async (e) => {
 }
 const getNasabah = async (e) => {
   if (no_anggota.value != '') {
-    const data = await daftarPinjaman.getNasabah(no_anggota.value)
+    const data = await daftarSimpata.getNasabah(no_anggota.value)
     if (data.success) {
       const nasabah = data.data.rows[0]
       nama_lengkap.value = nasabah.nama
@@ -197,7 +197,7 @@ const getNasabah = async (e) => {
       })
     }
   } else if (typeof e == 'string') {
-    const data = await daftarPinjaman.getNasabah(e)
+    const data = await daftarSimpata.getNasabah(e)
     if (data.success) {
       modal_nasabah.value = false
       const nasabah = data.data.rows[0]
@@ -225,20 +225,18 @@ const itungPinjaman = async () => {
     provisi.value = parseFloat(
       (parseFloat(provisi_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     ).toFixed(2)
-    angsuran_pokok.value = parseFloat(pokok_pinj.value / lama_durasi.value)
+    angsuran_pokok.value = parseFloat(pokok_pinj.value / pajak.value)
     angsuran_jasa.value =
       (parseFloat(suku_bunga.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
-    if (tgl_mulai.value != '' && lama_durasi.value != '') {
-      tgl_jatuh_tempo.value = moment(tgl_mulai.value)
-        .add(lama_durasi.value, 'M')
-        .format('DD-MM-YYYY')
+    if (tgl_mulai.value != '' && pajak.value != '') {
+      tgl_jatuh_tempo.value = moment(tgl_mulai.value).add(pajak.value, 'M').format('DD-MM-YYYY')
     }
   }
 }
 const simpan_data = async (e) => {
   try {
-    await daftarPinjaman.postItem(
+    await daftarSimpata.postItem(
       // console.log('simpan',
       tanggal.value,
       no_anggota.value,
@@ -250,7 +248,7 @@ const simpan_data = async (e) => {
       suku_bunga.value,
       cara_hitung.value,
       tgl_mulai.value,
-      lama_durasi.value,
+      pajak.value,
       admin.value,
       provisi.value,
       tgl_jatuh_tempo.value,
@@ -277,11 +275,11 @@ const deletePinjaman = async () => {
   if (userIds.value.length > 1) {
     for (let idPinjaman = 0; idPinjaman < userIds.value.length; idPinjaman++) {
       console.log('delete post 1+', userIds.value[idPinjaman])
-      await daftarPinjaman.removeItem(userIds.value[idPinjaman])
+      await daftarSimpata.removeItem(userIds.value[idPinjaman])
     }
   } else {
     console.log('delete post 1', userIds.value)
-    await daftarPinjaman.removeItem(userIds.value[0])
+    await daftarSimpata.removeItem(userIds.value[0])
   }
   resetForm()
 }
@@ -303,7 +301,7 @@ const resetForm = () => {
   jenis_kredit.value = ''
   pokok_pinj.value = ''
   no_pk.value = ''
-  lama_durasi.value = ''
+  pajak.value = ''
   tgl_valuta.value = ''
   tgl_alih_bunga.value = ''
   suku_bunga.value = ''
@@ -342,7 +340,7 @@ const sorting = async (e) => {
   sort_mode.value = !sort_mode.value
 
   try {
-    await daftarPinjaman.readItem(
+    await daftarSimpata.readItem(
       search_type.value,
       search_data.value,
       e,
@@ -404,7 +402,7 @@ const lastPage = async () => {
 watch(page_number, async (e) => {
   try {
     isLoading.value = true
-    await daftarPinjaman.readItem(
+    await daftarSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -428,7 +426,7 @@ watch(row_per_page, async (e) => {
     if (page_number.value > total_pages.value || page_number.value == '') {
       page_number.value = 1
     }
-    const data = await daftarPinjaman.readItem(
+    const data = await daftarSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -455,7 +453,7 @@ watch(row_per_page, async (e) => {
 watch(search_data, async (e) => {
   try {
     isLoading.value = true
-    const data = await daftarPinjaman.readItem(
+    const data = await daftarSimpata.readItem(
       search_type.value,
       e,
       sort_by.value,
@@ -477,7 +475,7 @@ watch(search_data, async (e) => {
 watch(search_type, async (e) => {
   try {
     isLoading.value = true
-    const data = await daftarPinjaman.readItem(
+    const data = await daftarSimpata.readItem(
       e,
       search_data.value,
       sort_by.value,
@@ -498,8 +496,8 @@ watch(search_type, async (e) => {
 })
 watch(tgl_mulai, async (tanggal) => {
   try {
-    if (jenis_kredit.value != '' && lama_durasi.value != '') {
-      tgl_jatuh_tempo.value = moment(tanggal).add(lama_durasi.value, 'M').format('DD-MM-YYYY')
+    if (jenis_kredit.value != '' && pajak.value != '') {
+      tgl_jatuh_tempo.value = moment(tanggal).add(pajak.value, 'M').format('DD-MM-YYYY')
     }
   } catch (error) {
     swal({
@@ -511,31 +509,31 @@ watch(tgl_mulai, async (tanggal) => {
 })
 watch(jenis_kredit, async (sandi) => {
   try {
-    produk_pinjaman.value.map((produk) => {
-      if (produk.sandi === sandi) {
-        suku_bunga.value = parseFloat(produk.rate).toFixed(2)
-        lama_durasi.value = produk.LAMA
-        admin_percent.value = parseFloat(produk.adm).toFixed(2)
-        provisi_percent.value = parseFloat(produk.prov).toFixed(2)
-        if (pokok_pinj.value != '' && !isView.value) {
-          admin.value = parseFloat(
-            (parseFloat(produk.adm).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-          ).toFixed(2)
-          provisi.value = parseFloat(
-            (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-          ).toFixed(2)
-          angsuran_pokok.value = parseFloat(pokok_pinj.value / produk.LAMA)
-          angsuran_jasa.value =
-            (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-          angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
-          if (tgl_mulai.value != '' && lama_durasi.value != '') {
-            tgl_jatuh_tempo.value = moment(tgl_mulai.value)
-              .add(lama_durasi.value, 'M')
-              .format('DD-MM-YYYY')
-          }
-        }
-      }
-    })
+    // produk_pinjaman.value.map((produk) => {
+    //   if (produk.sandi === sandi) {
+    //     suku_bunga.value = parseFloat(produk.rate).toFixed(2)
+    //     pajak.value = produk.LAMA
+    //     admin_percent.value = parseFloat(produk.adm).toFixed(2)
+    //     provisi_percent.value = parseFloat(produk.prov).toFixed(2)
+    //     if (pokok_pinj.value != '' && !isView.value) {
+    //       admin.value = parseFloat(
+    //         (parseFloat(produk.adm).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    //       ).toFixed(2)
+    //       provisi.value = parseFloat(
+    //         (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    //       ).toFixed(2)
+    //       angsuran_pokok.value = parseFloat(pokok_pinj.value / produk.LAMA)
+    //       angsuran_jasa.value =
+    //         (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    //       angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
+    //       if (tgl_mulai.value != '' && pajak.value != '') {
+    //         tgl_jatuh_tempo.value = moment(tgl_mulai.value)
+    //           .add(pajak.value, 'M')
+    //           .format('DD-MM-YYYY')
+    //       }
+    //     }
+    //   }
+    // })
   } catch (error) {
     swal({
       icon: 'error',
@@ -549,8 +547,8 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let pinjaman = 0; pinjaman < daftarPinjaman.items.length; pinjaman++) {
-      userIds.value.push(daftarPinjaman.items[pinjaman].norek)
+    for (let pinjaman = 0; pinjaman < daftarSimpata.items.length; pinjaman++) {
+      userIds.value.push(daftarSimpata.items[pinjaman].norek)
     }
   }
 }
@@ -560,7 +558,7 @@ const selectOne = () => {
 
 onBeforeMount(async () => {
   try {
-    const data = await daftarPinjaman.setupItem()
+    const data = await daftarSimpata.setupItem()
     if (data.success) {
       marketing_list.value = data.data.marketing
       produk_pinjaman.value = data.data.produk_pinjaman
@@ -577,7 +575,7 @@ onBeforeMount(async () => {
 onMounted(async () => {
   try {
     isLoading.value = true
-    const data = await daftarPinjaman.readItem(
+    const data = await daftarSimpata.readItem(
       search_type.value,
       search_data.value,
       sort_by.value,
@@ -684,6 +682,7 @@ onMounted(async () => {
                 <input
                   id="tabungan-checkbox"
                   type="checkbox"
+                  disabled
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -693,6 +692,7 @@ onMounted(async () => {
                 <input
                   id="deposito-checkbox"
                   type="checkbox"
+                  disabled
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -702,6 +702,7 @@ onMounted(async () => {
                 <input
                   id="penyertaan-checkbox"
                   type="checkbox"
+                  disabled
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -955,7 +956,7 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="pinjaman in daftarPinjaman.items"
+            v-for="pinjaman in daftarSimpata.items"
             :key="pinjaman.norek"
             :pinjaman="pinjaman"
             :value="pinjaman.norek"
@@ -1022,7 +1023,7 @@ onMounted(async () => {
               @dblclick="viewData(pinjaman.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ currencyFormatter.format(pinjaman.pokok) }}
+              {{ currencyFormatter.format(pinjaman.saldo) }}
             </td>
             <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
@@ -1406,10 +1407,10 @@ onMounted(async () => {
                     placeholder=" "
                     v-model="cara_hitung"
                     required
-                    :disabled="isView"
+                    disabled
                   >
                     <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
-                    <option value="A">A - FLAT</option>
+                    <option value="1">A - FLAT</option>
                     <!-- <option v-for="agama in list_agama" :value="agama.value">
                       {{ agama.nama }}
                     </option> -->
@@ -1425,7 +1426,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="lama_durasi"
+                    v-model="pajak"
                     readonly
                     required
                   />

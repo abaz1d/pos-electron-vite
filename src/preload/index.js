@@ -5,18 +5,20 @@ import produkPinjaman from '../models/Setting/Pinjaman/produkPinjaman'
 import produkSimpata from '../models/Setting/Simpanan/produkSimpata'
 import caraHitungPinjaman from '../models/Setting/Pinjaman/caraHitungPinjaman'
 import daftarPinjaman from '../models/Transaksi/Pinjaman/daftarPinjaman'
+import daftarSimpata from '../models/Transaksi/Simpanan/daftarSimpata'
 import daftarAnggota from '../models/Transaksi/Keanggotaan/daftarAnggota'
 import historyAnggota from '../models/Transaksi/Keanggotaan/historyAnggota'
 import jurnalTransaksi from '../models/Transaksi/Akuntansi/jurnalTransaksi'
 import perkiraanAkuntansi from '../models/Transaksi/Akuntansi/perkiraanAkuntansi'
 
-// Custom APIs for renderer
+// Custom APIs for renderer src/
 const api = {
   oAuth,
   produkPinjaman,
   produkSimpata,
   caraHitungPinjaman,
   daftarPinjaman,
+  daftarSimpata,
   daftarAnggota,
   historyAnggota,
   jurnalTransaksi,
