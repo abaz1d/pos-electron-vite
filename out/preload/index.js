@@ -175,7 +175,7 @@ produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT sandi, keterangan, TGLINP, kantor FROM setsandi_pinj WHERE kantor = '${kantor}'`;
+      query = `SELECT id, sandi, keterangan, TGLINP, kantor FROM setsandi_pinj WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -272,7 +272,7 @@ produkSimpata.fetchProduk = async (search_type, search_data, sort_by, sort_mode,
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT SANDI, KETERANGAN, TGLINP, kantor FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
+      query = `SELECT id, SANDI, KETERANGAN, TGLINP, kantor FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -360,7 +360,7 @@ daftarPinjaman.fetchPinjaman = async (search_type, search_data, sort_by, sort_mo
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`;
+      let query = `SELECT COUNT(p.norek) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -698,7 +698,7 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
+      let query = `SELECT COUNT(iddata) AS total FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -709,7 +709,7 @@ daftarAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
+      query = `SELECT iddata, cif, tanggal, resort, noktp, nokK, nama, alamat, desa, kecamatan, kota, statuskawin, kantor FROM anggota WHERE tglbht = '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -824,7 +824,7 @@ historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mod
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
+      let query = `SELECT COUNT(iddata) AS total FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -835,7 +835,7 @@ historyAnggota.fetchAnggota = async (search_type, search_data, sort_by, sort_mod
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
+      query = `SELECT iddata, cif, tanggal, resort, noktp, nokK, nama, alamat, desa, kecamatan, kota, statuskawin, kantor FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -891,7 +891,7 @@ jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mod
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM jurnal WHERE kantor = '${kantor}'`;
+      let query = `SELECT COUNT(idtrans) AS total FROM jurnal WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -902,7 +902,7 @@ jurnalTransaksi.fetchJurnal = async (search_type, search_data, sort_by, sort_mod
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM jurnal WHERE kantor = '${kantor}'`;
+      query = `SELECT idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH FROM jurnal WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -979,7 +979,7 @@ perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, so
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM perkiraan WHERE kantor = '${kantor}'`;
+      let query = `SELECT COUNT(noper) AS total FROM perkiraan WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -990,7 +990,7 @@ perkiraanAkuntansi.fetchPerkiraan = async (search_type, search_data, sort_by, so
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM perkiraan WHERE kantor = '${kantor}'`;
+      query = `SELECT noper, nama, kel, bukubantu, keldata, level, font, detail, saldo FROM perkiraan WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }

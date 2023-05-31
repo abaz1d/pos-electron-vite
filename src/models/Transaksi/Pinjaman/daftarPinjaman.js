@@ -23,7 +23,7 @@ daftarPinjaman.fetchPinjaman = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`
+      let query = `SELECT COUNT(p.norek) AS total FROM pinjaman p left join anggota a on p.cif = a.cif WHERE p.tgllunas = '0000-00-00' AND p.kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

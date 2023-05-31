@@ -22,7 +22,7 @@ perkiraanAkuntansi.fetchPerkiraan = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM perkiraan WHERE kantor = '${kantor}'`
+      let query = `SELECT COUNT(noper) AS total FROM perkiraan WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -33,7 +33,7 @@ perkiraanAkuntansi.fetchPerkiraan = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM perkiraan WHERE kantor = '${kantor}'`
+      query = `SELECT noper, nama, kel, bukubantu, keldata, level, font, detail, saldo FROM perkiraan WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

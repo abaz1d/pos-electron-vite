@@ -22,7 +22,7 @@ historyAnggota.fetchAnggota = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`
+      let query = `SELECT COUNT(iddata) AS total FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -33,7 +33,7 @@ historyAnggota.fetchAnggota = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`
+      query = `SELECT iddata, cif, tanggal, resort, noktp, nokK, nama, alamat, desa, kecamatan, kota, statuskawin, kantor FROM anggota WHERE tglbht != '0000-00-00' AND kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

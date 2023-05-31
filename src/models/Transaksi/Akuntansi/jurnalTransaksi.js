@@ -22,7 +22,7 @@ jurnalTransaksi.fetchJurnal = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM jurnal WHERE kantor = '${kantor}'`
+      let query = `SELECT COUNT(idtrans) AS total FROM jurnal WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -33,7 +33,7 @@ jurnalTransaksi.fetchJurnal = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM jurnal WHERE kantor = '${kantor}'`
+      query = `SELECT idtrans, TANGGAL, BUKTI, NOPER, KETERANGAN, JUMLAH FROM jurnal WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
