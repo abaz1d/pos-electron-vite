@@ -7,12 +7,16 @@ const oAuth = {}
 oAuth.auth = async (input_user, password) => {
   try {
     var data
-    const [rows] = await db.query(`SELECT * FROM user WHERE nama = ?`, [input_user])
+    const [rows] = await db.query(`SELECT id, nama, password FROM user WHERE nama = ?`, [
+      input_user
+    ])
     data = rows
     if (rows.length == 0) {
       //check userid
       console.log('check userid')
-      const [rows2] = await db.query('SELECT * FROM user WHERE userid = ?', [input_user])
+      const [rows2] = await db.query('SELECT id, nama, password FROM user WHERE userid = ?', [
+        input_user
+      ])
       if (rows2.length == 0) {
         return new Response({ message: 'unregistered e-mail/userid' }, false)
       }
@@ -34,7 +38,10 @@ oAuth.auth = async (input_user, password) => {
           data[0].id
         ])
 
-        const [rows2] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id])
+        const [rows2] = await db.query(
+          `SELECT id, nama, userid, kantor, token FROM user WHERE id = ?;`,
+          [data[0].id]
+        )
         return new Response({
           userid: rows2[0].id,
           nama: rows2[0].nama,
@@ -62,7 +69,10 @@ oAuth.auth = async (input_user, password) => {
           token,
           data[0].id
         ])
-        const [rows] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id])
+        const [rows] = await db.query(
+          `SELECT id, nama, userid, kantor, token FROM user WHERE id = ?;`,
+          [data[0].id]
+        )
         return new Response({
           userid: rows[0].id,
           nama: rows[0].nama,

@@ -21,7 +21,7 @@ produkPinjaman.fetchProduk = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`
+      let query = `SELECT COUNT(id) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -32,7 +32,7 @@ produkPinjaman.fetchProduk = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`
+      query = `SELECT sandi, keterangan, TGLINP, kantor FROM setsandi_pinj WHERE kantor = '${kantor}'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

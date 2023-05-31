@@ -21,7 +21,7 @@ produkSimpata.fetchProduk = async (
     }
 
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`
+      let query = `SELECT COUNT(id) AS total FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }
@@ -32,7 +32,7 @@ produkSimpata.fetchProduk = async (
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1
       }
-      query = `SELECT * FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`
+      query = `SELECT SANDI, KETERANGAN, TGLINP, kantor FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`
       if (search_data !== '') {
         query += ` AND ${search_type} LIKE '%${search_data}%'`
       }

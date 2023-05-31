@@ -48,11 +48,15 @@ const oAuth = {};
 oAuth.auth = async (input_user, password) => {
   try {
     var data;
-    const [rows] = await db.query(`SELECT * FROM user WHERE nama = ?`, [input_user]);
+    const [rows] = await db.query(`SELECT id, nama, password FROM user WHERE nama = ?`, [
+      input_user
+    ]);
     data = rows;
     if (rows.length == 0) {
       console.log("check userid");
-      const [rows2] = await db.query("SELECT * FROM user WHERE userid = ?", [input_user]);
+      const [rows2] = await db.query("SELECT id, nama, password FROM user WHERE userid = ?", [
+        input_user
+      ]);
       if (rows2.length == 0) {
         return new Response({ message: "unregistered e-mail/userid" }, false);
       }
@@ -72,7 +76,10 @@ oAuth.auth = async (input_user, password) => {
           token,
           data[0].id
         ]);
-        const [rows22] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id]);
+        const [rows22] = await db.query(
+          `SELECT id, nama, userid, kantor, token FROM user WHERE id = ?;`,
+          [data[0].id]
+        );
         return new Response({
           userid: rows22[0].id,
           nama: rows22[0].nama,
@@ -98,7 +105,10 @@ oAuth.auth = async (input_user, password) => {
           token,
           data[0].id
         ]);
-        const [rows2] = await db.query(`SELECT * FROM user WHERE id = ?;`, [data[0].id]);
+        const [rows2] = await db.query(
+          `SELECT id, nama, userid, kantor, token FROM user WHERE id = ?;`,
+          [data[0].id]
+        );
         return new Response({
           userid: rows2[0].id,
           nama: rows2[0].nama,
@@ -154,7 +164,7 @@ produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`;
+      let query = `SELECT COUNT(id) AS total FROM setsandi_pinj WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -165,7 +175,7 @@ produkPinjaman.fetchProduk = async (search_type, search_data, sort_by, sort_mode
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`;
+      query = `SELECT sandi, keterangan, TGLINP, kantor FROM setsandi_pinj WHERE kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -251,7 +261,7 @@ produkSimpata.fetchProduk = async (search_type, search_data, sort_by, sort_mode,
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
+      let query = `SELECT COUNT(id) AS total FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -262,7 +272,7 @@ produkSimpata.fetchProduk = async (search_type, search_data, sort_by, sort_mode,
       } else {
         total_page = parseInt(data[0].total / total_row_displayed) + 1;
       }
-      query = `SELECT * FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
+      query = `SELECT SANDI, KETERANGAN, TGLINP, kantor FROM setsandi_tab WHERE kantor = '${kantor}' AND jenis = '1'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }

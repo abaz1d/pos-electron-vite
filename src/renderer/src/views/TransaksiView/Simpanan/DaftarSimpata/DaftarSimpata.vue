@@ -3,7 +3,7 @@ import { useDaftarSimpataStore } from '@renderer/stores/daftarSimpata.js'
 import { onMounted, onBeforeMount, ref, watch, inject } from 'vue'
 import moment from 'moment'
 import Breadcrumbs from '@renderer/components/Breadcrumbs/Breadcrumbs.vue'
-//import DaftarNasabah from './DaftarNasabah.vue'
+import DaftarNasabah from './DaftarNasabah.vue'
 import { currencyFormatter } from '@renderer/utils/helper'
 import TRANSAKSI from '@renderer/assets/images/menu/transaksi.svg'
 
@@ -1184,7 +1184,7 @@ onMounted(async () => {
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded-l focus:shadow-outline"
                     type="text"
                     v-model="no_anggota"
-                    @keyup.enter="getNasabah"
+                    @keyup.enter="no_anggota == '' ? (modal_nasabah = true) : getNasabah"
                     @blur="getNasabah"
                     required
                     :readonly="isView"
@@ -1599,7 +1599,7 @@ onMounted(async () => {
       </a>
     </ModalHeader>
     <ModalBody>
-      <!-- <DaftarNasabah @selectNasabah="getNasabah" /> -->
+      <DaftarNasabah @selectNasabah="getNasabah" />
     </ModalBody>
     <ModalFooter class="text-right italic">
       * Klik 2 kali untuk memilih Nasabah/ Anggota
