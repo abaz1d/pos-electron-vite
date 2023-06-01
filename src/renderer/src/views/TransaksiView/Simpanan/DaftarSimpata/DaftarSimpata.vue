@@ -30,10 +30,10 @@ const marketing_list = ref([])
 const produk_pinjaman = ref([])
 const tanggal = ref(moment(Date.now()).format('DD-MM-YYYY'))
 const no_anggota = ref('')
-const no_pk = ref('')
+const no_buku = ref('')
 const norek = ref('')
-const jenis_kredit = ref('')
-const resort = ref('')
+const jenis_simpanan = ref('')
+const kd_produk = ref('')
 const nama_lengkap = ref('')
 const pendamping = ref('')
 const alamat = ref('')
@@ -41,21 +41,21 @@ const desa = ref('')
 const kecamatan = ref('')
 const kota = ref('')
 const pokok_pinj = ref('')
-const suku_bunga = ref('')
-const cara_hitung = ref('')
-const tgl_mulai = ref('')
+const petugas = ref('')
+const cara_hitung = ref('1')
+const norek_sma = ref('')
 const pajak = ref('')
 const admin = ref('')
 const provisi = ref('')
 const admin_percent = ref('')
 const provisi_percent = ref('')
-const tgl_jatuh_tempo = ref('')
+const atas_nama = ref('')
 const tgl_alih_bunga = ref('')
 const tgl_valuta = ref('')
 const tgl_lunas = ref('')
-const angsuran_pokok = ref('')
-const angsuran_jasa = ref('')
-const angsuran_bulanan = ref('')
+const tgl_tutup_rekening = ref('')
+const saldo_blokir = ref('')
+const max_pengambilan = ref('')
 const sisa_pokok = ref('')
 const sisa_jasa = ref('')
 const saldo_pinjaman = ref('')
@@ -73,10 +73,10 @@ const editGet = async (e) => {
       ? ''
       : moment(pinjaman.tanggal).format('DD-MM-YYYY')
   no_anggota.value = pinjaman.cif
-  no_pk.value = pinjaman.nopk
+  no_buku.value = pinjaman.nopk
   norek.value = pinjaman.norek
-  jenis_kredit.value = pinjaman.jenis
-  resort.value = pinjaman.marketing + ' '
+  jenis_simpanan.value = pinjaman.jenis
+  kd_produk.value = pinjaman.marketing + ' '
   nama_lengkap.value = pinjaman.nama
   pendamping.value = pinjaman.statuskawin
   alamat.value = pinjaman.alamat
@@ -84,16 +84,16 @@ const editGet = async (e) => {
   kecamatan.value = pinjaman.kecamatan
   kota.value = pinjaman.kota
   pokok_pinj.value = pinjaman.pokok
-  suku_bunga.value = pinjaman.rate
+  petugas.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
   pajak.value = pinjaman.lama
-  tgl_mulai.value =
+  norek_sma.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
   admin.value = parseFloat(pinjaman.adm)
   provisi.value = pinjaman.provisi
-  tgl_jatuh_tempo.value =
+  atas_nama.value =
     moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
@@ -106,9 +106,9 @@ const editGet = async (e) => {
     moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  angsuran_pokok.value = pinjaman.saldo
-  angsuran_jasa.value = pinjaman.pot_bunga
-  angsuran_bulanan.value = pinjaman.saldo
+  tgl_tutup_rekening.value = pinjaman.saldo
+  saldo_blokir.value = pinjaman.pot_bunga
+  max_pengambilan.value = pinjaman.saldo
   sisa_pokok.value = pinjaman.sisapokok
   sisa_jasa.value = pinjaman.sisabunga
   saldo_pinjaman.value = pinjaman.sisapokok + pinjaman.sisabunga
@@ -138,10 +138,10 @@ const viewData = async (e) => {
       ? ''
       : moment(pinjaman.tanggal).format('DD-MM-YYYY')
   no_anggota.value = pinjaman.cif
-  no_pk.value = pinjaman.nopk
+  no_buku.value = pinjaman.nopk
   norek.value = pinjaman.norek
-  jenis_kredit.value = pinjaman.jenis
-  resort.value = pinjaman.marketing + ' '
+  jenis_simpanan.value = pinjaman.jenis
+  kd_produk.value = pinjaman.marketing + ' '
   nama_lengkap.value = pinjaman.nama
   pendamping.value = pinjaman.statuskawin
   alamat.value = pinjaman.alamat
@@ -149,16 +149,16 @@ const viewData = async (e) => {
   kecamatan.value = pinjaman.kecamatan
   kota.value = pinjaman.kota
   pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
-  suku_bunga.value = pinjaman.rate
+  petugas.value = pinjaman.rate
   cara_hitung.value = pinjaman.kdhit
   pajak.value = pinjaman.lama
-  tgl_mulai.value =
+  norek_sma.value =
     moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
   admin.value = currencyFormatter.format(parseFloat(pinjaman.adm))
   provisi.value = currencyFormatter.format(pinjaman.provisi)
-  tgl_jatuh_tempo.value =
+  atas_nama.value =
     moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
@@ -171,9 +171,9 @@ const viewData = async (e) => {
     moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
       : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  angsuran_pokok.value = currencyFormatter.format(pinjaman.pot_pokok)
-  angsuran_jasa.value = currencyFormatter.format(pinjaman.pot_bunga)
-  angsuran_bulanan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
+  tgl_tutup_rekening.value = currencyFormatter.format(pinjaman.pot_pokok)
+  saldo_blokir.value = currencyFormatter.format(pinjaman.pot_bunga)
+  max_pengambilan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
   sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
   sisa_jasa.value = currencyFormatter.format(pinjaman.sisabunga)
   saldo_pinjaman.value = currencyFormatter.format(pinjaman.sisapokok + pinjaman.sisabunga)
@@ -218,19 +218,18 @@ const getNasabah = async (e) => {
   }
 }
 const itungPinjaman = async () => {
-  if (jenis_kredit.value != '') {
+  if (jenis_simpanan.value != '') {
     admin.value = parseFloat(
       (parseFloat(admin_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     ).toFixed(2)
     provisi.value = parseFloat(
       (parseFloat(provisi_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     ).toFixed(2)
-    angsuran_pokok.value = parseFloat(pokok_pinj.value / pajak.value)
-    angsuran_jasa.value =
-      (parseFloat(suku_bunga.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
-    if (tgl_mulai.value != '' && pajak.value != '') {
-      tgl_jatuh_tempo.value = moment(tgl_mulai.value).add(pajak.value, 'M').format('DD-MM-YYYY')
+    tgl_tutup_rekening.value = parseFloat(pokok_pinj.value / pajak.value)
+    saldo_blokir.value = (parseFloat(petugas.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+    max_pengambilan.value = tgl_tutup_rekening.value + saldo_blokir.value
+    if (norek_sma.value != '' && pajak.value != '') {
+      atas_nama.value = moment(norek_sma.value).add(pajak.value, 'M').format('DD-MM-YYYY')
     }
   }
 }
@@ -240,23 +239,23 @@ const simpan_data = async (e) => {
       // console.log('simpan',
       tanggal.value,
       no_anggota.value,
-      no_pk.value,
+      no_buku.value,
       norek.value,
-      jenis_kredit.value,
-      resort.value,
+      jenis_simpanan.value,
+      kd_produk.value,
       pokok_pinj.value,
-      suku_bunga.value,
+      petugas.value,
       cara_hitung.value,
-      tgl_mulai.value,
+      norek_sma.value,
       pajak.value,
       admin.value,
       provisi.value,
-      tgl_jatuh_tempo.value,
+      atas_nama.value,
       tgl_alih_bunga.value,
       tgl_valuta.value,
       tgl_lunas.value,
-      angsuran_pokok.value,
-      angsuran_jasa.value,
+      tgl_tutup_rekening.value,
+      saldo_blokir.value,
       sisa_pokok.value,
       sisa_jasa.value,
       isEdit.value
@@ -298,25 +297,25 @@ const resetForm = () => {
   norek.value = ''
   nama_lengkap.value = ''
   no_anggota.value = ''
-  jenis_kredit.value = ''
+  jenis_simpanan.value = ''
   pokok_pinj.value = ''
-  no_pk.value = ''
+  no_buku.value = ''
   pajak.value = ''
   tgl_valuta.value = ''
   tgl_alih_bunga.value = ''
-  suku_bunga.value = ''
-  cara_hitung.value = ''
+  petugas.value = ''
+  cara_hitung.value = '1'
   provisi.value = ''
   admin.value = ''
   provisi_percent.value = ''
   admin_percent.value = ''
   tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
-  tgl_mulai.value = ''
-  tgl_jatuh_tempo.value = ''
+  norek_sma.value = ''
+  atas_nama.value = ''
   tgl_lunas.value = ''
-  angsuran_pokok.value = ''
-  angsuran_jasa.value = ''
-  angsuran_bulanan.value = ''
+  tgl_tutup_rekening.value = ''
+  saldo_blokir.value = ''
+  max_pengambilan.value = ''
   sisa_pokok.value = ''
   sisa_jasa.value = ''
   alamat.value = ''
@@ -324,7 +323,7 @@ const resetForm = () => {
   kecamatan.value = ''
   kota.value = ''
   pendamping.value = ''
-  resort.value = ''
+  kd_produk.value = ''
   saldo_pinjaman.value = ''
   modal_utama.value = false
   modal_nasabah.value = false
@@ -494,10 +493,10 @@ watch(search_type, async (e) => {
     })
   }
 })
-watch(tgl_mulai, async (tanggal) => {
+watch(norek_sma, async (tanggal) => {
   try {
-    if (jenis_kredit.value != '' && pajak.value != '') {
-      tgl_jatuh_tempo.value = moment(tanggal).add(pajak.value, 'M').format('DD-MM-YYYY')
+    if (jenis_simpanan.value != '' && pajak.value != '') {
+      atas_nama.value = moment(tanggal).add(pajak.value, 'M').format('DD-MM-YYYY')
     }
   } catch (error) {
     swal({
@@ -507,11 +506,11 @@ watch(tgl_mulai, async (tanggal) => {
     })
   }
 })
-watch(jenis_kredit, async (sandi) => {
+watch(jenis_simpanan, async (sandi) => {
   try {
     // produk_pinjaman.value.map((produk) => {
     //   if (produk.sandi === sandi) {
-    //     suku_bunga.value = parseFloat(produk.rate).toFixed(2)
+    //     petugas.value = parseFloat(produk.rate).toFixed(2)
     //     pajak.value = produk.LAMA
     //     admin_percent.value = parseFloat(produk.adm).toFixed(2)
     //     provisi_percent.value = parseFloat(produk.prov).toFixed(2)
@@ -522,12 +521,12 @@ watch(jenis_kredit, async (sandi) => {
     //       provisi.value = parseFloat(
     //         (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     //       ).toFixed(2)
-    //       angsuran_pokok.value = parseFloat(pokok_pinj.value / produk.LAMA)
-    //       angsuran_jasa.value =
+    //       tgl_tutup_rekening.value = parseFloat(pokok_pinj.value / produk.LAMA)
+    //       saldo_blokir.value =
     //         (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    //       angsuran_bulanan.value = angsuran_pokok.value + angsuran_jasa.value
-    //       if (tgl_mulai.value != '' && pajak.value != '') {
-    //         tgl_jatuh_tempo.value = moment(tgl_mulai.value)
+    //       max_pengambilan.value = tgl_tutup_rekening.value + saldo_blokir.value
+    //       if (norek_sma.value != '' && pajak.value != '') {
+    //         atas_nama.value = moment(norek_sma.value)
     //           .add(pajak.value, 'M')
     //           .format('DD-MM-YYYY')
     //       }
@@ -560,8 +559,8 @@ onBeforeMount(async () => {
   try {
     const data = await daftarSimpata.setupItem()
     if (data.success) {
-      marketing_list.value = data.data.marketing
-      produk_pinjaman.value = data.data.produk_pinjaman
+      marketing_list.value = data.data.jenis_simpanan
+      produk_pinjaman.value = data.data.produk_simpanan
     }
   } catch (error) {
     isLoading.value = false
@@ -1209,7 +1208,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="no_pk"
+                    v-model="no_buku"
                     required
                     :readonly="isView"
                   />
@@ -1239,39 +1238,43 @@ onMounted(async () => {
                 <span class="mr-3 pb-2">:</span>
                 <div class="w-3/5 flex-grow">
                   <select
-                    name="jenis_kredit"
-                    id="jenis_kredit"
+                    name="kd_produk"
+                    id="kd_produk"
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     placeholder=" "
-                    v-model="jenis_kredit"
+                    v-model="jenis_simpanan"
                     required
                     :disabled="isView"
                   >
                     <option class="text-xs" value="" disabled>Pilih Jenis Simpanan</option>
-                    <option v-for="produk in produk_pinjaman" :value="produk.sandi">
-                      {{ produk.sandi }} - {{ produk.keterangan }}
+                    <option v-for="marketing in marketing_list" :value="marketing.sandi">
+                      {{ marketing.sandi }} - {{ marketing.keterangan }}
                     </option>
                   </select>
                 </div>
               </div>
               <div class="text-gray-700 flex items-center mx-auto w-9/12">
                 <div class="mb-1 w-2/5 text-xs">
-                  <label>KD Product</label>
+                  <label>KD Produk</label>
                 </div>
                 <span class="mr-3 pb-2">:</span>
                 <div class="w-3/5 flex-grow">
                   <select
-                    name="resort"
-                    id="resort"
+                    name="jenis_simpanan"
+                    id="jenis_simpanan"
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     placeholder=" "
-                    v-model="resort"
+                    v-model="kd_produk"
                     required
                     :disabled="isView"
                   >
-                    <option class="text-xs" value="" disabled>Pilih Resort</option>
-                    <option v-for="marketing in marketing_list" :value="marketing.sandi">
-                      {{ marketing.sandi }} - {{ marketing.keterangan }}
+                    <option class="text-xs" value="" disabled>Pilih KD Produk</option>
+                    <option
+                      v-for="produk in produk_pinjaman"
+                      :value="produk.SANDI"
+                      :disabled="produk.SANDI != '002'"
+                    >
+                      {{ produk.SANDI }} - {{ produk.KETERANGAN }}
                     </option>
                   </select>
                 </div>
@@ -1376,90 +1379,171 @@ onMounted(async () => {
             </div>
           </div>
           <hr />
-          <h1 class="uppercase text-center border-y">tabungan</h1>
+          <h1 class="uppercase text-center border-y">
+            {{
+              jenis_simpanan == '1'
+                ? 'tabungan'
+                : jenis_simpanan == '2'
+                ? 'simpanan berjangka'
+                : jenis_simpanan == '3'
+                ? 'penyertaan'
+                : '==================='
+            }}
+          </h1>
           <div class="flex items-center justify-center w-full bg-slate-100">
-            <div class="p-3 rounded-t w-7/12">
-              <div class="text-gray-700 flex items-center mx-[26px] w-1/2 space-x-5">
-                <div class="mb-1 w-[35%] text-xs">
-                  <label>Suku Bunga</label>
+            <div class="p-3 flex rounded-t w-7/12 space-x-16">
+              <div class="rounded-t w-1/2">
+                <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                  <div class="mb-1 w-[35%] text-xs">
+                    <label>Suku Bunga</label>
+                  </div>
+                  <span class="mr-3 pb-2">:</span>
+                  <div class="w-3/5 flex-grow">
+                    <input
+                      class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                      type="text"
+                      v-model="petugas"
+                      readonly
+                      required
+                    />
+                  </div>
                 </div>
-                <span class="mr-3 pb-2">:</span>
-                <div class="w-3/5 flex-grow">
-                  <input
-                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                    type="text"
-                    v-model="suku_bunga"
-                    readonly
-                    required
-                  />
+                <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                  <div class="mb-1 w-[35%] text-xs">
+                    <label>Cara Hitung</label>
+                  </div>
+                  <span class="mr-3 pb-2">:</span>
+                  <div class="w-3/5 flex-grow">
+                    <select
+                      name="cara_hitung"
+                      id="cara_hitung"
+                      class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                      placeholder=" "
+                      v-model="cara_hitung"
+                      required
+                      disabled
+                    >
+                      <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
+                      <option value="1">A - FLAT</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                  <div class="mb-1 w-2/5 text-xs">
+                    <label>Pajak</label>
+                  </div>
+                  <span class="mr-3 pb-2">:</span>
+                  <div class="w-3/5 flex-grow">
+                    <input
+                      class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                      type="text"
+                      v-model="pajak"
+                      readonly
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                  <div class="mb-1 w-2/5 text-xs">
+                    <label>Norek S M A</label>
+                  </div>
+                  <span class="mr-3 pb-2">:</span>
+                  <div class="w-3/5 flex-grow">
+                    <input
+                      class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                      type="text"
+                      v-model="norek_sma"
+                      required
+                      :readonly="isView"
+                    />
+                  </div>
+                </div>
+                <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                  <div class="mb-1 w-2/5 text-xs">
+                    <label>Atas Nama</label>
+                  </div>
+                  <span class="mr-3 pb-2">:</span>
+                  <div class="w-3/5 flex-grow">
+                    <input
+                      class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                      type="text"
+                      v-model="atas_nama"
+                      readonly
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-              <div class="text-gray-700 flex items-center mx-[26px] w-1/2 space-x-5">
-                <div class="mb-1 w-[35%] text-xs">
-                  <label>Cara Hitung</label>
-                </div>
-                <span class="mr-3 pb-2">:</span>
-                <div class="w-3/5 flex-grow">
-                  <select
-                    name="cara_hitung"
-                    id="cara_hitung"
-                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                    placeholder=" "
-                    v-model="cara_hitung"
-                    required
-                    disabled
-                  >
-                    <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
-                    <option value="1">A - FLAT</option>
-                    <!-- <option v-for="agama in list_agama" :value="agama.value">
+              <div class="rounded-t w-1/2">
+                <div class="w-full" v-if="jenis_simpanan == '2'">
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                    <div class="mb-1 w-[35%] text-xs">
+                      <label>Setoran Awal</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <input
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        type="text"
+                        v-model="petugas"
+                        readonly
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full space-x-5">
+                    <div class="mb-1 w-[35%] text-xs">
+                      <label>Jangka Waktu</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <select
+                        name="cara_hitung"
+                        id="cara_hitung"
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        placeholder=" "
+                        v-model="cara_hitung"
+                        required
+                        disabled
+                      >
+                        <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
+                        <option value="1">A - FLAT</option>
+                        <!-- <option v-for="agama in list_agama" :value="agama.value">
                       {{ agama.nama }}
                     </option> -->
-                  </select>
-                </div>
-              </div>
-              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-                <div class="mb-1 w-2/5 text-xs">
-                  <label>Pajak</label>
-                </div>
-                <span class="mr-3 pb-2">:</span>
-                <div class="w-3/5 flex-grow">
-                  <input
-                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                    type="text"
-                    v-model="pajak"
-                    readonly
-                    required
-                  />
-                </div>
-              </div>
-              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-                <div class="mb-1 w-2/5 text-xs">
-                  <label>Norek S M A</label>
-                </div>
-                <span class="mr-3 pb-2">:</span>
-                <div class="w-3/5 flex-grow">
-                  <input
-                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                    type="text"
-                    v-model="tgl_mulai"
-                    required
-                    :readonly="isView"
-                  />
-                </div>
-              </div>
-              <div class="text-gray-700 flex items-center mx-[26px] w-[48%]">
-                <div class="mb-1 w-2/5 text-xs">
-                  <label>Atas Nama</label>
-                </div>
-                <span class="mr-3 pb-2">:</span>
-                <div class="w-3/5 flex-grow">
-                  <input
-                    class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                    type="text"
-                    v-model="tgl_jatuh_tempo"
-                    readonly
-                    required
-                  />
+                      </select>
+                    </div>
+                  </div>
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                    <div class="mb-1 w-2/5 text-xs">
+                      <label>Mulai Tanggal</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <input
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        type="date"
+                        v-model="pajak"
+                        readonly
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                    <div class="mb-1 w-2/5 text-xs">
+                      <label>S/D. Tanggal ARO</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <input
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        type="text"
+                        v-model="norek_sma"
+                        required
+                        :readonly="isView"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1473,7 +1557,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="angsuran_pokok"
+                    v-model="tgl_tutup_rekening"
                     readonly
                   />
                 </div>
@@ -1487,7 +1571,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="angsuran_jasa"
+                    v-model="saldo_blokir"
                     readonly
                   />
                 </div>
@@ -1503,7 +1587,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="angsuran_bulanan"
+                    v-model="max_pengambilan"
                     readonly
                   />
                 </div>
@@ -1552,7 +1636,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="suku_bunga"
+                    v-model="petugas"
                     required
                   />
                 </div>
@@ -1568,7 +1652,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="date"
-                    v-model="angsuran_pokok"
+                    v-model="tgl_tutup_rekening"
                   />
                 </div>
               </div>

@@ -529,7 +529,7 @@ daftarSimpata.fetchSimpata = async (search_type, search_data, sort_by, sort_mode
       row_number = (page_number - 1) * total_row_displayed;
     }
     try {
-      let query = `SELECT COUNT(*) AS total FROM simpanan p left join anggota a on p.cif = a.cif WHERE p.produk = '002' AND p.tgltutup = '0000-00-00' AND p.kantor = '${kantor}'`;
+      let query = `SELECT COUNT(p.cif) AS total FROM simpanan p left join anggota a on p.cif = a.cif WHERE p.produk = '002' AND p.tgltutup = '0000-00-00' AND p.kantor = '${kantor}'`;
       if (search_data !== "") {
         query += ` AND ${search_type} LIKE '%${search_data}%'`;
       }
@@ -612,12 +612,12 @@ daftarSimpata.getNasabah = async (cif) => {
 daftarSimpata.setupSimpata = async (kantor) => {
   try {
     const [produk_simpanan] = await db.query(
-      `SELECT * FROM setsandi_pinj WHERE kantor = '${kantor}'`
+      `SELECT * FROM setsandi_tab WHERE kantor = '${kantor}'`
     );
-    const [marketing] = await db.query(
-      `SELECT sandi, keterangan FROM setsandi WHERE kantor = '${kantor}' AND kode = 'C002'`
+    const [jenis_simpanan] = await db.query(
+      `SELECT sandi, keterangan FROM setsandi WHERE kantor = '${kantor}' AND kode = 'S000'`
     );
-    return new Response({ produk_simpanan, marketing });
+    return new Response({ produk_simpanan, jenis_simpanan });
   } catch (error) {
     console.error(error);
     return new Response(error, false);
