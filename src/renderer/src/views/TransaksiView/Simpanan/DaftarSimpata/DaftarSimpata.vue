@@ -26,12 +26,12 @@ const row_per_page = ref(50)
 const allSelected = ref(false)
 const userIds = ref([])
 
-const marketing_list = ref([])
-const produk_pinjaman = ref([])
+const jenis_simpanan_list = ref([])
+const produk_simpata_list = ref([])
+const norek = ref('')
 const tanggal = ref(moment(Date.now()).format('DD-MM-YYYY'))
 const no_anggota = ref('')
 const no_buku = ref('')
-const norek = ref('')
 const jenis_simpanan = ref('')
 const kd_produk = ref('')
 const nama_lengkap = ref('')
@@ -40,25 +40,23 @@ const alamat = ref('')
 const desa = ref('')
 const kecamatan = ref('')
 const kota = ref('')
-const pokok_pinj = ref('')
-const petugas = ref('')
+const suku_bunga = ref('')
 const cara_hitung = ref('1')
-const norek_sma = ref('')
 const pajak = ref('')
-const admin = ref('')
-const provisi = ref('')
-const admin_percent = ref('')
-const provisi_percent = ref('')
+const norek_sma = ref('')
 const atas_nama = ref('')
-const tgl_alih_bunga = ref('')
-const tgl_valuta = ref('')
-const tgl_lunas = ref('')
-const tgl_tutup_rekening = ref('')
+const setoran_awal = ref('')
+const jangka_waktu = ref('')
+const mulai_tanggal = ref('')
+const tanggal_selesai = ref('')
+const saldo_sekarang = ref('')
 const saldo_blokir = ref('')
 const max_pengambilan = ref('')
-const sisa_pokok = ref('')
-const sisa_jasa = ref('')
-const saldo_pinjaman = ref('')
+const blokir_check = ref('')
+const autodebet_check = ref('')
+const catatan_check = ref('')
+const petugas = ref('')
+const tgl_tutup_rekening = ref('')
 
 const addGet = () => {
   isAdd.value = true
@@ -67,58 +65,46 @@ const addGet = () => {
 const editGet = async (e) => {
   isEdit.value = true
   modal_utama.value = true
-  const pinjaman = await daftarSimpata.getItem(e)
+  const simpanan = await daftarSimpata.getItem(e)
   tanggal.value =
-    moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
+    moment(simpanan.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tanggal).format('DD-MM-YYYY')
-  no_anggota.value = pinjaman.cif
-  no_buku.value = pinjaman.nopk
-  norek.value = pinjaman.norek
-  jenis_simpanan.value = pinjaman.jenis
-  kd_produk.value = pinjaman.marketing + ' '
-  nama_lengkap.value = pinjaman.nama
-  pendamping.value = pinjaman.statuskawin
-  alamat.value = pinjaman.alamat
-  desa.value = pinjaman.desa
-  kecamatan.value = pinjaman.kecamatan
-  kota.value = pinjaman.kota
-  pokok_pinj.value = pinjaman.pokok
-  petugas.value = pinjaman.rate
-  cara_hitung.value = pinjaman.kdhit
-  pajak.value = pinjaman.lama
-  norek_sma.value =
-    moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
-  admin.value = parseFloat(pinjaman.adm)
-  provisi.value = pinjaman.provisi
-  atas_nama.value =
-    moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
-  //tgl_alih_bunga.value = pinjaman.
-  tgl_valuta.value =
-    moment(pinjaman.tglvaluta).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tglvaluta).format('DD-MM-YYYY')
-  tgl_lunas.value =
-    moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  tgl_tutup_rekening.value = pinjaman.saldo
-  saldo_blokir.value = pinjaman.pot_bunga
-  max_pengambilan.value = pinjaman.saldo
-  sisa_pokok.value = pinjaman.sisapokok
-  sisa_jasa.value = pinjaman.sisabunga
-  saldo_pinjaman.value = pinjaman.sisapokok + pinjaman.sisabunga
+      : moment(simpanan.tanggal).format('DD-MM-YYYY')
+  no_anggota.value = simpanan.cif
+  no_buku.value = simpanan.nobuku
+  norek.value = simpanan.norek
+  jenis_simpanan.value = simpanan.jenis
+  kd_produk.value = simpanan.marketing + ' '
+  nama_lengkap.value = simpanan.nama
+  pendamping.value = simpanan.statuskawin
+  alamat.value = simpanan.alamat
+  desa.value = simpanan.desa
+  kecamatan.value = simpanan.kecamatan
+  kota.value = simpanan.kota
+  suku_bunga.value = simpanan.rate
+  cara_hitung.value = simpanan.carahitung
+  pajak.value = simpanan.adm
+  norek_sma.value = ''
+  atas_nama.value = ''
+  setoran_awal.value = simpanan.pokok
+  jangka_waktu.value = simpanan.lama
+  mulai_tanggal.value = simpanan.tglawal
+  tanggal_selesai.value = simpanan.tgljtempo
+  saldo_sekarang.value = simpanan.saldo
+  saldo_blokir.value = ''
+  max_pengambilan.value = simpanan.saldo
+  blokir_check.value = simpanan.lama
+  autodebet_check.value = simpanan.lama
+  catatan_check.value = simpanan.saldo
+  petugas.value = simpanan.marketing
+  tgl_tutup_rekening.value = simpanan.tgltutup
 }
 const deleteGet = (e) => {
-  const pinjaman = e
+  const simpanan = e
 
-  if (pinjaman.norek) {
+  if (simpanan.norek) {
     userIds.value = []
-    userIds.value.push(pinjaman.norek)
+    userIds.value.push(simpanan.norek)
     console.log('delete get 1', userIds.value)
     modal_delete.value = true
   } else {
@@ -132,51 +118,39 @@ const deleteGet = (e) => {
 const viewData = async (e) => {
   isView.value = true
   modal_utama.value = true
-  const pinjaman = await daftarSimpata.getItem(e)
+  const simpanan = await daftarSimpata.getItem(e)
   tanggal.value =
-    moment(pinjaman.tanggal).format('DD-MM-YYYY') == '30-11-1899'
+    moment(simpanan.tanggal).format('DD-MM-YYYY') == '30-11-1899'
       ? ''
-      : moment(pinjaman.tanggal).format('DD-MM-YYYY')
-  no_anggota.value = pinjaman.cif
-  no_buku.value = pinjaman.nopk
-  norek.value = pinjaman.norek
-  jenis_simpanan.value = pinjaman.jenis
-  kd_produk.value = pinjaman.marketing + ' '
-  nama_lengkap.value = pinjaman.nama
-  pendamping.value = pinjaman.statuskawin
-  alamat.value = pinjaman.alamat
-  desa.value = pinjaman.desa
-  kecamatan.value = pinjaman.kecamatan
-  kota.value = pinjaman.kota
-  pokok_pinj.value = currencyFormatter.format(pinjaman.pokok)
-  petugas.value = pinjaman.rate
-  cara_hitung.value = pinjaman.kdhit
-  pajak.value = pinjaman.lama
-  norek_sma.value =
-    moment(pinjaman.tglmulai).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tglmulai).format('YYYY-MM-DD')
-  admin.value = currencyFormatter.format(parseFloat(pinjaman.adm))
-  provisi.value = currencyFormatter.format(pinjaman.provisi)
-  atas_nama.value =
-    moment(pinjaman.tgljtempo).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tgljtempo).format('DD-MM-YYYY')
-  //tgl_alih_bunga.value = pinjaman.
-  tgl_valuta.value =
-    moment(pinjaman.tglvaluta).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tglvaluta).format('DD-MM-YYYY')
-  tgl_lunas.value =
-    moment(pinjaman.tgllunas).format('DD-MM-YYYY') == '30-11-1899'
-      ? ''
-      : moment(pinjaman.tgllunas).format('DD-MM-YYYY')
-  tgl_tutup_rekening.value = currencyFormatter.format(pinjaman.pot_pokok)
-  saldo_blokir.value = currencyFormatter.format(pinjaman.pot_bunga)
-  max_pengambilan.value = currencyFormatter.format(pinjaman.pot_pokok + pinjaman.pot_bunga)
-  sisa_pokok.value = currencyFormatter.format(pinjaman.sisapokok)
-  sisa_jasa.value = currencyFormatter.format(pinjaman.sisabunga)
-  saldo_pinjaman.value = currencyFormatter.format(pinjaman.sisapokok + pinjaman.sisabunga)
+      : moment(simpanan.tanggal).format('DD-MM-YYYY')
+  no_anggota.value = simpanan.cif
+  no_buku.value = simpanan.nobuku
+  norek.value = simpanan.norek
+  jenis_simpanan.value = simpanan.jenis
+  kd_produk.value = simpanan.marketing + ' '
+  nama_lengkap.value = simpanan.nama
+  pendamping.value = simpanan.statuskawin
+  alamat.value = simpanan.alamat
+  desa.value = simpanan.desa
+  kecamatan.value = simpanan.kecamatan
+  kota.value = simpanan.kota
+  suku_bunga.value = simpanan.rate
+  cara_hitung.value = simpanan.carahitung
+  pajak.value = simpanan.adm
+  norek_sma.value = ''
+  atas_nama.value = ''
+  setoran_awal.value = simpanan.pokok
+  jangka_waktu.value = simpanan.lama
+  mulai_tanggal.value = simpanan.tglawal
+  tanggal_selesai.value = simpanan.tgljtempo
+  saldo_sekarang.value = simpanan.saldo
+  saldo_blokir.value = ''
+  max_pengambilan.value = simpanan.saldo
+  blokir_check.value = simpanan.lama
+  autodebet_check.value = simpanan.lama
+  catatan_check.value = simpanan.saldo
+  petugas.value = simpanan.marketing
+  tgl_tutup_rekening.value = simpanan.tgltutup
 }
 const getNasabah = async (e) => {
   if (no_anggota.value != '') {
@@ -217,22 +191,6 @@ const getNasabah = async (e) => {
     }
   }
 }
-const itungPinjaman = async () => {
-  if (jenis_simpanan.value != '') {
-    admin.value = parseFloat(
-      (parseFloat(admin_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    ).toFixed(2)
-    provisi.value = parseFloat(
-      (parseFloat(provisi_percent.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    ).toFixed(2)
-    tgl_tutup_rekening.value = parseFloat(pokok_pinj.value / pajak.value)
-    saldo_blokir.value = (parseFloat(petugas.value).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    max_pengambilan.value = tgl_tutup_rekening.value + saldo_blokir.value
-    if (norek_sma.value != '' && pajak.value != '') {
-      atas_nama.value = moment(norek_sma.value).add(pajak.value, 'M').format('DD-MM-YYYY')
-    }
-  }
-}
 const simpan_data = async (e) => {
   try {
     await daftarSimpata.postItem(
@@ -243,21 +201,29 @@ const simpan_data = async (e) => {
       norek.value,
       jenis_simpanan.value,
       kd_produk.value,
-      pokok_pinj.value,
-      petugas.value,
+      nama_lengkap.value,
+      pendamping.value,
+      alamat.value,
+      desa.value,
+      kecamatan.value,
+      kota.value,
+      suku_bunga.value,
       cara_hitung.value,
-      norek_sma.value,
       pajak.value,
-      admin.value,
-      provisi.value,
+      norek_sma.value,
       atas_nama.value,
-      tgl_alih_bunga.value,
-      tgl_valuta.value,
-      tgl_lunas.value,
-      tgl_tutup_rekening.value,
+      setoran_awal.value,
+      jangka_waktu.value,
+      mulai_tanggal.value,
+      tanggal_selesai.value,
+      saldo_sekarang.value,
       saldo_blokir.value,
-      sisa_pokok.value,
-      sisa_jasa.value,
+      max_pengambilan.value,
+      blokir_check.value,
+      autodebet_check.value,
+      catatan_check.value,
+      petugas.value,
+      tgl_tutup_rekening.value,
       isEdit.value
     )
     //e.target.reset()
@@ -295,36 +261,36 @@ const resetForm = () => {
   allSelected.value = false
   userIds.value = []
   norek.value = ''
-  nama_lengkap.value = ''
-  no_anggota.value = ''
-  jenis_simpanan.value = ''
-  pokok_pinj.value = ''
-  no_buku.value = ''
-  pajak.value = ''
-  tgl_valuta.value = ''
-  tgl_alih_bunga.value = ''
-  petugas.value = ''
-  cara_hitung.value = '1'
-  provisi.value = ''
-  admin.value = ''
-  provisi_percent.value = ''
-  admin_percent.value = ''
   tanggal.value = moment(Date.now()).format('DD-MM-YYYY')
-  norek_sma.value = ''
-  atas_nama.value = ''
-  tgl_lunas.value = ''
-  tgl_tutup_rekening.value = ''
-  saldo_blokir.value = ''
-  max_pengambilan.value = ''
-  sisa_pokok.value = ''
-  sisa_jasa.value = ''
+  no_anggota.value = ''
+  no_buku.value = ''
+  jenis_simpanan.value = ''
+  kd_produk.value = ''
+  nama_lengkap.value = ''
+  pendamping.value = ''
   alamat.value = ''
   desa.value = ''
   kecamatan.value = ''
   kota.value = ''
-  pendamping.value = ''
-  kd_produk.value = ''
-  saldo_pinjaman.value = ''
+  suku_bunga.value = ''
+  cara_hitung.value = '1'
+  pajak.value = ''
+  norek_sma.value = ''
+  atas_nama.value = ''
+  setoran_awal.value = ''
+  jangka_waktu.value = ''
+  mulai_tanggal.value = ''
+  tanggal_selesai.value = ''
+  saldo_sekarang.value = ''
+  saldo_blokir.value = ''
+  max_pengambilan.value = ''
+
+  blokir_check.value = ''
+  autodebet_check.value = ''
+  catatan_check.value = ''
+  petugas.value = ''
+  tgl_tutup_rekening.value = ''
+
   modal_utama.value = false
   modal_nasabah.value = false
   modal_delete.value = false
@@ -508,9 +474,9 @@ watch(norek_sma, async (tanggal) => {
 })
 watch(jenis_simpanan, async (sandi) => {
   try {
-    // produk_pinjaman.value.map((produk) => {
+    // produk_simpata_list.value.map((produk) => {
     //   if (produk.sandi === sandi) {
-    //     petugas.value = parseFloat(produk.rate).toFixed(2)
+    //     suku_bunga.value = parseFloat(produk.rate).toFixed(2)
     //     pajak.value = produk.LAMA
     //     admin_percent.value = parseFloat(produk.adm).toFixed(2)
     //     provisi_percent.value = parseFloat(produk.prov).toFixed(2)
@@ -521,10 +487,10 @@ watch(jenis_simpanan, async (sandi) => {
     //       provisi.value = parseFloat(
     //         (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
     //       ).toFixed(2)
-    //       tgl_tutup_rekening.value = parseFloat(pokok_pinj.value / produk.LAMA)
+    //       saldo_sekarang.value = parseFloat(pokok_pinj.value / produk.LAMA)
     //       saldo_blokir.value =
     //         (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    //       max_pengambilan.value = tgl_tutup_rekening.value + saldo_blokir.value
+    //       max_pengambilan.value = saldo_sekarang.value + saldo_blokir.value
     //       if (norek_sma.value != '' && pajak.value != '') {
     //         atas_nama.value = moment(norek_sma.value)
     //           .add(pajak.value, 'M')
@@ -546,8 +512,8 @@ const selectAll = (e) => {
   userIds.value = []
 
   if (!allSelected.value || e) {
-    for (let pinjaman = 0; pinjaman < daftarSimpata.items.length; pinjaman++) {
-      userIds.value.push(daftarSimpata.items[pinjaman].norek)
+    for (let simpanan = 0; simpanan < daftarSimpata.items.length; simpanan++) {
+      userIds.value.push(daftarSimpata.items[simpanan].norek)
     }
   }
 }
@@ -559,8 +525,8 @@ onBeforeMount(async () => {
   try {
     const data = await daftarSimpata.setupItem()
     if (data.success) {
-      marketing_list.value = data.data.jenis_simpanan
-      produk_pinjaman.value = data.data.produk_simpanan
+      jenis_simpanan_list.value = data.data.jenis_simpanan
+      produk_simpata_list.value = data.data.produk_simpanan
     }
   } catch (error) {
     isLoading.value = false
@@ -618,7 +584,7 @@ onMounted(async () => {
           <Trash2Icon class="w-4 h-4 mx-auto my-[5px] stroke-2 stroke-current" />
         </button>
         <RouterLink
-          to="/laporan-daftar-pinjaman"
+          to="/laporan-daftar-simpanan"
           class="inline-block align-middle hover:text-success text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export CSV"
         >
@@ -629,7 +595,7 @@ onMounted(async () => {
           >
         </RouterLink>
         <RouterLink
-          to="/laporan-daftar-pinjaman"
+          to="/laporan-daftar-simpanan"
           class="inline-block hover:text-danger align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Export PDF"
         >
@@ -640,7 +606,7 @@ onMounted(async () => {
           >
         </RouterLink>
         <RouterLink
-          to="/laporan-daftar-pinjaman"
+          to="/laporan-daftar-simpanan"
           class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded no-underline h-9 mx-auto px-2 p-1 leading-tight text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 btn-light-bordered"
           title="Print Table"
         >
@@ -955,10 +921,10 @@ onMounted(async () => {
         <tbody class="overflow-y-scroll" v-show="!isLoading">
           <tr
             class="bg-white hover:bg-lime-300 hover:text-slate-700 drop-shadow-2xl group"
-            v-for="pinjaman in daftarSimpata.items"
-            :key="pinjaman.norek"
-            :pinjaman="pinjaman"
-            :value="pinjaman.norek"
+            v-for="simpanan in daftarSimpata.items"
+            :key="simpanan.norek"
+            :simpanan="simpanan"
+            :value="simpanan.norek"
           >
             <td class="w-4 border-r border-b font-medium p-0 pl-3">
               <div class="flex items-center">
@@ -967,7 +933,7 @@ onMounted(async () => {
                   >:::</span
                 >
                 <input
-                  :value="pinjaman.norek"
+                  :value="simpanan.norek"
                   type="checkbox"
                   v-model="userIds"
                   @click="selectOne"
@@ -976,65 +942,65 @@ onMounted(async () => {
               </div>
             </td>
             <th
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               scope="row"
               class="border-r border-b font-medium whitespace-nowrap pl-2"
             >
-              {{ moment(pinjaman.tanggal).format('DD-MM-YYYY') }}
+              {{ moment(simpanan.tanggal).format('DD-MM-YYYY') }}
             </th>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ pinjaman.norek }}
+              {{ simpanan.norek }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-center border-r border-b font-medium px-2"
             >
-              {{ pinjaman.cif }}
+              {{ simpanan.cif }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ pinjaman.nama }}
+              {{ simpanan.nama }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ pinjaman.alamat }}
+              {{ simpanan.alamat }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ pinjaman.kecamatan }}
+              {{ simpanan.kecamatan }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ pinjaman.kota }}
+              {{ simpanan.kota }}
             </td>
             <td
-              @dblclick="viewData(pinjaman.norek)"
+              @dblclick="viewData(simpanan.norek)"
               class="min-w-max text-left border-r border-b font-medium px-2"
             >
-              {{ currencyFormatter.format(pinjaman.saldo) }}
+              {{ currencyFormatter.format(simpanan.saldo) }}
             </td>
             <td class="min-w-max border-r border-b font-medium p-1">
               <div class="flex justify-center">
                 <a
-                  @click="editGet(pinjaman.norek)"
+                  @click="editGet(simpanan.norek)"
                   class="flex items-center mr-4 hover:text-blue-700 text-sky-600"
                   href="javascript:;"
                 >
                   <CheckSquareIcon class="w-3 h-3 mr-1" /> Edit
                 </a>
                 <a
-                  @click="deleteGet(pinjaman)"
+                  @click="deleteGet(simpanan)"
                   class="flex items-center hover:text-red-800 text-danger"
                   href="javascript:;"
                 >
@@ -1247,8 +1213,8 @@ onMounted(async () => {
                     :disabled="isView"
                   >
                     <option class="text-xs" value="" disabled>Pilih Jenis Simpanan</option>
-                    <option v-for="marketing in marketing_list" :value="marketing.sandi">
-                      {{ marketing.sandi }} - {{ marketing.keterangan }}
+                    <option v-for="jenis in jenis_simpanan_list" :value="jenis.sandi">
+                      {{ jenis.sandi }} - {{ jenis.keterangan }}
                     </option>
                   </select>
                 </div>
@@ -1270,7 +1236,7 @@ onMounted(async () => {
                   >
                     <option class="text-xs" value="" disabled>Pilih KD Produk</option>
                     <option
-                      v-for="produk in produk_pinjaman"
+                      v-for="produk in produk_simpata_list"
                       :value="produk.SANDI"
                       :disabled="produk.SANDI != '002'"
                     >
@@ -1402,7 +1368,7 @@ onMounted(async () => {
                     <input
                       class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                       type="text"
-                      v-model="petugas"
+                      v-model="suku_bunga"
                       readonly
                       required
                     />
@@ -1485,7 +1451,7 @@ onMounted(async () => {
                       <input
                         class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                         type="text"
-                        v-model="petugas"
+                        v-model="setoran_awal"
                         readonly
                         required
                       />
@@ -1497,21 +1463,13 @@ onMounted(async () => {
                     </div>
                     <span class="mr-3 pb-2">:</span>
                     <div class="w-3/5 flex-grow">
-                      <select
-                        name="cara_hitung"
-                        id="cara_hitung"
+                      <input
                         class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
-                        placeholder=" "
-                        v-model="cara_hitung"
+                        type="text"
+                        v-model="jangka_waktu"
+                        readonly
                         required
-                        disabled
-                      >
-                        <option class="text-xs" value="" disabled>Pilih Cara Hitung</option>
-                        <option value="1">A - FLAT</option>
-                        <!-- <option v-for="agama in list_agama" :value="agama.value">
-                      {{ agama.nama }}
-                    </option> -->
-                      </select>
+                      />
                     </div>
                   </div>
                   <div class="text-gray-700 flex items-center mx-[26px] w-full">
@@ -1523,7 +1481,7 @@ onMounted(async () => {
                       <input
                         class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                         type="date"
-                        v-model="pajak"
+                        v-model="mulai_tanggal"
                         readonly
                         required
                       />
@@ -1538,7 +1496,7 @@ onMounted(async () => {
                       <input
                         class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                         type="text"
-                        v-model="norek_sma"
+                        v-model="tanggal_selesai"
                         required
                         :readonly="isView"
                       />
@@ -1557,7 +1515,7 @@ onMounted(async () => {
                   <input
                     class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                     type="text"
-                    v-model="tgl_tutup_rekening"
+                    v-model="saldo_sekarang"
                     readonly
                   />
                 </div>
@@ -1599,7 +1557,7 @@ onMounted(async () => {
                   <input
                     id="blokir-checkbox"
                     type="checkbox"
-                    value=""
+                    v-model="blokir_check"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="blokir-checkbox" class="ml-2 text-xs font-medium">Blokir</label>
@@ -1608,7 +1566,7 @@ onMounted(async () => {
                   <input
                     id="autodebet-checkbox"
                     type="checkbox"
-                    value=""
+                    v-model="autodebet_check"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="autodebet-checkbox" class="ml-2 text-xs font-medium">Autodebet</label>
@@ -1617,7 +1575,7 @@ onMounted(async () => {
                   <input
                     id="catatan-checkbox"
                     type="checkbox"
-                    value=""
+                    v-model="catatan_check"
                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label for="catatan-checkbox" class="ml-2 text-xs font-medium">Catatan</label>
