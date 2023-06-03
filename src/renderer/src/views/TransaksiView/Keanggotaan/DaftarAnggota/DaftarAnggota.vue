@@ -105,9 +105,6 @@ const editGet = async (e) => {
   simpanan_wajib.value = currencyFormatter.format(anggota.simwajib).replace('Rp', '').trim()
   simpanan_lain.value = currencyFormatter.format(anggota.lain).replace('Rp', '').trim()
   total_simpanan.value = currencyFormatter.format(anggota.simshu).replace('Rp', '').trim()
-
-  // previewFoto.value = URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' }))
-  // console.log('Image', URL.createObjectURL(new Blob([anggota.foto.buffer], { type: 'image/png' })))
 }
 const deleteGet = (e) => {
   const anggota = e
