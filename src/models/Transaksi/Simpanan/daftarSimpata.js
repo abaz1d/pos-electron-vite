@@ -115,9 +115,6 @@ daftarSimpata.getNasabah = async (cif) => {
 }
 daftarSimpata.setupSimpata = async (kantor) => {
   try {
-    // const [anggota] = await db.query(
-    //   `SELECT a.nama, a.cif, a.kota FROM simpanan p left join anggota a on p.cif = a.cif WHERE p.tgltutup != '0000-00-00' AND p.kantor = ${kantor} ORDER BY a.nama;`
-    // )
     const [produk_simpanan] = await db.query(
       `SELECT * FROM setsandi_tab WHERE kantor = '${kantor}'`
     )
