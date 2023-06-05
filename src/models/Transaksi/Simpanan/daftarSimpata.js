@@ -11,7 +11,6 @@ daftarSimpata.fetchSimpata = async (
   total_row_displayed,
   kantor
 ) => {
-  //console.log(isTokenValid() ? 'yes' : 'no')
   const token = await isTokenValid()
   if (token.success) {
     var sortMode = sort_mode ? 'ASC' : 'DESC'
