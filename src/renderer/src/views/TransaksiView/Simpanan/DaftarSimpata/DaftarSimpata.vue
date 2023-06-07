@@ -49,6 +49,8 @@ const setoran_awal = ref('')
 const jangka_waktu = ref('')
 const mulai_tanggal = ref('')
 const tanggal_selesai = ref('')
+const aro = ref('')
+const perpanjangan = ref('')
 const saldo_sekarang = ref('')
 const saldo_blokir = ref('')
 const max_pengambilan = ref('')
@@ -216,6 +218,8 @@ const simpan_data = async (e) => {
       jangka_waktu.value,
       mulai_tanggal.value,
       tanggal_selesai.value,
+      aro.value,
+      perpanjangan.value,
       saldo_sekarang.value,
       saldo_blokir.value,
       max_pengambilan.value,
@@ -281,6 +285,8 @@ const resetForm = () => {
   jangka_waktu.value = ''
   mulai_tanggal.value = ''
   tanggal_selesai.value = ''
+  aro.value = ''
+  perpanjangan.value = ''
   saldo_sekarang.value = ''
   saldo_blokir.value = ''
   max_pengambilan.value = ''
@@ -472,33 +478,35 @@ watch(norek_sma, async (tanggal) => {
     })
   }
 })
-watch(jenis_simpanan, async (sandi) => {
+watch(kd_produk, async (sandi) => {
   try {
-    // produk_simpata_list.value.map((produk) => {
-    //   if (produk.sandi === sandi) {
-    //     suku_bunga.value = parseFloat(produk.rate).toFixed(2)
-    //     pajak.value = produk.LAMA
-    //     admin_percent.value = parseFloat(produk.adm).toFixed(2)
-    //     provisi_percent.value = parseFloat(produk.prov).toFixed(2)
-    //     if (pokok_pinj.value != '' && !isView.value) {
-    //       admin.value = parseFloat(
-    //         (parseFloat(produk.adm).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    //       ).toFixed(2)
-    //       provisi.value = parseFloat(
-    //         (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    //       ).toFixed(2)
-    //       saldo_sekarang.value = parseFloat(pokok_pinj.value / produk.LAMA)
-    //       saldo_blokir.value =
-    //         (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
-    //       max_pengambilan.value = saldo_sekarang.value + saldo_blokir.value
-    //       if (norek_sma.value != '' && pajak.value != '') {
-    //         atas_nama.value = moment(norek_sma.value)
-    //           .add(pajak.value, 'M')
-    //           .format('DD-MM-YYYY')
-    //       }
-    //     }
-    //   }
-    // })
+    produk_simpata_list.value.map((produk) => {
+      if (produk.SANDI === sandi) {
+        console.log(produk, sandi)
+        pajak.value = produk.PAJAK
+        suku_bunga.value = parseFloat(produk.A_RATE).toFixed(2)
+        // pajak.value = produk.LAMA
+        // admin_percent.value = parseFloat(produk.adm).toFixed(2)
+        // provisi_percent.value = parseFloat(produk.prov).toFixed(2)
+        // if (pokok_pinj.value != '' && !isView.value) {
+        //   admin.value = parseFloat(
+        //     (parseFloat(produk.adm).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+        //   ).toFixed(2)
+        //   provisi.value = parseFloat(
+        //     (parseFloat(produk.prov).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+        //   ).toFixed(2)
+        //   saldo_sekarang.value = parseFloat(pokok_pinj.value / produk.LAMA)
+        //   saldo_blokir.value =
+        //     (parseFloat(produk.rate).toFixed(2) / 100) * parseFloat(pokok_pinj.value)
+        //   max_pengambilan.value = saldo_sekarang.value + saldo_blokir.value
+        //   if (norek_sma.value != '' && pajak.value != '') {
+        //     atas_nama.value = moment(norek_sma.value)
+        //       .add(pajak.value, 'M')
+        //       .format('DD-MM-YYYY')
+        //   }
+        // }
+      }
+    })
   } catch (error) {
     swal({
       icon: 'error',
@@ -1489,7 +1497,7 @@ onMounted(async () => {
                   </div>
                   <div class="text-gray-700 flex items-center mx-[26px] w-full">
                     <div class="mb-1 w-2/5 text-xs">
-                      <label>S/D. Tanggal ARO</label>
+                      <label>S/D. Tanggal</label>
                     </div>
                     <span class="mr-3 pb-2">:</span>
                     <div class="w-3/5 flex-grow">
@@ -1497,6 +1505,36 @@ onMounted(async () => {
                         class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
                         type="text"
                         v-model="tanggal_selesai"
+                        required
+                        :readonly="isView"
+                      />
+                    </div>
+                  </div>
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                    <div class="mb-1 w-2/5 text-xs">
+                      <label>A R O</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <input
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        type="text"
+                        v-model="aro"
+                        required
+                        :readonly="isView"
+                      />
+                    </div>
+                  </div>
+                  <div class="text-gray-700 flex items-center mx-[26px] w-full">
+                    <div class="mb-1 w-2/5 text-xs">
+                      <label>Perpanjangan</label>
+                    </div>
+                    <span class="mr-3 pb-2">:</span>
+                    <div class="w-3/5 flex-grow">
+                      <input
+                        class="w-full h-7 mb-1 px-0.5 text-xs border rounded focus:shadow-outline"
+                        type="text"
+                        v-model="perpanjangan"
                         required
                         :readonly="isView"
                       />

@@ -162,45 +162,89 @@ daftarSimpata.getSimpata = async (norek) => {
 daftarSimpata.postSimpata = async (
   tanggal,
   cif,
-  nopk,
+  nobuku,
   norek,
   jenis,
-  marketing,
-  pokok,
+  produk,
+  nama,
+  pendamping,
+  alamat,
+  desa,
+  kecamatan,
+  kota,
   rate,
-  kdhit,
-  tglmulai,
-  lama,
-  adm,
-  provisi,
-  tgljtempo,
-  tgl_alih_bunga,
-  tglvaluta,
-  tgltutup,
-  pot_pokok,
-  pot_bunga,
-  sisapokok,
-  sisabunga,
+  carahitung,
+  pajak,
+  norek_sma,
+  atas_nama,
+  pokok,
+  jangka_waktu,
+  mulai_tanggal,
+  tanggal_selesai,
+  aro,
+  perpanjangan,
+  saldo,
+  saldo_blokir,
+  max_pengambilan,
+  blokir_check,
+  autodebet_check,
+  catatan_check,
+  petugas,
+  tgl_tutup_rekening,
   isEdit,
-  kantor,
-  opt
+  kantor
 ) => {
   try {
     let rows
-    if (!isEdit) {
-      console.log('ADDING')
-      ;[rows] = await db.query(
-        `INSERT INTO simpanan(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tglvaluta, tgltutup, pot_pokok, pot_bunga, sisapokok, sisabunga, kantor, opt) VALUES (STR_TO_DATE('${tanggal}','%d-%m-%Y'), '${cif}', '${nopk}', '${norek}', '${jenis}', '${
-          marketing + ' '
-        }', '${pokok}', '${rate}', '${kdhit}', STR_TO_DATE('${tglmulai}','%Y-%m-%d'), '${lama}', '${adm}', '${provisi}', STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), '${tglvaluta}', '${tgltutup}', '${pot_pokok}', '${pot_bunga}', '${sisapokok}', '${sisabunga}', '${kantor}', '${opt}')`
-      )
-    } else {
-      console.log('EDITING')
-      ;[rows] = await db.query(
-        `UPDATE simpanan SET tanggal = STR_TO_DATE('${tanggal}','%d-%m-%Y'), cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = STR_TO_DATE('${tglmulai}','%Y-%m-%d'), lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), tglvaluta = '${tglvaluta}',tgltutup = '${tgltutup}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisapokok = '${sisapokok}',sisabunga = '${sisabunga}',kantor = '${kantor}', opt = '${opt}' WHERE norek = '${norek}'`
-      )
-    }
-    return new Response(rows)
+    console.log(
+      tanggal,
+      cif,
+      nobuku,
+      norek,
+      jenis,
+      produk,
+      nama,
+      pendamping,
+      alamat,
+      desa,
+      kecamatan,
+      kota,
+      rate,
+      carahitung,
+      pajak,
+      norek_sma,
+      atas_nama,
+      pokok,
+      jangka_waktu,
+      mulai_tanggal,
+      tanggal_selesai,
+      aro,
+      perpanjangan,
+      saldo,
+      saldo_blokir,
+      max_pengambilan,
+      blokir_check,
+      autodebet_check,
+      catatan_check,
+      petugas,
+      tgl_tutup_rekening,
+      isEdit,
+      Auth.items.kantor
+    )
+    // if (!isEdit) {
+    //   console.log('ADDING')
+    //   ;[rows] = await db.query(
+    //     `INSERT INTO simpanan(tanggal, cif, nopk, norek, jenis, marketing, pokok, rate, kdhit, tglmulai, lama, adm, provisi, tgljtempo, tglvaluta, tgltutup, pot_pokok, pot_bunga, sisapokok, sisabunga, kantor, opt) VALUES (STR_TO_DATE('${tanggal}','%d-%m-%Y'), '${cif}', '${nopk}', '${norek}', '${jenis}', '${
+    //       marketing + ' '
+    //     }', '${pokok}', '${rate}', '${kdhit}', STR_TO_DATE('${tglmulai}','%Y-%m-%d'), '${lama}', '${adm}', '${provisi}', STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), '${tglvaluta}', '${tgltutup}', '${pot_pokok}', '${pot_bunga}', '${sisapokok}', '${sisabunga}', '${kantor}', '${opt}')`
+    //   )
+    // } else {
+    //   console.log('EDITING')
+    //   ;[rows] = await db.query(
+    //     `UPDATE simpanan SET tanggal = STR_TO_DATE('${tanggal}','%d-%m-%Y'), cif = '${cif}', nopk = '${nopk}', norek = '${norek}', jenis = '${jenis}', marketing = '${marketing}', pokok = '${pokok}', rate = '${rate}', kdhit = '${kdhit}', tglmulai = STR_TO_DATE('${tglmulai}','%Y-%m-%d'), lama = '${lama}', adm = '${adm}', provisi = '${provisi}', tgljtempo = STR_TO_DATE('${tgljtempo}','%d-%m-%Y'), tglvaluta = '${tglvaluta}',tgltutup = '${tgltutup}',pot_pokok = '${pot_pokok}',pot_bunga = '${pot_bunga}',sisapokok = '${sisapokok}',sisabunga = '${sisabunga}',kantor = '${kantor}', opt = '${opt}' WHERE norek = '${norek}'`
+    //   )
+    // }
+    // return new Response(rows)
   } catch (error) {
     console.error('error models', error)
     return new Response(error, false)
